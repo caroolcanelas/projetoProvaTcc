@@ -15,6 +15,7 @@ import model.Disciplina;
 @NamedQuery(name = "DisciplinaCodigo", query = "SELECT d FROM Disciplina d WHERE d.codigo = :codigo")
 public class DaoDisciplina {
 
+	//abre uma conexao para o banco de dados.
 	private static EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("jpa_prjProva");
 	private static EntityManager entityManager = entityManagerFactory.createEntityManager();
 
@@ -24,16 +25,16 @@ public class DaoDisciplina {
 
 	public boolean salvar(Disciplina d, boolean autoCommit) {
 		if (autoCommit == true)
-			entityManager.getTransaction().begin();
+			entityManager.getTransaction().begin(); //abre a tampa da caixa de disciplina
 		try {
-			entityManager.persist(d);
+			entityManager.persist(d); // coloca disciplina la dentro
 		} catch (PersistenceException e) {
 			if (autoCommit == true)
-				entityManager.getTransaction().rollback();
+				entityManager.getTransaction().rollback(); //se der erro, tira de dentro
 			return false;
 		}
 		if (autoCommit == true)
-			entityManager.getTransaction().commit();
+			entityManager.getTransaction().commit(); //se der tudo certo, fecha a tampa
 		return true;
 	}
 
@@ -56,12 +57,13 @@ public class DaoDisciplina {
 		return true;
 	}
 
+	//ele está fazendo select d from disciplina d where d.codigo = "exemplo"
 	public Disciplina obterDisciplinaPeloCodigo(String codigo) {
-		Query query = entityManager.createNamedQuery("Disciplina.codigo");
-		query.setParameter("codigo", codigo);
-		List<Disciplina> resultado  = query.getResultList();
+		Query query = entityManager.createNamedQuery("Disciplina.codigo"); // faz a busca citada na linha 15 select
+		query.setParameter("codigo", codigo); //troca o parametro :codigo para codigo
+		List<Disciplina> resultado  = query.getResultList(); //busca uma lista de disciplina
 		if(resultado != null && resultado.size() > 0)
-			return resultado.get(0);
+			return resultado.get(0); //pega o primeiro resultado da lista
 		return null;
 	}
 }
