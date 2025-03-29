@@ -6,7 +6,7 @@ import model.Topico;
 import javax.persistence.*;
 import java.util.List;
 
-@NamedQuery(name = "TopicoNumOrdem", query = "SELECT t FROM Topico t WHERE t.numOrdem -= :numOrdem")
+@NamedQuery(name = "Topico.numOrdem", query = "SELECT t FROM Topico t WHERE t.numOrdem -= :numOrdem")
 public class DaoTopico {
 
 
@@ -50,9 +50,6 @@ public class DaoTopico {
             entityManager.getTransaction().commit();
         return true;
     }
-
-
-    //Necessario obter todos os topicos cadastrados ?
 
     //dentro de uma dicsiplina quero encontrar um topico
     public Topico obterTopicoPeloNumOrdem(String numOrdem) {

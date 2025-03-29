@@ -12,7 +12,7 @@ import javax.persistence.Query;
 
 import model.Disciplina;
 
-@NamedQuery(name = "DisciplinaCodigo", query = "SELECT d FROM Disciplina d WHERE d.codigo = :codigo")
+@NamedQuery(name = "Disciplina.codigo", query = "SELECT d FROM Disciplina d WHERE d.codigo = :codigo")
 public class DaoDisciplina {
 
 	//abre uma conexao para o banco de dados.
@@ -57,6 +57,16 @@ public class DaoDisciplina {
 		return true;
 	}
 
+	public List<Disciplina> obterTodasDisciplinas() {
+		Query query = entityManager.createQuery("SELECT d FROM Disciplina d");
+		List<Disciplina> resultado  = query.getResultList();
+		Disciplina[] retorno = new Disciplina[resultado.size()];
+		for(int i = 0; i < resultado.size(); i++)
+			retorno[i] = resultado.get(i);
+		return List.of(retorno);
+
+	}
+
 	//ele está fazendo select d from disciplina d where d.codigo = "exemplo"
 	public Disciplina obterDisciplinaPeloCodigo(String codigo) {
 		Query query = entityManager.createNamedQuery("Disciplina.codigo"); // faz a busca citada na linha 15 select
@@ -67,3 +77,9 @@ public class DaoDisciplina {
 		return null;
 	}
 }
+
+
+
+
+
+
