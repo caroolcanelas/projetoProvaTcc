@@ -23,7 +23,7 @@ public class CtrlPrograma {
 			//Questao q = new Questao("Instrução inicial", "Suporte", "Comando",
 				//	NivelQuestao.AVANCADO, TipoQuestao.MULTIPLA_ESCOLHA, true);
 			//DaoQuestao dao = new DaoQuestao();
-			//dao.salvar(q); lala
+			//dao.salvar(q); lalaa
 
 			Tag t = new Tag("Nome da tag", "Assunto da tag");
 			DaoTag dao = new DaoTag();
