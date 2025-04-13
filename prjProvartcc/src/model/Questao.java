@@ -258,7 +258,7 @@ public class Questao { //TODO já conferido
 
 	//add e remove - conjRecursos
 
-	//TODO
+	//TODO esses metodos
 
 	//conjRecursos
 
