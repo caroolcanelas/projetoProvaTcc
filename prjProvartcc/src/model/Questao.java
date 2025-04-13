@@ -1,6 +1,10 @@
 package model;
 
+import org.dom4j.rule.Mode;
+
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -49,16 +53,16 @@ public class Questao { //TODO já conferido
     @JoinTable(name = "foi_marcada_com", 
                joinColumns = @JoinColumn(name = "id_tag"),
                inverseJoinColumns = @JoinColumn(name = "id_questao"))
-    private Set<Tag>   conjTags;
+    private List<Tag>   conjTags;
     
     @OneToMany(fetch = FetchType.LAZY)
-	private Set<Questao>  conjQuestoesDerivadas; // relacionamento unidirecional
+	private List<Questao>  conjQuestoesDerivadas; // relacionamento unidirecional
 	
     @OneToMany(fetch = FetchType.LAZY)
-    private Set<Opcao>    conjOpcoes; 			 // relacionamento unidirecional
+    private List<Opcao>    conjOpcoes; 			 // relacionamento unidirecional
 
     @OneToMany(fetch = FetchType.LAZY)
-    private Set<Recurso>  conjRecursos; 			 
+    private List<Recurso>  conjRecursos;
 
 	//
 	// MÉTODOS
@@ -77,10 +81,10 @@ public class Questao { //TODO já conferido
 		this.setTipo(tipo);
 		this.setValidada(validada);
 
-		this.conjTags = new HashSet<>();
-		this.conjQuestoesDerivadas = new HashSet<>();
-		this.conjOpcoes = new HashSet<>();
-		this.conjRecursos = new HashSet<>();
+		this.conjTags = new ArrayList<>();
+		this.conjQuestoesDerivadas = new ArrayList<>();
+		this.conjOpcoes = new ArrayList<>();
+		this.conjRecursos = new ArrayList<>();
 
 	}
 	
@@ -92,6 +96,7 @@ public class Questao { //TODO já conferido
 		this.id = id;
 	}
 
+	//instrução
 	public String getInstrucaoInicial() {
 		return this.instrucaoInicial;
 	}
@@ -106,6 +111,7 @@ public class Questao { //TODO já conferido
 			throw new ModelException("A instrução inicial não pode ser nula!");
 	}
 
+	//suporte
 	public String getSuporte() {
 		return this.suporte;
 	}
@@ -120,6 +126,7 @@ public class Questao { //TODO já conferido
 			throw new ModelException("O suporte não pode ser nulo!");
 	}
 
+	//comando
 	public String getComando() {
 		return this.comando;
 	}
@@ -134,6 +141,7 @@ public class Questao { //TODO já conferido
 			throw new ModelException("O comando não pode ser nulo!");
 	}
 
+	//nivel questao
 	public NivelQuestao getNivel() {
 		return this.nivel;
 	}
@@ -148,6 +156,7 @@ public class Questao { //TODO já conferido
 			throw new ModelException("O nível da questão não pode ser nulo!");
 	}
 
+	//tipo questao
 	public TipoQuestao getTipo() {
 		return this.tipo;
 	}
@@ -162,6 +171,7 @@ public class Questao { //TODO já conferido
 			throw new ModelException("O tipo da questão não pode ser nulo!");
 	}
 
+	//se é validada
 	public boolean isValidada() {
 		return this.validada;
 	}
@@ -170,13 +180,39 @@ public class Questao { //TODO já conferido
 		this.validada = validada;
 	}
 
+	//conjTag - add e remove
+	public void addTag(Tag tag) throws ModelException{
+		if (tag == null) {
+			throw new ModelException("A tag não pode ser nula");
+		}
+		 this.conjTags.add(tag);
+	}
+
+	public void removeTag(Tag tag) throws ModelException{
+		if(tag == null) {
+			throw new ModelException("A tag não pode ser nula");
+		}
+		this.conjTags.remove(tag);
+	}
+
+	//questoesDerivadas -- add e remove
+	public boolean addQuestaoDerivada(Questao questao) throws ModelException{
+		Questao.validarQuestao(questao);
+		return this.conjQuestoesDerivadas.add(questao);
+	}
+
+	public boolean removeQuestaoDerivada(Questao questao) throws ModelException{
+		return this.conjQuestoesDerivadas.remove(questao);
+	}
+
+	// questoesDerivadas
 	public Set<Questao> getConjQuestoesDerivadas() {
 		return new HashSet<Questao>(this.conjQuestoesDerivadas);
 	}
 
 	public void setConjQuestoesDerivadas(Set<Questao> conjQuestoesDerivadas) throws ModelException {
 		Questao.validarConjQuestoesDerivadas(conjQuestoesDerivadas);
-		this.conjQuestoesDerivadas = conjQuestoesDerivadas;
+		this.conjQuestoesDerivadas = (List<Questao>) conjQuestoesDerivadas;
 	}
 
 	public static void validarConjQuestoesDerivadas(Set<Questao> conjQuestoesDerivadas) throws ModelException {
@@ -184,19 +220,47 @@ public class Questao { //TODO já conferido
 			throw new ModelException("O conjunto de questões derivadas questão não pode ser nulo!");
 	}
 
+	public static void validarQuestao (Questao questao) throws ModelException {
+		if(questao == null)
+			throw new ModelException("A questão não pode ser nulo");
+	}
+
+	//add e remove - conjOpcoes
+
+	public boolean addOpcao(Opcao opcao) throws ModelException{
+		Questao.validarOpcao(opcao);
+		return this.conjOpcoes.add(opcao);
+	}
+
+	public boolean removeOpcao(Opcao opcao) throws ModelException{
+		return this.conjOpcoes.remove(opcao);
+	}
+
+	// conjOpcoes
 	public Set<Opcao> getConjOpcoes() {
 		return new HashSet<Opcao>(this.conjOpcoes);
 	}
 
 	public void setConjOpcoes(Set<Opcao> conjOpcoes) throws ModelException {
 		Questao.validarConjOpcoes(conjOpcoes);		
-		this.conjOpcoes = conjOpcoes;
+		this.conjOpcoes = (List<Opcao>) conjOpcoes;
 	}
 	
 	public static void validarConjOpcoes(Set<Opcao> conjOpcoes) throws ModelException {
 		if(conjOpcoes == null)
 			throw new ModelException("O conjunto de opções da questão não pode ser nulo!");
 	}
+
+	public static void validarOpcao (Opcao opcao) throws ModelException {
+		if(opcao == null)
+			throw new ModelException("A opção não pode ser nulo");
+	}
+
+	//add e remove - conjRecursos
+
+	//TODO
+
+	//conjRecursos
 
 	public void validarQuestao() throws ModelException {
 		// TODO Codificar esse método depois		
