@@ -1,5 +1,5 @@
 package model;
 
 public enum NivelQuestao {
-	FACIL, INTERMEDIARIA, DIFICIL;
+	FACIL, INTERMEDIARIA, DIFICIL, ADVANCED, AVANCADO;
 }

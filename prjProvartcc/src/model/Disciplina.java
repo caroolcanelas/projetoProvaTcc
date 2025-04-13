@@ -1,7 +1,9 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -39,7 +41,7 @@ public class Disciplina { // TODO já conferido
     // ATRIBUTOS DE RELACIONAMENTO
     // 
     @OneToMany(mappedBy = "disciplina")
-    private Set<Topico> conjTopicos; // relacionamento bidirecional
+    private List<Topico> conjTopicos; // relacionamento bidirecional
 
     // 
     // MÉTODOS
@@ -48,12 +50,13 @@ public class Disciplina { // TODO já conferido
     	super();    	
     }
     
-    public Disciplina(String codigo, String nome, int numCreditos) throws ModelException {
+    public Disciplina(String codigo, String nome, int numCreditos, String objetivoGeral) throws ModelException {
     	super();
     	this.setCodigo(codigo);
         this.setNome(nome);
         this.setNumCreditos(numCreditos);
-        this.conjTopicos = new HashSet<Topico>();
+        this.setObjetivoGeral(objetivoGeral);
+        this.conjTopicos = new ArrayList<>();
     }
 
 	public int getId() {
@@ -107,7 +110,7 @@ public class Disciplina { // TODO já conferido
 
 	public void setConjTopicos(Set<Topico> conjTopicos) throws ModelException {
 		Disciplina.validarConjTopicos(conjTopicos);
-		this.conjTopicos = conjTopicos;
+		this.conjTopicos = (List<Topico>) conjTopicos;
 	}
 
 	public boolean addTopico(Topico topico) throws ModelException {

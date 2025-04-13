@@ -23,7 +23,7 @@ public class Questao { //TODO já conferido
 	final public static int TAMANHO_INSTRUCAO_INICIAL = 500;
 	final public static int TAMANHO_SUPORTE = 1024;
 	final public static int TAMANHO_COMANDO = 500;
-	
+
 	//
 	// ATRIBUTOS
 	//
@@ -65,6 +65,23 @@ public class Questao { //TODO já conferido
 	// 
 	public Questao() {
 		super();
+	}
+
+	public Questao(String instrucaoInicial, String suporte, String comando,
+				   NivelQuestao nivel, TipoQuestao tipo, boolean validada) throws ModelException {
+		super();
+		this.setInstrucaoInicial(instrucaoInicial);
+		this.setSuporte(suporte);
+		this.setComando(comando);
+		this.setNivel(nivel);
+		this.setTipo(tipo);
+		this.setValidada(validada);
+
+		this.conjTags = new HashSet<>();
+		this.conjQuestoesDerivadas = new HashSet<>();
+		this.conjOpcoes = new HashSet<>();
+		this.conjRecursos = new HashSet<>();
+
 	}
 	
 	public int getId() {

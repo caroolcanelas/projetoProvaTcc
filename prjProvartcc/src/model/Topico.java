@@ -52,10 +52,11 @@ public class Topico {//TODO já conferido
     public Topico() {
     }
     
-	public Topico(int numOrdem, String nome, Disciplina disciplina) throws ModelException {
+	public Topico(int numOrdem, String nome, String conteudo, Disciplina disciplina) throws ModelException {
 		super();
 		this.setNumOrdem(numOrdem);
 		this.setNome(nome);
+		this.setConteudo(conteudo);
 		this.setDisciplina(disciplina);
 		this.conjSubTopicos = new HashSet<Topico>();
 	}
@@ -84,6 +85,15 @@ public class Topico {//TODO já conferido
 	public void setNome(String nome) throws ModelException {
 		Topico.validarNome(nome);
 		this.nome = nome;
+	}
+
+	public String getConteudo(){
+		return this.conteudo;
+	}
+
+	private void setConteudo(String conteudo) throws ModelException {
+		Topico.validarConteudo(conteudo);
+		this.conteudo = conteudo;
 	}
 
 	public Disciplina getDisciplina() {
@@ -130,6 +140,12 @@ public class Topico {//TODO já conferido
 		}
 	}
 
+	private static void validarConteudo(String conteudo) throws ModelException {
+		if (conteudo == null || conteudo.length() == 0) {
+			throw new ModelException("O conteúdo não pode ser nulo!");
+		}
+	}
+
 	public static void validarDisciplina(Disciplina disciplina) throws ModelException {
 		if (disciplina == null)
 			throw new ModelException("O tópico precisa estar vinculado a uma disciplina!");
@@ -147,6 +163,6 @@ public class Topico {//TODO já conferido
 
 	@Override
 	public String toString() {
-		return "Número de Ordem: " + this.numOrdem + " - Nome: " + this.nome;
+		return "Número de Ordem: " + this.numOrdem + " - Nome: " + this.nome + " - Conteúdo: " + this.conteudo;
 	}
 }
