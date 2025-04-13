@@ -50,11 +50,12 @@ public class Disciplina { // TODO já conferido
     	super();    	
     }
     
-    public Disciplina(String codigo, String nome, int numCreditos) throws ModelException {
+    public Disciplina(String codigo, String nome, int numCreditos, String objetivoGeral) throws ModelException {
     	super();
     	this.setCodigo(codigo);
         this.setNome(nome);
         this.setNumCreditos(numCreditos);
+        this.setObjetivoGeral(objetivoGeral);
         this.conjTopicos = new ArrayList<>();
     }
 
