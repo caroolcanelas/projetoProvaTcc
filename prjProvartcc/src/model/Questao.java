@@ -258,9 +258,34 @@ public class Questao { //TODO já conferido
 
 	//add e remove - conjRecursos
 
-	//TODO esses metodos
+	public boolean addRecurso(Recurso recurso) throws ModelException{
+		Questao.validarRecurso(recurso);
+		return this.conjRecursos.add(recurso);
+	}
+
+	public boolean removeRecurso(Recurso recurso) throws ModelException{
+		return this.conjRecursos.remove(recurso);
+	}
 
 	//conjRecursos
+
+	public Set<Recurso> getConjRecursos(){return new HashSet<Recurso>(this.conjRecursos);}
+
+	public void setConjRecursos(Set<Recurso> conjRecursos) throws ModelException {
+		Questao.validarConjRecursos(conjRecursos);
+		this.conjRecursos = (List<Recurso>) conjRecursos;
+	}
+
+	public static void validarConjRecursos(Set<Recurso> conjRecursos) throws ModelException {
+		if(conjRecursos == null)
+			throw new ModelException("O conjunto de recursos da questão não pode ser nulo!");
+	}
+
+	public static void validarRecurso (Recurso recurso) throws ModelException {
+		if(recurso == null)
+			throw new ModelException("O recurso não pode ser nulo");
+	}
+
 
 	public void validarQuestao() throws ModelException {
 		// TODO Codificar esse método depois		
