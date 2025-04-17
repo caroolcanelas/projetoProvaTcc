@@ -21,7 +21,7 @@ public class CtrlPrograma {
 			//dao.salvar(o);
 
 			//Questao q = new Questao("Instrução inicial", "Suporte", "Comando",
-				//	NivelQuestao.AVANCADO, TipoQuestao.MULTIPLA_ESCOLHA, true);
+				//	NivelQuestao.DIFICIL, TipoQuestao.RESPOSTA_UNICA, true);
 			//DaoQuestao dao = new DaoQuestao();
 			//dao.salvar(q); lalaa
 
