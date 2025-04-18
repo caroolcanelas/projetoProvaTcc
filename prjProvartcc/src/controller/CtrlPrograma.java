@@ -12,7 +12,7 @@ public class CtrlPrograma {
 			//DaoDisciplina daoDisciplina = new DaoDisciplina();
 			//daoDisciplina.salvar(d);
 
-			//Topico t = new Topico(1, "Herança", "Explicação sobre herança", d);
+			//Topico t = new Topico(1, "Herança", "Explicação ssobre herança", d);
 			//DaoTopico dao = new DaoTopico();
 			//dao.salvar(t);
 
