@@ -1,6 +1,8 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -38,14 +40,14 @@ public class Tag { //TODO já conferido
     
     // TODO Já Conferido com Questão
     @ManyToMany(mappedBy = "conjTags") 
-	private Set<Questao> conjQuestoes; // relacionamento bidirecional
+	private List<Questao> conjQuestoes; // relacionamento bidirecional
 
     
     @ManyToMany(fetch = FetchType.LAZY) 
     @JoinTable(name = "esta_aderente_a", 
                joinColumns = @JoinColumn(name = "id_topico"),
                inverseJoinColumns = @JoinColumn(name = "id_tag"))
-    private Set<Topico>   conjTopicosAderentes;
+    private List<Topico>   conjTopicosAderentes;
     
 
 	//
@@ -58,10 +60,11 @@ public class Tag { //TODO já conferido
 		super();
 		this.setTagName(tagName);
 		this.setAssunto(assunto);
-		this.conjTopicosAderentes = new HashSet<Topico>();
-		this.conjQuestoes = new HashSet<Questao>();
+		this.conjQuestoes = new ArrayList<>();
+		this.conjTopicosAderentes = new ArrayList<>();
 	}
 
+	//id
 	public int getId() {
 		return this.id;
 	}
@@ -70,6 +73,7 @@ public class Tag { //TODO já conferido
 		this.id = id;
 	}
 
+	//Assunto
 	public String getAssunto() {
 		return this.assunto;
 	}
@@ -79,6 +83,7 @@ public class Tag { //TODO já conferido
 		this.assunto = assunto;
 	}
 
+	//tagName
 	public String getTagName() {
 		return this.tagName;
 	}
@@ -88,6 +93,7 @@ public class Tag { //TODO já conferido
 		this.tagName= tagName;
 	}
 
+	//conjQuestoes
 	public Set<Questao> getConjQuestoes() {
 		// Retorno uma cópia do conjunto de questões
 		return new HashSet<Questao>(this.conjQuestoes);
@@ -95,9 +101,10 @@ public class Tag { //TODO já conferido
 
 	public void setConjQuestoes(Set<Questao> conjQuestoes) throws ModelException {
 		Tag.validarConjQuestoes(conjQuestoes);
-		this.conjQuestoes = conjQuestoes;
+		this.conjQuestoes = (List<Questao>) conjQuestoes;
 	}
 
+	//conjQuestoes - add e remove
 	public boolean addQuestao(Questao questao) throws ModelException {
 		Tag.validarQuestao(questao);
 		return this.conjQuestoes.add(questao);
@@ -107,6 +114,23 @@ public class Tag { //TODO já conferido
 		return this.conjQuestoes.remove(questao);
 	}
 
+	//conjTopicosAderentes - add e remove
+	public void addTopicoAderente(Topico topico) throws ModelException{
+		if (topico == null) {
+			throw new ModelException("O tópico não pode ser nula");
+		}
+		this.conjTopicosAderentes.add(topico);
+	}
+
+	public void removeTopicoAderente(Topico topico) throws ModelException{
+		if(topico == null) {
+			throw new ModelException("O tópico não pode ser nula");
+		}
+		this.conjTopicosAderentes.remove(topico);
+	}
+
+
+	//validarnumOrdem - não sei se esse método ta certo aqui
 	public static void validarNumOrdem(int numOrdem) throws ModelException {
 		if (numOrdem < NUM_ORDEM_MINIMO || numOrdem > NUM_ORDEM_MAXIMO) {
 			throw new ModelException(
@@ -114,6 +138,7 @@ public class Tag { //TODO já conferido
 		}
 	}
 
+	//validarTagName
 	public static void validarTagName(String tagName) throws ModelException {
 		if (tagName == null || tagName.length() == 0) {
 			throw new ModelException("A TagName não pode ser nula!");
@@ -123,6 +148,7 @@ public class Tag { //TODO já conferido
 		}
 	}
 
+	//validarAssunto
 	public static void validarAssunto(String assunto) throws ModelException {
 		if (assunto == null || assunto.length() == 0) {
 			throw new ModelException("O assunto não pode ser nulo!");
@@ -132,11 +158,13 @@ public class Tag { //TODO já conferido
 		}
 	}
 
+	//ValidarQuestao
 	public static void validarQuestao(Questao questao) throws ModelException {
 		if (questao == null)
 			throw new ModelException("A questão não pode ser nula!");
 	}
 
+	//ValidarConjQuestoes
 	public static void validarConjQuestoes(Set<Questao> conjQuestoes) throws ModelException {
 		if (conjQuestoes == null)
 			throw new ModelException("O conjunto de questões não pode ser nulo!");
