@@ -1,6 +1,8 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -41,10 +43,10 @@ public class Topico {//TODO já conferido
 	private Disciplina disciplina; 		// relacionamento bidirecional
     
     @OneToMany
-	private Set<Topico> conjSubTopicos; // relacionamento unidirecional
+	private List<Topico> conjSubTopicos; // relacionamento unidirecional
     
     @ManyToMany(mappedBy = "conjTopicosAderentes")
-    private Set<Tag> conjTags; // relacionamento birecional
+    private List<Tag> conjTags; // relacionamento birecional
         
 	//
 	// MÉTODOS
@@ -58,9 +60,12 @@ public class Topico {//TODO já conferido
 		this.setNome(nome);
 		this.setConteudo(conteudo);
 		this.setDisciplina(disciplina);
-		this.conjSubTopicos = new HashSet<Topico>();
+
+		this.conjSubTopicos = new ArrayList<>();
+		this.conjTags = new ArrayList<>();
 	}
 
+	//id
 	public int getId() {
 		return this.id;
 	}
@@ -69,6 +74,7 @@ public class Topico {//TODO já conferido
 		this.id = id;
 	}
 
+	//numOrdem
 	public int getNumOrdem() {
 		return this.numOrdem;
 	}
@@ -78,6 +84,7 @@ public class Topico {//TODO já conferido
 		this.numOrdem = numOrdem;
 	}
 
+	//nome
 	public String getNome() {
 		return this.nome;
 	}
@@ -87,6 +94,7 @@ public class Topico {//TODO já conferido
 		this.nome = nome;
 	}
 
+	//conteudo
 	public String getConteudo(){
 		return this.conteudo;
 	}
@@ -96,6 +104,7 @@ public class Topico {//TODO já conferido
 		this.conteudo = conteudo;
 	}
 
+	//disciplina
 	public Disciplina getDisciplina() {
 		return this.disciplina;
 	}
@@ -105,16 +114,18 @@ public class Topico {//TODO já conferido
 		this.disciplina = disciplina;
 	}
 
+	//conjSubTopicos
 	public Set<Topico> getConjSubTopicos() {
 		// Retorno uma cópia do conjunto de subtópicos
 		return new HashSet<Topico>(this.conjSubTopicos);
 	}
 
-	public void setConjSubTopicos(Set<Topico> conjSubjTopicos) throws ModelException {
+	public void setConjSubTopicos(Set<Topico> conjSubTopicos) throws ModelException {
 		Topico.validarConjSubTopicos(conjSubTopicos);
-		this.conjSubTopicos = conjSubjTopicos;
+		this.conjSubTopicos = (List<Topico>) conjSubTopicos;
 	}
 
+	//conjSubTopicos - add e remove
 	public boolean addSubTopico(Topico subTopico) throws ModelException {
 		Topico.validarSubTopico(subTopico);
 		return this.conjSubTopicos.add(subTopico);
@@ -124,6 +135,23 @@ public class Topico {//TODO já conferido
 		return this.conjSubTopicos.remove(subTopico);
 	}
 
+	//conjTags
+
+	public void addTag(Tag tag) throws ModelException{
+		if (tag == null) {
+			throw new ModelException("A tag não pode ser nula");
+		}
+		this.conjTags.add(tag);
+	}
+
+	public void removeTag(Tag tag) throws ModelException{
+		if(tag == null) {
+			throw new ModelException("A tag não pode ser nula");
+		}
+		this.conjTags.remove(tag);
+	}
+
+	//Validações
 	public static void validarNumOrdem(int numOrdem) throws ModelException {
 		if (numOrdem < NUM_ORDEM_MINIMO || numOrdem > NUM_ORDEM_MAXIMO) {
 			throw new ModelException(
