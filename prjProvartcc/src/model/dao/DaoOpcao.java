@@ -59,10 +59,4 @@ public class DaoOpcao {
         return List.of(retorno);
 
     }
-
-    //ObterOpcaoPelo...
-    //Qual atributo que vamos usar pra obter a opcao ?
-    //altera namedQuery
-    //deve ter obterOpcaoPorQuestao ?
-
 }

@@ -59,9 +59,4 @@ public class DaoTag {
         return List.of(retorno);
 
     }
-
-    //obterTagPor....
-    //Qual atributo que vamos usar pra obter a tag ?
-
-
 }

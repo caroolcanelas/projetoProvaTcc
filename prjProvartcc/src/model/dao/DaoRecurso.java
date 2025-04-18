@@ -60,8 +60,4 @@ public class DaoRecurso {
         return List.of(retorno);
 
     }
-
-    //ObterRecursoPelo...
-    //Qual atributo que vamos usar pra obter a recurso ?
-    //alterar namedQuery
 }
