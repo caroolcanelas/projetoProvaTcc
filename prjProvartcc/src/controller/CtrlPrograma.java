@@ -12,7 +12,7 @@ public class CtrlPrograma {
 			//DaoDisciplina daoDisciplina = new DaoDisciplina();
 			//daoDisciplina.salvar(d);
 
-			//Topico t = new Topico(1, "Herança", "Explicação sobre herança", d);
+			//Topico t = new Topico(1, "Herança", "Explicação ssobre herança", d);
 			//DaoTopico dao = new DaoTopico();
 			//dao.salvar(t);
 
@@ -21,7 +21,7 @@ public class CtrlPrograma {
 			//dao.salvar(o);
 
 			//Questao q = new Questao("Instrução inicial", "Suporte", "Comando",
-				//	NivelQuestao.AVANCADO, TipoQuestao.MULTIPLA_ESCOLHA, true);
+				//	NivelQuestao.DIFICIL, TipoQuestao.RESPOSTA_UNICA, true);
 			//DaoQuestao dao = new DaoQuestao();
 			//dao.salvar(q); lalaa
 
