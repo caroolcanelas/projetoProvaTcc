@@ -16,7 +16,7 @@
 *.ear
 
 # Maven target directory
-/target/
+target/
 
 # Gradle build directory
 /build/
