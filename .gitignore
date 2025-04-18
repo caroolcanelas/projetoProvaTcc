@@ -48,6 +48,9 @@ out/
 .DS_Store
 Thumbs.db
 
+# Bin
+/prjProvartcc/bin/
+
 # Environment files
 .env
 *.env
