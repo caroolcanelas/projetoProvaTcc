@@ -1,23 +1,12 @@
-package model;
+package com.projetoProvaTcc.model;
 
-import org.dom4j.rule.Mode;
+import com.projetoProvaTcc.exception.ModelException;
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 
 @Entity
 public class Questao { //TODO já conferido
@@ -31,7 +20,8 @@ public class Questao { //TODO já conferido
 	//
 	// ATRIBUTOS
 	//
-    @Id @GeneratedValue
+    @Id
+	@GeneratedValue
     private int           id;
     @Column(length = TAMANHO_INSTRUCAO_INICIAL, name = "instrucao_inicial")
 	private String 		  instrucaoInicial;
@@ -40,9 +30,9 @@ public class Questao { //TODO já conferido
     @Column(length = TAMANHO_COMANDO)
 	private String 		  comando;
     @Enumerated(EnumType.STRING)
-	private NivelQuestao  nivel;
+	private NivelQuestao nivel;
     @Enumerated(EnumType.STRING)
-	private TipoQuestao	  tipo;
+	private TipoQuestao tipo;
     @Column
 	private boolean       validada;
 	

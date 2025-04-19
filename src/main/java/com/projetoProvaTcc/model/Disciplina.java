@@ -1,16 +1,12 @@
-package model;
+package com.projetoProvaTcc.model;
 
+import jakarta.persistence.*;
+import com.projetoProvaTcc.exception.ModelException;
 import java.util.ArrayList;
 import java.util.HashSet;
 
 import java.util.List;
 import java.util.Set;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
 
 @Entity
 public class Disciplina { // TODO já conferido
@@ -26,7 +22,8 @@ public class Disciplina { // TODO já conferido
     //
     // ATRIBUTOS
     //
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     private int         id;
     @Column(length = TAMANHO_MAX_CODIGO_DISCIPLINA, unique = true)
     private String      codigo;

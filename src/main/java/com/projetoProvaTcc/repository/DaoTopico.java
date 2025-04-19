@@ -1,8 +1,7 @@
-package model.dao;
+package com.projetoProvaTcc.repository;
 
-import model.Topico;
-
-import javax.persistence.*;
+import com.projetoProvaTcc.model.Topico;
+import jakarta.persistence.*;
 import java.util.List;
 
 @NamedQueries({

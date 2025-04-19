@@ -6,12 +6,12 @@
 	<persistence-unit name="jpa_prjProva" transaction-type="RESOURCE_LOCAL">
 		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 		
-         <class>model.Recurso</class>
-         <class>model.Opcao</class>
-         <class>model.Questao</class>
-		 <class>model.Disciplina</class>
-         <class>model.Topico</class>
-         <class>model.Tag</class>
+         <class>main.java.com.projetoProvaTcc.model.Recurso</class>
+         <class>main.java.com.projetoProvaTcc.model.Opcao</class>
+         <class>main.java.com.projetoProvaTcc.model.Questao</class>
+		 <class>main.java.com.projetoProvaTcc.model.Disciplina</class>
+         <class>main.java.com.projetoProvaTcc.model.Topico</class>
+         <class>main.java.com.projetoProvaTcc.model.Tag</class>
          
 		<properties>
 			<property name="javax.persistence.jdbc.url"

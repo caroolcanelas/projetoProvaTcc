@@ -1,8 +1,9 @@
-package model.dao;
+package com.projetoProvaTcc.repository;
 
 import java.util.List;
-import javax.persistence.*;
-import model.Disciplina;
+
+import jakarta.persistence.*;
+import com.projetoProvaTcc.model.Disciplina;
 
 @NamedQueries({
 		@NamedQuery(name = "Disciplina.codigo", query = "SELECT d FROM Disciplina d WHERE d.codigo = :codigo"),
