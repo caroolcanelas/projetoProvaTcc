@@ -8,9 +8,9 @@ public class CtrlPrograma {
 	public static void main(String[] args) {
 
 		try {
-//			Disciplina d = new Disciplina("PROG II","Programacao de Computadores II",3, "Aprender principíos de Programacao II");
-//			DaoDisciplina daoDisciplina = new DaoDisciplina();
-//			daoDisciplina.salvar(d);
+			Disciplina d = new Disciplina("PROG II","Programacao de Computadores II",3, "Aprender principíos de Programacao II");
+			DaoDisciplina daoDisciplina = new DaoDisciplina();
+			daoDisciplina.salvar(d);
 //
 //			Topico t = new Topico(1, "Arvore", "Explicação sobre arvore", d);
 //			DaoTopico dao = new DaoTopico();
