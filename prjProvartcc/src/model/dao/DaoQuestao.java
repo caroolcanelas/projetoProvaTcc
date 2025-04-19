@@ -59,12 +59,4 @@ public class DaoQuestao {
         return List.of(retorno);
 
     }
-
-    //ObterQuestaoPelo...
-    //Qual atributo que vamos usar pra obter a questao ?
-    // consertar namedQuery
-
-
-
-
 }
