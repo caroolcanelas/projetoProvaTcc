@@ -1,18 +1,13 @@
 package model.dao;
 
-
 import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.NamedQuery;
-import javax.persistence.Persistence;
-import javax.persistence.PersistenceException;
-import javax.persistence.Query;
-
+import javax.persistence.*;
 import model.Disciplina;
 
-@NamedQuery(name = "Disciplina.codigo", query = "SELECT d FROM Disciplina d WHERE d.codigo = :codigo")
+@NamedQueries({
+		@NamedQuery(name = "Disciplina.codigo", query = "SELECT d FROM Disciplina d WHERE d.codigo = :codigo"),
+		@NamedQuery(name = "Disciplina.nome", query = "SELECT n FROM Disciplina n WHERE n.nome = :nome")
+})
 public class DaoDisciplina {
 
 	//abre uma conexao para o banco de dados.
@@ -72,8 +67,17 @@ public class DaoDisciplina {
 		Query query = entityManager.createNamedQuery("Disciplina.codigo"); // faz a busca citada na linha 15 select
 		query.setParameter("codigo", codigo); //troca o parametro :codigo para codigo
 		List<Disciplina> resultado  = query.getResultList(); //busca uma lista de disciplina
-		if(resultado != null && resultado.size() > 0)
+		if(resultado != null && !resultado.isEmpty())
 			return resultado.get(0); //pega o primeiro resultado da lista
+		return null;
+	}
+
+	public Disciplina obterDisciplinaPeloNome(String nome) {
+		Query query = entityManager.createNamedQuery("Disciplina.nome");
+		query.setParameter("nome", nome);
+		List<Disciplina> resultado  = query.getResultList();
+		if(resultado != null && !resultado.isEmpty())
+			return resultado.get(0);
 		return null;
 	}
 }
