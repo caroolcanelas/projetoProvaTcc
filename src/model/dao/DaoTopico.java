@@ -1,14 +1,15 @@
 package model.dao;
 
-import model.Disciplina;
 import model.Topico;
 
 import javax.persistence.*;
 import java.util.List;
 
-@NamedQuery(name = "Topico.numOrdem", query = "SELECT t FROM Topico t WHERE t.numOrdem -= :numOrdem")
+@NamedQueries({
+        @NamedQuery(name = "Topico.numOrdem", query = "SELECT t FROM Topico t WHERE t.numOrdem -= :numOrdem"),
+        @NamedQuery(name = "Topico.nome", query = "SELECT n FROM Topico n WHERE n.nome -= :nome")
+})
 public class DaoTopico {
-
 
     private static EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("jpa_prjProva");
     private static EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -56,19 +57,17 @@ public class DaoTopico {
         Query query = entityManager.createNamedQuery("Topico.numOrdem");
         query.setParameter("numOrdem", numOrdem);
         List<Topico> resultado  = query.getResultList();
-        if(resultado != null && resultado.size() > 0)
+        if(resultado != null && !resultado.isEmpty())
             return resultado.get(0);
         return null;
     }
 
-    // quero todos os topicos de uma disciplina
-//    public List<Topico> obterTopicosPorDisciplina(Disciplina disciplina) {
-//        Query query = entityManager.createQuery(
-//                //"SELECT t FROM Topico t WHERE
-//        );
-//        query.setParameter("disciplina", disciplina);
-//        return query.getResultList();
-//    }
-
-
+    public Topico obterTopicoPeloNome(String nome) {
+        Query query = entityManager.createNamedQuery("Topico.nome");
+        query.setParameter("numOrdem", nome);
+        List<Topico> resultado  = query.getResultList();
+        if(resultado != null && !resultado.isEmpty())
+            return resultado.get(0);
+        return null;
+    }
 }
