@@ -1,90 +1,59 @@
 package com.projetoProvaTcc.repository;
 
+import com.projetoProvaTcc.model.Disciplina;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
-import jakarta.persistence.*;
-import com.projetoProvaTcc.model.Disciplina;
-
-@NamedQueries({
-		@NamedQuery(name = "Disciplina.codigo", query = "SELECT d FROM Disciplina d WHERE d.codigo = :codigo"),
-		@NamedQuery(name = "Disciplina.nome", query = "SELECT n FROM Disciplina n WHERE n.nome = :nome")
-})
+@Repository
 public class DaoDisciplina {
 
-	//abre uma conexao para o banco de dados.
-	private static EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("jpa_prjProva");
-	private static EntityManager entityManager = entityManagerFactory.createEntityManager();
+	@PersistenceContext
+	private EntityManager entityManager;
 
+	@Transactional
 	public boolean salvar(Disciplina d) {
-		return this.salvar(d, true);
-	}
-
-	public boolean salvar(Disciplina d, boolean autoCommit) {
-		if (autoCommit == true)
-			entityManager.getTransaction().begin(); //abre a tampa da caixa de disciplina
 		try {
-			entityManager.persist(d); // coloca disciplina la dentro
+			entityManager.persist(d);
+			return true;
 		} catch (PersistenceException e) {
-			if (autoCommit == true)
-				entityManager.getTransaction().rollback(); //se der erro, tira de dentro
+			e.printStackTrace(); // para debugging
 			return false;
 		}
-		if (autoCommit == true)
-			entityManager.getTransaction().commit(); //se der tudo certo, fecha a tampa
-		return true;
 	}
 
+	@Transactional
 	public boolean remover(Disciplina d) {
-		return this.remover(d, true);
-	}
-
-	public boolean remover(Disciplina d, boolean autoCommit) {
-		if (autoCommit == true)
-			entityManager.getTransaction().begin();
 		try {
-			entityManager.remove(d);
+			entityManager.remove(entityManager.contains(d) ? d : entityManager.merge(d));
+			return true;
 		} catch (PersistenceException e) {
-			if (autoCommit == true)
-				entityManager.getTransaction().rollback();
+			e.printStackTrace();
 			return false;
 		}
-		if (autoCommit == true)
-			entityManager.getTransaction().commit();
-		return true;
 	}
 
 	public List<Disciplina> obterTodasDisciplinas() {
-		Query query = entityManager.createQuery("SELECT d FROM Disciplina d");
-		List<Disciplina> resultado  = query.getResultList();
-		Disciplina[] retorno = new Disciplina[resultado.size()];
-		for(int i = 0; i < resultado.size(); i++)
-			retorno[i] = resultado.get(i);
-		return List.of(retorno);
-
+		return entityManager.createQuery("SELECT d FROM Disciplina d", Disciplina.class)
+				.getResultList();
 	}
 
-	//ele está fazendo select d from disciplina d where d.codigo = "exemplo"
 	public Disciplina obterDisciplinaPeloCodigo(String codigo) {
-		Query query = entityManager.createNamedQuery("Disciplina.codigo"); // faz a busca citada na linha 15 select
-		query.setParameter("codigo", codigo); //troca o parametro :codigo para codigo
-		List<Disciplina> resultado  = query.getResultList(); //busca uma lista de disciplina
-		if(resultado != null && !resultado.isEmpty())
-			return resultado.get(0); //pega o primeiro resultado da lista
-		return null;
+		List<Disciplina> resultado = entityManager
+				.createQuery("SELECT d FROM Disciplina d WHERE d.codigo = :codigo", Disciplina.class)
+				.setParameter("codigo", codigo)
+				.getResultList();
+
+		return resultado.isEmpty() ? null : resultado.get(0);
 	}
 
 	public Disciplina obterDisciplinaPeloNome(String nome) {
-		Query query = entityManager.createNamedQuery("Disciplina.nome");
-		query.setParameter("nome", nome);
-		List<Disciplina> resultado  = query.getResultList();
-		if(resultado != null && !resultado.isEmpty())
-			return resultado.get(0);
-		return null;
+		List<Disciplina> resultado = entityManager
+				.createQuery("SELECT d FROM Disciplina d WHERE d.nome = :nome", Disciplina.class)
+				.setParameter("nome", nome)
+				.getResultList();
+
+		return resultado.isEmpty() ? null : resultado.get(0);
 	}
 }
-
-
-
-
-
-
