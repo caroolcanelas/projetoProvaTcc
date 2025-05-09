@@ -2,8 +2,6 @@ package com.projetoProvaTcc.service;
 
 import com.projetoProvaTcc.model.Disciplina;
 import com.projetoProvaTcc.repository.DaoDisciplinaRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,14 +9,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class DisciplinaService {
 
-//    @PersistenceContext
-//    private EntityManager entityManager;
 
     @Autowired
-    private DaoDisciplinaRepository daoDisciRepository;
+    private DaoDisciplinaRepository daoDisciplinaRepository;
 
+    //service precisa pegar as informações vindas pelo endpoint e atraves do JpaRepository, salvar no banco
     @Transactional
     public Disciplina salvarDisciplina(Disciplina disciplina) {
-        return daoDisciRepository.save(disciplina);  // Salva a entidade no banco
+        return daoDisciplinaRepository.save(disciplina);  // Salva a entidade no banco
     }
 }
