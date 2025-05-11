@@ -6,7 +6,7 @@ import com.projetoProvaTcc.service.DisciplinaService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class ControiObjeto {
+public class TestaObjeto {
 
 
     @Autowired
