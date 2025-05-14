@@ -1,4 +1,4 @@
-package com.projetoProvaTcc.model;
+package com.projetoProvaTcc.entity;
 
 import jakarta.persistence.*;
 import com.projetoProvaTcc.exception.ModelException;

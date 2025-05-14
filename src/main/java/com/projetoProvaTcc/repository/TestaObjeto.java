@@ -1,7 +1,7 @@
 package com.projetoProvaTcc.repository;
 
 import com.projetoProvaTcc.exception.ModelException;
-import com.projetoProvaTcc.model.Disciplina;
+import com.projetoProvaTcc.entity.Disciplina;
 import com.projetoProvaTcc.service.DisciplinaService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;

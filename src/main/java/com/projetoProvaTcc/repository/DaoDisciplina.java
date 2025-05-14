@@ -1,6 +1,6 @@
 package com.projetoProvaTcc.repository;
 
-import com.projetoProvaTcc.model.Disciplina;
+import com.projetoProvaTcc.entity.Disciplina;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.PersistenceException;

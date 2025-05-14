@@ -1,6 +1,6 @@
 package com.projetoProvaTcc.repository;
 
-import com.projetoProvaTcc.model.Tag;
+import com.projetoProvaTcc.entity.Tag;
 
 import jakarta.persistence.*;
 import java.util.List;

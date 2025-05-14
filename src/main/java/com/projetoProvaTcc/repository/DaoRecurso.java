@@ -1,6 +1,6 @@
 package com.projetoProvaTcc.repository;
 
-import com.projetoProvaTcc.model.Recurso;
+import com.projetoProvaTcc.entity.Recurso;
 
 import jakarta.persistence.*;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.projetoProvaTcc.model;
+package com.projetoProvaTcc.entity;
 
 import java.util.ArrayList;
 import java.util.HashSet;

@@ -1,6 +1,6 @@
 package com.projetoProvaTcc.repository;
 
-import com.projetoProvaTcc.model.Opcao;
+import com.projetoProvaTcc.entity.Opcao;
 
 import jakarta.persistence.*;
 import java.util.List;
