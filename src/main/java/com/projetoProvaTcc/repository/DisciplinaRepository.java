@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface DaoDisciplinaRepository extends JpaRepository<Disciplina, Long> {
-
+public interface DisciplinaRepository extends JpaRepository<Disciplina, Long> {
 
 }

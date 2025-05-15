@@ -1,26 +1,26 @@
-package com.projetoProvaTcc.repository;
+package com.projetoProvaTcc.dao;
 
-import com.projetoProvaTcc.entity.Tag;
+import com.projetoProvaTcc.entity.Recurso;
 
 import jakarta.persistence.*;
 import java.util.List;
 
-@NamedQuery(name = "Tag.codigo", query = "SELECT t FROM Tag t WHERE t.codigo = :codigo")
-public class DaoTag {
+@NamedQuery(name = "Recurso.codigo", query = "SELECT r FROM Recurso r WHERE r.codigo = :codigo")
+public class DaoRecurso {
 
     //abre uma conexao para o banco de dados.
     private static EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("jpa_prjProva");
     private static EntityManager entityManager = entityManagerFactory.createEntityManager();
 
-    public boolean salvar(Tag tag) {
-        return this.salvar(tag, true);
+    public boolean salvar(Recurso recurso) {
+        return this.salvar(recurso, true);
     }
 
-    public boolean salvar(Tag tag, boolean autoCommit) {
+    public boolean salvar(Recurso recurso, boolean autoCommit) {
         if (autoCommit == true)
             entityManager.getTransaction().begin();
         try {
-            entityManager.persist(tag);
+            entityManager.persist(recurso);
         } catch (PersistenceException e) {
             if (autoCommit == true)
                 entityManager.getTransaction().rollback();
@@ -31,15 +31,15 @@ public class DaoTag {
         return true;
     }
 
-    public boolean remover(Tag tag) {
-        return this.remover(tag, true);
+    public boolean remover(Recurso recurso) {
+        return this.remover(recurso, true);
     }
 
-    public boolean remover(Tag tag, boolean autoCommit) {
+    public boolean remover(Recurso recurso, boolean autoCommit) {
         if (autoCommit == true)
             entityManager.getTransaction().begin();
         try {
-            entityManager.remove(tag);
+            entityManager.remove(recurso);
         } catch (PersistenceException e) {
             if (autoCommit == true)
                 entityManager.getTransaction().rollback();
@@ -50,10 +50,11 @@ public class DaoTag {
         return true;
     }
 
-    public List<Tag> obterTodasTag() {
-        Query query = entityManager.createQuery("SELECT t FROM Tag t");
-        List<Tag> resultado  = query.getResultList();
-        Tag[] retorno = new Tag[resultado.size()];
+    //precisa???????
+    public List<Recurso> obterTodosRecursos() {
+        Query query = entityManager.createQuery("SELECT r FROM Recurso r");
+        List<Recurso> resultado  = query.getResultList();
+        Recurso[] retorno = new Recurso[resultado.size()];
         for(int i = 0; i < resultado.size(); i++)
             retorno[i] = resultado.get(i);
         return List.of(retorno);

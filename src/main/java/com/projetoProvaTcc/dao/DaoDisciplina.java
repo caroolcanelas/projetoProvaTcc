@@ -1,11 +1,9 @@
-package com.projetoProvaTcc.repository;
+package com.projetoProvaTcc.dao;
 
 import com.projetoProvaTcc.entity.Disciplina;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.PersistenceException;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -15,32 +13,8 @@ public class DaoDisciplina {
 	@PersistenceContext
 	private EntityManager entityManager;
 
-	@Transactional
-	public boolean salvar(Disciplina d) {
-		try {
-			entityManager.persist(d);
-			return true;
-		} catch (PersistenceException e) {
-			e.printStackTrace(); // para debugging
-			return false;
-		}
-	}
-
-	@Transactional
-	public boolean remover(Disciplina d) {
-		try {
-			entityManager.remove(entityManager.contains(d) ? d : entityManager.merge(d));
-			return true;
-		} catch (PersistenceException e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-
-	public List<Disciplina> obterTodasDisciplinas() {
-		return entityManager.createQuery("SELECT d FROM Disciplina d", Disciplina.class)
-				.getResultList();
-	}
+	//metodos salvar, remover e obterTodarDisciplinas excluidos pois utilizei metodos prontos do JPARepository na classe DisciplinaService
+	//Como esses metodos tem interação com banco, podem ser movidos para DisciplinaRepository e assim armazenar todas queries em uma classe JPArepository
 
 	public Disciplina obterDisciplinaPeloCodigo(String codigo) {
 		List<Disciplina> resultado = entityManager

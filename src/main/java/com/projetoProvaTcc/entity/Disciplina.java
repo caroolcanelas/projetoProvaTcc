@@ -3,10 +3,8 @@ package com.projetoProvaTcc.entity;
 import jakarta.persistence.*;
 import com.projetoProvaTcc.exception.ModelException;
 import java.util.ArrayList;
-import java.util.HashSet;
 
 import java.util.List;
-import java.util.Set;
 
 @Entity
 public class Disciplina { // TODO já conferido

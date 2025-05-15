@@ -1,4 +1,4 @@
-package com.projetoProvaTcc.repository;
+package com.projetoProvaTcc.dao;
 
 import com.projetoProvaTcc.entity.Topico;
 import jakarta.persistence.*;

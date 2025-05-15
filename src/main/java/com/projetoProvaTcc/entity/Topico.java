@@ -1,14 +1,11 @@
 package com.projetoProvaTcc.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.projetoProvaTcc.exception.ModelException;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 public class Topico {//TODO já conferido

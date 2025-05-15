@@ -3,17 +3,19 @@ package com.projetoProvaTcc.service;
 import com.projetoProvaTcc.entity.Disciplina;
 import com.projetoProvaTcc.entity.Topico;
 import com.projetoProvaTcc.exception.ModelException;
-import com.projetoProvaTcc.repository.DaoDisciplinaRepository;
+import com.projetoProvaTcc.repository.DisciplinaRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class DisciplinaService {
 
 
     @Autowired
-    private DaoDisciplinaRepository repository;
+    private DisciplinaRepository repository;
 
     //service precisa pegar as informações vindas pelo endpoint e atraves do JpaRepository, salvar no banco
     //anotação para se caso der certo, salva a info no banco, se falhar ao final, tudo que foi feito no metodo é desfeito
@@ -25,5 +27,17 @@ public class DisciplinaService {
             topico.setDisciplina(disciplina);  // garante que cada topico da disciplina tenha o campo disciplina corretamente. evita null
         }
         return repository.save(disciplina);  // Salva a entidade no banco
+    }
+
+    public List<Disciplina> buscarTodasDisciplinas(){
+        return repository.findAll();
+    }
+
+    public boolean deletarDisciplinaPorId(long id) {
+        if (repository.existsById(id)) {
+            repository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }
