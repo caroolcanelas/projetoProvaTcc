@@ -23,7 +23,7 @@ public class Disciplina { // TODO já conferido
     // ATRIBUTOS
     //
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY) //ajuda na ordem de inserção no banco. sequencial
     private int         id;
     @Column(length = TAMANHO_MAX_CODIGO_DISCIPLINA, unique = true)
     private String      codigo;
@@ -37,14 +37,14 @@ public class Disciplina { // TODO já conferido
     //
     // ATRIBUTOS DE RELACIONAMENTO
     // 
-    @OneToMany(mappedBy = "disciplina")
+    @OneToMany(mappedBy = "disciplina", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Topico> conjTopicos; // relacionamento bidirecional
 
     // 
     // MÉTODOS
     //
     public Disciplina() {
-    	super();    	
+        super();
     }
     
     public Disciplina(String codigo, String nome, int numCreditos, String objetivoGeral) throws ModelException {
@@ -100,12 +100,12 @@ public class Disciplina { // TODO já conferido
         this.objetivoGeral = objetivo;
     }
 
-    public Set<Topico> getConjTopicos() {
+    public List<Topico> getConjTopicos() {
     	// Retorno uma cópia do conjunto de tópicos
-		return new HashSet<Topico>(this.conjTopicos);
+        return this.conjTopicos;
 	}
 
-	public void setConjTopicos(Set<Topico> conjTopicos) throws ModelException {
+	public void setConjTopicos(List<Topico> conjTopicos) throws ModelException {
 		Disciplina.validarConjTopicos(conjTopicos);
 		this.conjTopicos = (List<Topico>) conjTopicos;
 	}
@@ -153,7 +153,7 @@ public class Disciplina { // TODO já conferido
     		throw new ModelException("É necessário definir o conteúdo do objetivo geral da disciplina");
     }
 
-    public static void validarConjTopicos(Set<Topico> conjTopicos) throws ModelException {
+    public static void validarConjTopicos(List<Topico> conjTopicos) throws ModelException {
     	if(conjTopicos == null)
     		throw new ModelException("O conjunto de tópicos não pode ser nulo");
     }

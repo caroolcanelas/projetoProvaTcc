@@ -1,5 +1,7 @@
 package com.projetoProvaTcc.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.projetoProvaTcc.exception.ModelException;
 import jakarta.persistence.*;
 
@@ -22,7 +24,7 @@ public class Topico {//TODO já conferido
 	// ATRIBUTOS
 	//
     @Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private int         id;
     @Column
 	private int    numOrdem;
@@ -35,6 +37,8 @@ public class Topico {//TODO já conferido
 	// ATRIBUTOS DE RELACIONAMENTO
 	//
     @ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "disciplina_id")
+	@JsonBackReference
 	private Disciplina disciplina; 		// relacionamento bidirecional
     
     @OneToMany
@@ -110,12 +114,12 @@ public class Topico {//TODO já conferido
 	}
 
 	//conjSubTopicos
-	public Set<Topico> getConjSubTopicos() {
+	public List<Topico> getConjSubTopicos() {
 		// Retorno uma cópia do conjunto de subtópicos
-		return new HashSet<Topico>(this.conjSubTopicos);
+		return this.conjSubTopicos;
 	}
 
-	public void setConjSubTopicos(Set<Topico> conjSubTopicos) throws ModelException {
+	public void setConjSubTopicos(List<Topico> conjSubTopicos) throws ModelException {
 		Topico.validarConjSubTopicos(conjSubTopicos);
 		this.conjSubTopicos = (List<Topico>) conjSubTopicos;
 	}
@@ -174,7 +178,7 @@ public class Topico {//TODO já conferido
 			throw new ModelException("O tópico precisa estar vinculado a uma disciplina!");
 	}
 
-	public static void validarConjSubTopicos(Set<Topico> conjSubTopicos) throws ModelException {
+	public static void validarConjSubTopicos(List<Topico> conjSubTopicos) throws ModelException {
 		if (conjSubTopicos == null)
 			throw new ModelException("O conjunto de subtópicos não pode ser nulo!");
 	}
