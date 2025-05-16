@@ -22,19 +22,25 @@ public class Questao { //TODO já conferido
 	//
     @Id
 	@GeneratedValue
-    private int           id;
+    private int id;
+
     @Column(length = TAMANHO_INSTRUCAO_INICIAL, name = "instrucao_inicial")
-	private String 		  instrucaoInicial;
+	private String instrucaoInicial;
+
     @Column(length = TAMANHO_SUPORTE)
-	private String 		  suporte;
+	private String suporte;
+
     @Column(length = TAMANHO_COMANDO)
-	private String 		  comando;
+	private String comando;
+
     @Enumerated(EnumType.STRING)
 	private NivelQuestao nivel;
+
     @Enumerated(EnumType.STRING)
 	private TipoQuestao tipo;
+
     @Column
-	private boolean       validada;
+	private boolean validada;
 	
 	// 
 	// ATRIBUTOS DE RELACIONAMENTO
@@ -43,16 +49,16 @@ public class Questao { //TODO já conferido
     @JoinTable(name = "foi_marcada_com", 
                joinColumns = @JoinColumn(name = "id_tag"),
                inverseJoinColumns = @JoinColumn(name = "id_questao"))
-    private List<Tag>   conjTags;
+    private List<Tag> conjTags;
     
     @OneToMany(fetch = FetchType.LAZY)
-	private List<Questao>  conjQuestoesDerivadas; // relacionamento unidirecional
+	private List<Questao> conjQuestoesDerivadas; // relacionamento unidirecional
 	
     @OneToMany(fetch = FetchType.LAZY)
-    private List<Opcao>    conjOpcoes; 			 // relacionamento unidirecional
+    private List<Opcao> conjOpcoes; 			 // relacionamento unidirecional
 
     @OneToMany(fetch = FetchType.LAZY)
-    private List<Recurso>  conjRecursos;
+    private List<Recurso> conjRecursos;
 
 	//
 	// MÉTODOS

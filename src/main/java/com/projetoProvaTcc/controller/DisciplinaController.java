@@ -2,6 +2,7 @@ package com.projetoProvaTcc.controller;
 
 import com.projetoProvaTcc.entity.Disciplina;
 import com.projetoProvaTcc.service.DisciplinaService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ public class DisciplinaController {
     private DisciplinaService disciplinaService;
 
     //Todos os endpoint chamam a camada SERVICE onde fica a logica de interação com o banco de dados
+    @Operation(summary = "Cria uma disciplina")
     @PostMapping
     public ResponseEntity<Disciplina> criarDisciplina(@RequestBody Disciplina disciplina) {
         try {
@@ -27,6 +29,7 @@ public class DisciplinaController {
         }
     }
 
+    @Operation(summary = "Lista todas as disciplinas")
     @GetMapping
     public ResponseEntity<?> listarTodasDisciplinas(){
         try {
@@ -38,6 +41,7 @@ public class DisciplinaController {
 
     }
 
+    @Operation(summary = "Exclui uma disciplina pelo ID")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletarDisciplina(@PathVariable long id) { //nao tem body. apenas passa id na URL
         try {

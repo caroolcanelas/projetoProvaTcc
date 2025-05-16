@@ -22,11 +22,14 @@ public class Topico {//TODO já conferido
 	//
     @Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int         id;
+    private int id;
+
     @Column
-	private int    numOrdem;
+	private int numOrdem;
+
     @Column(length = TAMANHO_MAXIMO_NOME)
 	private String nome;
+
     @Column(length = TAMANHO_CONTEUDO)
 	private String conteudo;
 

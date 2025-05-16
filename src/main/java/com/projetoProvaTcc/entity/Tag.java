@@ -22,9 +22,11 @@ public class Tag { //TODO já conferido
 	// ATRIBUTOS
 	//
     @Id @GeneratedValue
-    private int    id;
+    private int id;
+
     @Column(length = TAMANHO_TAGNAME)
 	private String tagName;
+
     @Column(length = TAMANHO_ASSUNTO)
 	private String assunto;
 

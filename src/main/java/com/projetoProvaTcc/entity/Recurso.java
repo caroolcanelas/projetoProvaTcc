@@ -16,6 +16,7 @@ public class Recurso { //TODO já conferido
 	@Id
 	@GeneratedValue
 	private int id;
+
 	@Lob
 	private byte[] conteudo;
 

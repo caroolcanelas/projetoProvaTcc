@@ -14,9 +14,11 @@ public class Opcao { //TODO já conferido
 	// ATRIBUTOS
 	//
     @Id @GeneratedValue
-    private int     id;
+    private int id;
+
     @Column(length = 300)
-	private String  conteudo;
+	private String conteudo;
+
     @Column
 	private boolean correta;
 

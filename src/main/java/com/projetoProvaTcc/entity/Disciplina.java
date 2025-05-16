@@ -22,15 +22,19 @@ public class Disciplina { // TODO já conferido
     //
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) //ajuda na ordem de inserção no banco. sequencial
-    private int         id;
+    private int id;
+
     @Column(length = TAMANHO_MAX_CODIGO_DISCIPLINA, unique = true)
-    private String      codigo;
+    private String codigo;
+
     @Column(length = TAMANHO_MAXIMO_NOME)
-    private String      nome;
+    private String nome;
+
     @Column
-    private int         numCreditos;
+    private int numCreditos;
+
     @Column(length = TAMANHO_OBJETIVO_GERAL)
-    private String      objetivoGeral;
+    private String objetivoGeral;
 
     //
     // ATRIBUTOS DE RELACIONAMENTO
