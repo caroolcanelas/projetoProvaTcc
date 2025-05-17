@@ -1,16 +1,10 @@
-package model;
+package com.projetoProvaTcc.entity;
 
+import jakarta.persistence.*;
+import com.projetoProvaTcc.exception.ModelException;
 import java.util.ArrayList;
-import java.util.HashSet;
 
 import java.util.List;
-import java.util.Set;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
 
 @Entity
 public class Disciplina { // TODO já conferido
@@ -26,28 +20,33 @@ public class Disciplina { // TODO já conferido
     //
     // ATRIBUTOS
     //
-    @Id @GeneratedValue
-    private int         id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) //ajuda na ordem de inserção no banco. sequencial
+    private int id;
+
     @Column(length = TAMANHO_MAX_CODIGO_DISCIPLINA, unique = true)
-    private String      codigo;
+    private String codigo;
+
     @Column(length = TAMANHO_MAXIMO_NOME)
-    private String      nome;
+    private String nome;
+
     @Column
-    private int         numCreditos;
+    private int numCreditos;
+
     @Column(length = TAMANHO_OBJETIVO_GERAL)
-    private String      objetivoGeral;
+    private String objetivoGeral;
 
     //
     // ATRIBUTOS DE RELACIONAMENTO
     // 
-    @OneToMany(mappedBy = "disciplina")
+    @OneToMany(mappedBy = "disciplina", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Topico> conjTopicos; // relacionamento bidirecional
 
     // 
     // MÉTODOS
     //
     public Disciplina() {
-    	super();    	
+        super();
     }
     
     public Disciplina(String codigo, String nome, int numCreditos, String objetivoGeral) throws ModelException {
@@ -103,12 +102,12 @@ public class Disciplina { // TODO já conferido
         this.objetivoGeral = objetivo;
     }
 
-    public Set<Topico> getConjTopicos() {
+    public List<Topico> getConjTopicos() {
     	// Retorno uma cópia do conjunto de tópicos
-		return new HashSet<Topico>(this.conjTopicos);
+        return this.conjTopicos;
 	}
 
-	public void setConjTopicos(Set<Topico> conjTopicos) throws ModelException {
+	public void setConjTopicos(List<Topico> conjTopicos) throws ModelException {
 		Disciplina.validarConjTopicos(conjTopicos);
 		this.conjTopicos = (List<Topico>) conjTopicos;
 	}
@@ -156,7 +155,7 @@ public class Disciplina { // TODO já conferido
     		throw new ModelException("É necessário definir o conteúdo do objetivo geral da disciplina");
     }
 
-    public static void validarConjTopicos(Set<Topico> conjTopicos) throws ModelException {
+    public static void validarConjTopicos(List<Topico> conjTopicos) throws ModelException {
     	if(conjTopicos == null)
     		throw new ModelException("O conjunto de tópicos não pode ser nulo");
     }

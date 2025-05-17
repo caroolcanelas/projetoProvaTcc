@@ -1,26 +1,26 @@
-package model.dao;
+package com.projetoProvaTcc.dao;
 
-import model.Opcao;
+import com.projetoProvaTcc.entity.Questao;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.List;
 
-@NamedQuery(name = "Opcao.codigo", query = "SELECT o FROM Opcao o WHERE o.codigo = :codigo")
-public class DaoOpcao {
+@NamedQuery(name = "Questao.codigo", query = "SELECT q FROM Questao q WHERE q.codigo = :codigo")
+public class DaoQuestao {
 
     //abre uma conexao para o banco de dados.
     private static EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("jpa_prjProva");
     private static EntityManager entityManager = entityManagerFactory.createEntityManager();
 
-    public boolean salvar(Opcao opcao) {
-        return this.salvar(opcao, true);
+    public boolean salvar(Questao questao) {
+        return this.salvar(questao, true);
     }
 
-    public boolean salvar(Opcao opcao, boolean autoCommit) {
+    public boolean salvar(Questao questao, boolean autoCommit) {
         if (autoCommit == true)
             entityManager.getTransaction().begin();
         try {
-            entityManager.persist(opcao);
+            entityManager.persist(questao);
         } catch (PersistenceException e) {
             if (autoCommit == true)
                 entityManager.getTransaction().rollback();
@@ -31,15 +31,15 @@ public class DaoOpcao {
         return true;
     }
 
-    public boolean remover(Opcao opcao) {
-        return this.remover(opcao, true);
+    public boolean remover(Questao questao) {
+        return this.remover(questao, true);
     }
 
-    public boolean remover(Opcao opcao, boolean autoCommit) {
+    public boolean remover(Questao questao, boolean autoCommit) {
         if (autoCommit == true)
             entityManager.getTransaction().begin();
         try {
-            entityManager.remove(opcao);
+            entityManager.remove(questao);
         } catch (PersistenceException e) {
             if (autoCommit == true)
                 entityManager.getTransaction().rollback();
@@ -50,10 +50,10 @@ public class DaoOpcao {
         return true;
     }
 
-    public List<Opcao> obterTodasOpcoes() {
-        Query query = entityManager.createQuery("SELECT o FROM Opcao o");
-        List<Opcao> resultado  = query.getResultList();
-        Opcao[] retorno = new Opcao[resultado.size()];
+    public List<Questao> obterTodasQuestoes() {
+        Query query = entityManager.createQuery("SELECT q FROM Questao q");
+        List<Questao> resultado  = query.getResultList();
+        Questao[] retorno = new Questao[resultado.size()];
         for(int i = 0; i < resultado.size(); i++)
             retorno[i] = resultado.get(i);
         return List.of(retorno);

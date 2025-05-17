@@ -1,23 +1,12 @@
-package model;
+package com.projetoProvaTcc.entity;
 
-import org.dom4j.rule.Mode;
+import com.projetoProvaTcc.exception.ModelException;
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 
 @Entity
 public class Questao { //TODO já conferido
@@ -31,20 +20,27 @@ public class Questao { //TODO já conferido
 	//
 	// ATRIBUTOS
 	//
-    @Id @GeneratedValue
-    private int           id;
+    @Id
+	@GeneratedValue
+    private int id;
+
     @Column(length = TAMANHO_INSTRUCAO_INICIAL, name = "instrucao_inicial")
-	private String 		  instrucaoInicial;
+	private String instrucaoInicial;
+
     @Column(length = TAMANHO_SUPORTE)
-	private String 		  suporte;
+	private String suporte;
+
     @Column(length = TAMANHO_COMANDO)
-	private String 		  comando;
+	private String comando;
+
     @Enumerated(EnumType.STRING)
-	private NivelQuestao  nivel;
+	private NivelQuestao nivel;
+
     @Enumerated(EnumType.STRING)
-	private TipoQuestao	  tipo;
+	private TipoQuestao tipo;
+
     @Column
-	private boolean       validada;
+	private boolean validada;
 	
 	// 
 	// ATRIBUTOS DE RELACIONAMENTO
@@ -53,16 +49,16 @@ public class Questao { //TODO já conferido
     @JoinTable(name = "foi_marcada_com", 
                joinColumns = @JoinColumn(name = "id_tag"),
                inverseJoinColumns = @JoinColumn(name = "id_questao"))
-    private List<Tag>   conjTags;
+    private List<Tag> conjTags;
     
     @OneToMany(fetch = FetchType.LAZY)
-	private List<Questao>  conjQuestoesDerivadas; // relacionamento unidirecional
+	private List<Questao> conjQuestoesDerivadas; // relacionamento unidirecional
 	
     @OneToMany(fetch = FetchType.LAZY)
-    private List<Opcao>    conjOpcoes; 			 // relacionamento unidirecional
+    private List<Opcao> conjOpcoes; 			 // relacionamento unidirecional
 
     @OneToMany(fetch = FetchType.LAZY)
-    private List<Recurso>  conjRecursos;
+    private List<Recurso> conjRecursos;
 
 	//
 	// MÉTODOS

@@ -1,14 +1,12 @@
-package model;
+package com.projetoProvaTcc.entity;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Lob;
+import jakarta.persistence.*;
+import com.projetoProvaTcc.exception.ModelException;
 
 @Entity
 public class Recurso { //TODO já conferido
@@ -18,6 +16,7 @@ public class Recurso { //TODO já conferido
 	@Id
 	@GeneratedValue
 	private int id;
+
 	@Lob
 	private byte[] conteudo;
 

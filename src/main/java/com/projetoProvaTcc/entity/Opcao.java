@@ -1,16 +1,12 @@
-package model;
+package com.projetoProvaTcc.entity;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import jakarta.persistence.*;
+import com.projetoProvaTcc.exception.ModelException;
 
 @Entity
 public class Opcao { //TODO já conferido
@@ -18,9 +14,11 @@ public class Opcao { //TODO já conferido
 	// ATRIBUTOS
 	//
     @Id @GeneratedValue
-    private int     id;
+    private int id;
+
     @Column(length = 300)
-	private String  conteudo;
+	private String conteudo;
+
     @Column
 	private boolean correta;
 

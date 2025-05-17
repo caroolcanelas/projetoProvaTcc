@@ -1,18 +1,11 @@
-package model;
+package com.projetoProvaTcc.entity;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.projetoProvaTcc.exception.ModelException;
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 
 @Entity
 public class Topico {//TODO já conferido
@@ -27,12 +20,16 @@ public class Topico {//TODO já conferido
 	//
 	// ATRIBUTOS
 	//
-    @Id @GeneratedValue
-    private int         id;
+    @Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
     @Column
-	private int    numOrdem;
+	private int numOrdem;
+
     @Column(length = TAMANHO_MAXIMO_NOME)
 	private String nome;
+
     @Column(length = TAMANHO_CONTEUDO)
 	private String conteudo;
 
@@ -40,6 +37,8 @@ public class Topico {//TODO já conferido
 	// ATRIBUTOS DE RELACIONAMENTO
 	//
     @ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "disciplina_id")
+	@JsonBackReference
 	private Disciplina disciplina; 		// relacionamento bidirecional
     
     @OneToMany
@@ -115,12 +114,12 @@ public class Topico {//TODO já conferido
 	}
 
 	//conjSubTopicos
-	public Set<Topico> getConjSubTopicos() {
+	public List<Topico> getConjSubTopicos() {
 		// Retorno uma cópia do conjunto de subtópicos
-		return new HashSet<Topico>(this.conjSubTopicos);
+		return this.conjSubTopicos;
 	}
 
-	public void setConjSubTopicos(Set<Topico> conjSubTopicos) throws ModelException {
+	public void setConjSubTopicos(List<Topico> conjSubTopicos) throws ModelException {
 		Topico.validarConjSubTopicos(conjSubTopicos);
 		this.conjSubTopicos = (List<Topico>) conjSubTopicos;
 	}
@@ -179,7 +178,7 @@ public class Topico {//TODO já conferido
 			throw new ModelException("O tópico precisa estar vinculado a uma disciplina!");
 	}
 
-	public static void validarConjSubTopicos(Set<Topico> conjSubTopicos) throws ModelException {
+	public static void validarConjSubTopicos(List<Topico> conjSubTopicos) throws ModelException {
 		if (conjSubTopicos == null)
 			throw new ModelException("O conjunto de subtópicos não pode ser nulo!");
 	}

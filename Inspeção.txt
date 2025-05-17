@@ -1,6 +1,6 @@
-1) A classe model apresenta a anotação @Entity?
+1) A classe main.java.com.projetoProvaTcc.entity apresenta a anotação @Entity?
 
-2) A classe model apresenta atributo @Id?
+2) A classe main.java.com.projetoProvaTcc.entity apresenta atributo @Id?
 
 3) Cada atributo String apresenta na anotação @Column a 
 indicação do length usando uma constante?
@@ -8,6 +8,6 @@ indicação do length usando uma constante?
 4) Relacionamentos @OneToMany bidirecionais indicacam corretamente
 o atributo de retorno?
 
-5) A classe model apresenta um construtor vazio?
+5) A classe main.java.com.projetoProvaTcc.entity apresenta um construtor vazio?
 
 6) Os atributos que são "unique" foram marcados na anotação @Column?

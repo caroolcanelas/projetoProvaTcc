@@ -1,18 +1,12 @@
-package model;
+package com.projetoProvaTcc.entity;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import jakarta.persistence.*;
+import com.projetoProvaTcc.exception.ModelException;
 
 @Entity
 public class Tag { //TODO já conferido
@@ -28,9 +22,11 @@ public class Tag { //TODO já conferido
 	// ATRIBUTOS
 	//
     @Id @GeneratedValue
-    private int    id;
+    private int id;
+
     @Column(length = TAMANHO_TAGNAME)
 	private String tagName;
+
     @Column(length = TAMANHO_ASSUNTO)
 	private String assunto;
 

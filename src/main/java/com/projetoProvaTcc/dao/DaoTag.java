@@ -1,8 +1,8 @@
-package model.dao;
+package com.projetoProvaTcc.dao;
 
-import model.Tag;
+import com.projetoProvaTcc.entity.Tag;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.List;
 
 @NamedQuery(name = "Tag.codigo", query = "SELECT t FROM Tag t WHERE t.codigo = :codigo")

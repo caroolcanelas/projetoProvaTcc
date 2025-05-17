@@ -1,26 +1,26 @@
-package model.dao;
+package com.projetoProvaTcc.dao;
 
-import model.Questao;
+import com.projetoProvaTcc.entity.Recurso;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.List;
 
-@NamedQuery(name = "Questao.codigo", query = "SELECT q FROM Questao q WHERE q.codigo = :codigo")
-public class DaoQuestao {
+@NamedQuery(name = "Recurso.codigo", query = "SELECT r FROM Recurso r WHERE r.codigo = :codigo")
+public class DaoRecurso {
 
     //abre uma conexao para o banco de dados.
     private static EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("jpa_prjProva");
     private static EntityManager entityManager = entityManagerFactory.createEntityManager();
 
-    public boolean salvar(Questao questao) {
-        return this.salvar(questao, true);
+    public boolean salvar(Recurso recurso) {
+        return this.salvar(recurso, true);
     }
 
-    public boolean salvar(Questao questao, boolean autoCommit) {
+    public boolean salvar(Recurso recurso, boolean autoCommit) {
         if (autoCommit == true)
             entityManager.getTransaction().begin();
         try {
-            entityManager.persist(questao);
+            entityManager.persist(recurso);
         } catch (PersistenceException e) {
             if (autoCommit == true)
                 entityManager.getTransaction().rollback();
@@ -31,15 +31,15 @@ public class DaoQuestao {
         return true;
     }
 
-    public boolean remover(Questao questao) {
-        return this.remover(questao, true);
+    public boolean remover(Recurso recurso) {
+        return this.remover(recurso, true);
     }
 
-    public boolean remover(Questao questao, boolean autoCommit) {
+    public boolean remover(Recurso recurso, boolean autoCommit) {
         if (autoCommit == true)
             entityManager.getTransaction().begin();
         try {
-            entityManager.remove(questao);
+            entityManager.remove(recurso);
         } catch (PersistenceException e) {
             if (autoCommit == true)
                 entityManager.getTransaction().rollback();
@@ -50,10 +50,11 @@ public class DaoQuestao {
         return true;
     }
 
-    public List<Questao> obterTodasQuestoes() {
-        Query query = entityManager.createQuery("SELECT q FROM Questao q");
-        List<Questao> resultado  = query.getResultList();
-        Questao[] retorno = new Questao[resultado.size()];
+    //precisa???????
+    public List<Recurso> obterTodosRecursos() {
+        Query query = entityManager.createQuery("SELECT r FROM Recurso r");
+        List<Recurso> resultado  = query.getResultList();
+        Recurso[] retorno = new Recurso[resultado.size()];
         for(int i = 0; i < resultado.size(); i++)
             retorno[i] = resultado.get(i);
         return List.of(retorno);

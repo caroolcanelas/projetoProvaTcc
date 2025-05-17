@@ -1,4 +1,6 @@
-package model;
+package com.projetoProvaTcc.entity;
+
+import com.projetoProvaTcc.exception.ModelException;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
