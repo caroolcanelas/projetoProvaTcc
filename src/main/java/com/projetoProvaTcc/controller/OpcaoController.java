@@ -1,6 +1,6 @@
 package com.projetoProvaTcc.controller;
 
-import com.projetoProvaTcc.entity.Opcao;
+import com.projetoProvaTcc.dto.OpcaoDTO;
 import com.projetoProvaTcc.service.OpcaoService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +19,12 @@ private OpcaoService opcaoService;
 
 @Operation(summary = "Cria uma opção")
 @PostMapping
-public ResponseEntity<Opcao> criarOpcao(@RequestBody Opcao opcao){
-    try{
-        Opcao salva = opcaoService.salvar(opcao);
+public ResponseEntity<?> criarOpcao(@RequestBody OpcaoDTO opcaoDTO) {
+    try {
+        OpcaoDTO salva = opcaoService.salvar(opcaoDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(salva);
-    }  catch (Exception e) {
-        return ResponseEntity.badRequest().build();
+    } catch (Exception e) {
+        return ResponseEntity.badRequest().body("Erro ao criar opção: " + e.getMessage());
     }
 }
 
@@ -32,7 +32,7 @@ public ResponseEntity<Opcao> criarOpcao(@RequestBody Opcao opcao){
 @GetMapping
 public ResponseEntity<?> listarTodasOpcoes(){
     try{
-        List<Opcao> opcoes = opcaoService.buscarTodasOpcoes();
+        List<OpcaoDTO> opcoes = opcaoService.buscarTodasOpcoes();
         return ResponseEntity.status(HttpStatus.OK).body(opcoes);
     } catch (Exception e){
         return ResponseEntity.status(500).body("Erro ao buscar opções: " + e.getMessage());
