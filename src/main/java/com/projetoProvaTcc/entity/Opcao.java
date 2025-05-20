@@ -13,7 +13,8 @@ public class Opcao { //TODO já conferido
 	//
 	// ATRIBUTOS
 	//
-    @Id @GeneratedValue
+    @Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(length = 300)
@@ -26,7 +27,7 @@ public class Opcao { //TODO já conferido
 	// ATRIBUTOS DE RELACIONAMENTO
 	//    
     @OneToMany(fetch = FetchType.LAZY)
-	private List<Recurso> conjRecursos;
+	private List<Recurso> conjRecursos = new ArrayList<>() ;
 
 	//
 	// MÉTODOS

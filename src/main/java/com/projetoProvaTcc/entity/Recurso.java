@@ -14,7 +14,7 @@ public class Recurso { //TODO já conferido
 	// ATRIBUTOS
 	//
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
 	@Lob
