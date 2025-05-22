@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.projetoProvaTcc.dto.TopicoDTO;
 import jakarta.persistence.*;
 import com.projetoProvaTcc.exception.ModelException;
 
@@ -170,4 +171,5 @@ public class Tag { //TODO já conferido
 	public String toString() {
 		return "#" + this.tagName;
 	}
+
 }

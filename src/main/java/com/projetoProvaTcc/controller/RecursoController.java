@@ -20,6 +20,7 @@ public class RecursoController {
     private RecursoService recursoService;
 
     // Upload
+    @Operation(summary= "Faz o upload de um novo recurso")
     @PostMapping("/upload")
     public ResponseEntity<RecursoDTO> upload(@RequestParam("arquivo") MultipartFile file) {
         try {
@@ -31,6 +32,7 @@ public class RecursoController {
     }
 
     // Download
+    @Operation(summary= "Lista o recurso pelo id")
     @GetMapping("/download/{id}")
     public ResponseEntity<byte[]> download(@PathVariable int id) {
         try {
