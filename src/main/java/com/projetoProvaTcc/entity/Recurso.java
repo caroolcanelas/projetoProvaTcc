@@ -20,6 +20,13 @@ public class Recurso { //TODO já conferido
 	@Lob
 	private byte[] conteudo;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "opcao_id")  // Aqui cria a FK!
+	private Opcao opcao;
+
+	public Opcao getOpcao() { return opcao; }
+	public void setOpcao(Opcao opcao) { this.opcao = opcao; }
+
 	//
 	// MÉTODOS
 	//

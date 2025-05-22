@@ -19,24 +19,23 @@ private OpcaoService opcaoService;
 
 @Operation(summary = "Cria uma opção")
 @PostMapping
-public ResponseEntity<?> criarOpcao(@RequestBody OpcaoDTO opcaoDTO) {
+public ResponseEntity<OpcaoDTO> criarOpcao(@RequestBody OpcaoDTO opcaoDTO) {
     try {
         OpcaoDTO salva = opcaoService.salvar(opcaoDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(salva);
     } catch (Exception e) {
-        return ResponseEntity.badRequest().body("Erro ao criar opção: " + e.getMessage());
+        return ResponseEntity.badRequest().build();
     }
 }
 
 @Operation(summary= "Listar todas as opções")
 @GetMapping
-public ResponseEntity<?> listarTodasOpcoes(){
+public ResponseEntity<List<OpcaoDTO>> listarTodasOpcoes(){
     try{
         List<OpcaoDTO> opcoes = opcaoService.buscarTodasOpcoes();
         return ResponseEntity.status(HttpStatus.OK).body(opcoes);
     } catch (Exception e){
-        return ResponseEntity.status(500).body("Erro ao buscar opções: " + e.getMessage());
-    }
+        return ResponseEntity.status(500).build();    }
 }
 
     @Operation(summary = "Exclui uma opção pelo ID")

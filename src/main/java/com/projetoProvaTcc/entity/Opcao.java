@@ -26,8 +26,8 @@ public class Opcao { //TODO já conferido
 	//
 	// ATRIBUTOS DE RELACIONAMENTO
 	//    
-    @OneToMany(fetch = FetchType.LAZY)
-	private List<Recurso> conjRecursos = new ArrayList<>() ;
+    @OneToMany(mappedBy = "opcao", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	private List<Recurso> conjRecursos ;
 
 	//
 	// MÉTODOS
@@ -79,12 +79,9 @@ public class Opcao { //TODO já conferido
 
 	//conjRecursos
 
-	public Set<Recurso> getConjRecursos(){return new HashSet<Recurso>(this.conjRecursos);}
+	public List<Recurso> getConjRecursos(){return conjRecursos;}
 
-	public void setConjRecursos(Set<Recurso> conjRecursos) throws ModelException {
-		Opcao.validarConjRecursos(conjRecursos);
-		this.conjRecursos = (List<Recurso>) conjRecursos;
-	}
+	public void setConjRecursos(List<Recurso> conjRecursos) { this.conjRecursos = conjRecursos; }
 
 	public static void validarConjRecursos(Set<Recurso> conjRecursos) throws ModelException {
 		if(conjRecursos == null)
