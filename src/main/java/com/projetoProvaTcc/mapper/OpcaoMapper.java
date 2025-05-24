@@ -7,7 +7,6 @@ import com.projetoProvaTcc.entity.Recurso;
 import com.projetoProvaTcc.exception.ModelException;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class OpcaoMapper {
@@ -19,7 +18,12 @@ public class OpcaoMapper {
         dto.setCorreta(opcao.isCorreta());
         dto.setConjRecursos(opcao.getConjRecursos()
                 .stream()
-                .map(r -> new RecursoDTO(r.getId()))
+                .map(recurso -> {
+                    RecursoDTO o = new RecursoDTO();
+                    o.setId(recurso.getId());
+                    o.setConteudo(recurso.getConteudo());
+                    return o;
+                })
                 .collect(Collectors.toList()));
         return dto;
     }

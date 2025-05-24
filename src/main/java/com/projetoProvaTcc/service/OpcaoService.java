@@ -27,9 +27,20 @@ public class OpcaoService {
     @Transactional
     public OpcaoDTO salvar(OpcaoDTO dto) throws ModelException {
         List<Recurso> recursos = dto.getConjRecursos().stream()
-                .map(id -> recursoRepository.findById(id.getId())
-                        .orElseThrow(() -> new RuntimeException("Recurso não encontrado: " + id)))
-                .collect(Collectors.toList());
+                .map(recursoDTO ->
+                        recursoRepository.findById(recursoDTO.getId())
+                                .orElseGet(()->{
+                                    Recurso novoRecurso = new Recurso();
+                                    try{
+                                        novoRecurso.setConteudo(recursoDTO.getConteudo());
+                                    } catch (ModelException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                    novoRecurso.setId(recursoDTO.getId());
+                                    return recursoRepository.save(novoRecurso);
+                                })
+                )
+                                .collect(Collectors.toList());
 
         Opcao opcao = OpcaoMapper.toEntity(dto, recursos);
         recursos.forEach(r -> r.setOpcao(opcao));  // associa recurso à opção

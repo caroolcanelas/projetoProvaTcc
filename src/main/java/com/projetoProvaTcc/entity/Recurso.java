@@ -18,6 +18,7 @@ public class Recurso { //TODO já conferido
 	private int id;
 
 	@Lob
+	@Column(name = "conteudo", columnDefinition = "LONGBLOB")
 	private byte[] conteudo;
 
 	@ManyToOne(fetch = FetchType.LAZY)
