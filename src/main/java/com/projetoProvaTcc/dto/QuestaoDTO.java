@@ -1,13 +1,11 @@
 package com.projetoProvaTcc.dto;
 
-import com.projetoProvaTcc.entity.NivelQuestao;
-import com.projetoProvaTcc.entity.Questao;
-import com.projetoProvaTcc.entity.Recurso;
-import com.projetoProvaTcc.entity.TipoQuestao;
+import com.projetoProvaTcc.entity.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -24,7 +22,8 @@ public class QuestaoDTO {
     private TipoQuestao tipo;
     private boolean validada;
     private List<OpcaoDTO> conjOpcoes;
-    //private List<Questao> conjQuestoesDerivadas;
-    //private List<Recurso> conjRecursos;
+    //private List<QuestaoDTO> conjQuestoesDerivadas; //To em dúvida de como fazer esse aqui
+    private List<RecursoDTO> conjRecursos = new ArrayList<>();
+    //private List<TagDTO> conjTags;
 
 }

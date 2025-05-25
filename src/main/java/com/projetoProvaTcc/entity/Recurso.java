@@ -28,6 +28,7 @@ public class Recurso { //TODO já conferido
 	public Opcao getOpcao() { return opcao; }
 	public void setOpcao(Opcao opcao) { this.opcao = opcao; }
 
+
 	//
 	// MÉTODOS
 	//
@@ -78,4 +79,5 @@ public class Recurso { //TODO já conferido
 	public String toString() {
 		return "Recurso{" + "id='" + this.id + "}";
 	}
+
 }

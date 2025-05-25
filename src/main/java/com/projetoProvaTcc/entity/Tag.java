@@ -21,7 +21,8 @@ public class Tag { //TODO já conferido
 	//
 	// ATRIBUTOS
 	//
-    @Id @GeneratedValue
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(length = TAMANHO_TAGNAME)
