@@ -98,7 +98,7 @@ public class Topico {//TODO já conferido
 		return this.conteudo;
 	}
 
-	private void setConteudo(String conteudo) throws ModelException {
+	public void setConteudo(String conteudo) throws ModelException {
 		Topico.validarConteudo(conteudo);
 		this.conteudo = conteudo;
 	}

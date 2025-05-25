@@ -21,7 +21,7 @@ public class Questao { //TODO já conferido
 	// ATRIBUTOS
 	//
     @Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(length = TAMANHO_INSTRUCAO_INICIAL, name = "instrucao_inicial")
@@ -46,42 +46,41 @@ public class Questao { //TODO já conferido
 	// ATRIBUTOS DE RELACIONAMENTO
 	//
     @ManyToMany(fetch = FetchType.LAZY) 
-    @JoinTable(name = "foi_marcada_com", 
-               joinColumns = @JoinColumn(name = "id_tag"),
-               inverseJoinColumns = @JoinColumn(name = "id_questao"))
+    @JoinTable(name = "foi_marcada_com",
+			joinColumns = @JoinColumn(name = "id_questao"),
+			inverseJoinColumns = @JoinColumn(name = "id_tag"))
     private List<Tag> conjTags;
-    
-    @OneToMany(fetch = FetchType.LAZY)
-	private List<Questao> conjQuestoesDerivadas; // relacionamento unidirecional
-	
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<Opcao> conjOpcoes; 			 // relacionamento unidirecional
 
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<Recurso> conjRecursos;
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Questao> conjQuestoesDerivadas; // relacionamento unidirecional
+
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Opcao> conjOpcoes ;            // relacionamento unidirecional
+
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Recurso> conjRecursos;
 
 	//
 	// MÉTODOS
 	// 
 	public Questao() {
 		super();
+		this.conjTags = new ArrayList<>();
+		this.conjQuestoesDerivadas = new ArrayList<>();
+		this.conjOpcoes = new ArrayList<>();
+		this.conjRecursos = new ArrayList<>();
 	}
+
 
 	public Questao(String instrucaoInicial, String suporte, String comando,
 				   NivelQuestao nivel, TipoQuestao tipo, boolean validada) throws ModelException {
-		super();
+		this(); // Chama o construtor padrão para inicializar as coleções
 		this.setInstrucaoInicial(instrucaoInicial);
 		this.setSuporte(suporte);
 		this.setComando(comando);
 		this.setNivel(nivel);
 		this.setTipo(tipo);
 		this.setValidada(validada);
-
-		this.conjTags = new ArrayList<>();
-		this.conjQuestoesDerivadas = new ArrayList<>();
-		this.conjOpcoes = new ArrayList<>();
-		this.conjRecursos = new ArrayList<>();
-
 	}
 	
 	public int getId() {
@@ -177,11 +176,26 @@ public class Questao { //TODO já conferido
 	}
 
 	//conjTag - add e remove
+
+	public List<Tag> getConjTags() {
+		return new ArrayList<>(this.conjTags);
+	}
+
+	public void setConjTags(List<Tag> conjTags) throws ModelException {
+		if (conjTags == null) {
+			throw new ModelException("O conjunto de tags não pode ser nulo!");
+		}
+		this.conjTags.clear();
+		this.conjTags.addAll(conjTags);
+	}
+
 	public void addTag(Tag tag) throws ModelException{
 		if (tag == null) {
 			throw new ModelException("A tag não pode ser nula");
 		}
-		 this.conjTags.add(tag);
+		if (!this.conjTags.contains(tag)) {
+			this.conjTags.add(tag);
+		}
 	}
 
 	public void removeTag(Tag tag) throws ModelException{
@@ -194,6 +208,9 @@ public class Questao { //TODO já conferido
 	//questoesDerivadas -- add e remove
 	public boolean addQuestaoDerivada(Questao questao) throws ModelException{
 		Questao.validarQuestao(questao);
+		if (this.conjQuestoesDerivadas.contains(questao)) { // Evita duplicatas
+			return false;
+		}
 		return this.conjQuestoesDerivadas.add(questao);
 	}
 
@@ -202,18 +219,19 @@ public class Questao { //TODO já conferido
 	}
 
 	// questoesDerivadas
-	public Set<Questao> getConjQuestoesDerivadas() {
-		return new HashSet<Questao>(this.conjQuestoesDerivadas);
+	public List<Questao> getConjQuestoesDerivadas() {
+		return new ArrayList<>(this.conjQuestoesDerivadas); // Retorna uma cópia
 	}
 
-	public void setConjQuestoesDerivadas(Set<Questao> conjQuestoesDerivadas) throws ModelException {
+	public void setConjQuestoesDerivadas(List<Questao> conjQuestoesDerivadas) throws ModelException {
 		Questao.validarConjQuestoesDerivadas(conjQuestoesDerivadas);
-		this.conjQuestoesDerivadas = (List<Questao>) conjQuestoesDerivadas;
+		this.conjQuestoesDerivadas.clear();
+		this.conjQuestoesDerivadas.addAll(conjQuestoesDerivadas);
 	}
 
-	public static void validarConjQuestoesDerivadas(Set<Questao> conjQuestoesDerivadas) throws ModelException {
+	public static void validarConjQuestoesDerivadas(List<Questao> conjQuestoesDerivadas) throws ModelException {
 		if(conjQuestoesDerivadas == null)
-			throw new ModelException("O conjunto de questões derivadas questão não pode ser nulo!");
+			throw new ModelException("O conjunto de questões derivadas da questão não pode ser nulo!");
 	}
 
 	public static void validarQuestao (Questao questao) throws ModelException {
@@ -225,6 +243,9 @@ public class Questao { //TODO já conferido
 
 	public boolean addOpcao(Opcao opcao) throws ModelException{
 		Questao.validarOpcao(opcao);
+		if (this.conjOpcoes.contains(opcao)) { // Evita duplicatas
+			return false;
+		}
 		return this.conjOpcoes.add(opcao);
 	}
 
@@ -233,16 +254,17 @@ public class Questao { //TODO já conferido
 	}
 
 	// conjOpcoes
-	public Set<Opcao> getConjOpcoes() {
-		return new HashSet<Opcao>(this.conjOpcoes);
+	public List<Opcao> getConjOpcoes() {
+		return new ArrayList<>(this.conjOpcoes); // Retorna uma cópia
 	}
 
-	public void setConjOpcoes(Set<Opcao> conjOpcoes) throws ModelException {
-		Questao.validarConjOpcoes(conjOpcoes);		
-		this.conjOpcoes = (List<Opcao>) conjOpcoes;
+	public void setConjOpcoes(List<Opcao> conjOpcoes) throws ModelException {
+		Questao.validarConjOpcoes(conjOpcoes);
+		this.conjOpcoes.clear();
+		this.conjOpcoes.addAll(conjOpcoes);
 	}
-	
-	public static void validarConjOpcoes(Set<Opcao> conjOpcoes) throws ModelException {
+
+	public static void validarConjOpcoes(List<Opcao> conjOpcoes) throws ModelException {
 		if(conjOpcoes == null)
 			throw new ModelException("O conjunto de opções da questão não pode ser nulo!");
 	}
@@ -256,6 +278,9 @@ public class Questao { //TODO já conferido
 
 	public boolean addRecurso(Recurso recurso) throws ModelException{
 		Questao.validarRecurso(recurso);
+		if (this.conjRecursos.contains(recurso)) { // Evita duplicatas
+			return false;
+		}
 		return this.conjRecursos.add(recurso);
 	}
 
@@ -265,14 +290,17 @@ public class Questao { //TODO já conferido
 
 	//conjRecursos
 
-	public Set<Recurso> getConjRecursos(){return new HashSet<Recurso>(this.conjRecursos);}
-
-	public void setConjRecursos(Set<Recurso> conjRecursos) throws ModelException {
-		Questao.validarConjRecursos(conjRecursos);
-		this.conjRecursos = (List<Recurso>) conjRecursos;
+	public List<Recurso> getConjRecursos(){
+		return new ArrayList<>(this.conjRecursos); // Retorna uma cópia
 	}
 
-	public static void validarConjRecursos(Set<Recurso> conjRecursos) throws ModelException {
+	public void setConjRecursos(List<Recurso> conjRecursos) throws ModelException {
+		Questao.validarConjRecursos(conjRecursos);
+		this.conjRecursos.clear();
+		this.conjRecursos.addAll(conjRecursos);
+	}
+
+	public static void validarConjRecursos(List<Recurso> conjRecursos) throws ModelException {
 		if(conjRecursos == null)
 			throw new ModelException("O conjunto de recursos da questão não pode ser nulo!");
 	}

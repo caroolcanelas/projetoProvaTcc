@@ -27,6 +27,12 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.32</version> <scope>provided</scope>
+		</dependency>
+
 		<!-- Spring Boot Starter JPA (integra com Hibernate) -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

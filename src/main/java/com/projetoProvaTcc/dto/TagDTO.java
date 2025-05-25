@@ -9,14 +9,10 @@ import java.util.List;
 @Data // Gera getters, setters, toString, equals e hashCode
 @NoArgsConstructor // Gera construtor sem argumentos
 @AllArgsConstructor //Gera construtor com argumentos
-public class OpcaoDTO {
+public class TagDTO {
     private int id;
-    private String conteudo;
-    private boolean correta;
-    private List<RecursoDTO> conjRecursos;
-
-    public OpcaoDTO(int id) {
-    }
+    private String tagName;
+    private String assunto;
+    //private List<QuestaoDTO> conjQuestoes;
+    //private List<TopicoDTO> conjTopicosAderentes;
 }
-
-
