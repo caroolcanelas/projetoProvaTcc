@@ -71,4 +71,8 @@ public class TopicoMapper {
         return topico;
     }
 
+    public static Topico toEntity(TopicoDTO dto) throws ModelException {
+        return toEntity(dto, null, null, null);
+    }
+
 }

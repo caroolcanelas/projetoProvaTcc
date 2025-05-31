@@ -67,4 +67,46 @@ public class DisciplinaService {
         }
         return false;
     }
+
+    public void adicionarTopicoNaDisciplina(int idDisciplina, Topico topico) throws ModelException {
+        //encontra a disciplina pelo id
+        Disciplina disciplina = repository.findById((long)idDisciplina)
+                .orElseThrow(() -> new ModelException("Disciplina não encontrada"));
+
+        //confere se o tópico já existe no banco
+        if (topico.getId() != 0) {
+            Topico topicoExistente = topicoRepository.findById((long) topico.getId())
+                    .orElseThrow(() -> new ModelException("Tópico com ID " + topico.getId() + " não encontrado"));
+
+            // Impede que a gente relacione o mesmo tópico duas vezes
+            if (disciplina.getConjTopicos().contains(topicoExistente)) {
+                throw new ModelException("Tópico já está associado a esta disciplina.");
+            }
+
+            //se o topico já existe adiciona na disciplina
+            topicoExistente.setDisciplina(disciplina);
+            disciplina.addTopico(topicoExistente);
+        } else {
+            // se não existe ele cria um tópico novo
+            topico.setDisciplina(disciplina);
+            disciplina.addTopico(topico);
+        }
+
+        //salva no banco
+        repository.save(disciplina);
+    }
+
+    public void removerTopicoDaDisciplina(int idDisciplina, int idTopico) throws ModelException {
+        Disciplina disciplina = repository.findById((long)idDisciplina)
+                .orElseThrow(() -> new ModelException("Disciplina não encontrada"));
+
+        Topico topico = topicoRepository.findById((long)idTopico)
+                .orElseThrow(() -> new ModelException("Tópico não encontrado"));
+
+        disciplina.removeTopico(topico); // remove topico
+
+        repository.save(disciplina); // salva a alteracao
+    }
+
+
 }

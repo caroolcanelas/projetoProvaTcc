@@ -113,6 +113,7 @@ public class QuestaoService {
 
         // Agora converte para Entidade
         Questao questao = QuestaoMapper.toEntity(dto, opcoes, recursos, tags, questaoDerivada);
+        questao.validarQuestao(); //valida a questão antes de salvar
         Questao salva = questaoRepository.save(questao);
         return QuestaoMapper.toDTO(salva);
     }

@@ -310,7 +310,26 @@ public class Questao { //TODO já conferido
 
 
 	public void validarQuestao() throws ModelException {
-		// TODO Codificar esse método depois		
+		if (this.conjOpcoes == null || this.conjOpcoes.isEmpty()) {
+			throw new ModelException("A questão deve conter pelo menos uma opção.");
+		}
+
+		boolean temCorreta = this.conjOpcoes.stream().anyMatch(Opcao::isCorreta);
+		if (!temCorreta) {
+			throw new ModelException("A questão deve conter pelo menos uma opção correta.");
+		}
+
+		if (this.conjTags == null || this.conjTags.isEmpty()) {
+			throw new ModelException("A questão deve conter pelo menos uma tag.");
+		}
+
+		if (this.conjRecursos == null) {
+			throw new ModelException("A lista de recursos não pode ser nula.");
+		}
+
+		if (this.conjQuestoesDerivadas == null) {
+			throw new ModelException("A lista de questões derivadas não pode ser nula.");
+		}
 	}
 	
 }
