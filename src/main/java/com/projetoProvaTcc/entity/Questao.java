@@ -55,7 +55,7 @@ public class Questao { //TODO já conferido
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Opcao> conjOpcoes ;            // relacionamento unidirecional
 
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Recurso> conjRecursos;
 
 	//

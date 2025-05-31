@@ -1,12 +1,17 @@
 package com.projetoProvaTcc.controller;
 
 import com.projetoProvaTcc.dto.OpcaoDTO;
+import com.projetoProvaTcc.dto.RecursoDTO;
+import com.projetoProvaTcc.entity.Recurso;
+import com.projetoProvaTcc.exception.ModelException;
 import com.projetoProvaTcc.service.OpcaoService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -37,6 +42,45 @@ public ResponseEntity<List<OpcaoDTO>> listarTodasOpcoes(){
     } catch (Exception e){
         return ResponseEntity.status(500).build();    }
 }
+
+@Operation(summary = "Lista uma opção por id")
+@GetMapping("/{id}")
+public OpcaoDTO getPorId(@PathVariable int id){
+    return opcaoService.buscarPorId(id);
+}
+
+    @Operation(summary = "Adiciona recurso na opção")
+    @PostMapping(value = "/{idOpcao}/recurso", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> adicionarRecurso(
+            @PathVariable int idOpcao,
+            @RequestPart("arquivo") MultipartFile arquivo,
+            @RequestPart(value = "id", required = false) Integer id
+    ) throws Exception {
+
+        Recurso recurso = new Recurso();
+
+        if (id != null && id != 0) {
+            recurso.setId(id);
+        }
+
+        if (arquivo != null && !arquivo.isEmpty()) {
+            recurso.setConteudo(arquivo.getBytes());
+        } else {
+            throw new ModelException("Arquivo é obrigatório.");
+        }
+
+        opcaoService.adicionarRecursoNaOpcao(idOpcao, recurso);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "Remove recurso na opção")
+    @DeleteMapping("/{idOpcao}/recurso/{idRecurso}")
+    public ResponseEntity<?> removerRecurso(@PathVariable int idOpcao, @PathVariable int idRecurso) throws ModelException {
+        opcaoService.removerRecursoDaOpcao(idOpcao, idRecurso);
+        return ResponseEntity.noContent().build();
+    }
+
 
     @Operation(summary = "Exclui uma opção pelo ID")
     @DeleteMapping("/{id}")

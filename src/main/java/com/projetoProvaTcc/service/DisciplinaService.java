@@ -109,4 +109,9 @@ public class DisciplinaService {
     }
 
 
+    public DisciplinaDTO buscarPorId(int id) {
+        Disciplina disciplina = repository.findById((long) id).orElse(null);
+        if (disciplina == null) return null;
+        return DisciplinaMapper.toDTO(disciplina);
+    }
 }

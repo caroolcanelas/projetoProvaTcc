@@ -45,6 +45,12 @@ public class DisciplinaController {
 
     }
 
+    @Operation(summary= "Listar uma disciplina por id")
+    @GetMapping("/{id}")
+    public DisciplinaDTO getPorId(@PathVariable int id) {
+        return disciplinaService.buscarPorId(id);
+    }
+
     @Operation(summary = "Exclui uma disciplina pelo ID")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletarDisciplina(@PathVariable long id) { //nao tem body. apenas passa id na URL

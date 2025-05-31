@@ -49,6 +49,51 @@ public class OpcaoService {
         return OpcaoMapper.toDTO(salva);
     }
 
+    public void adicionarRecursoNaOpcao (int idOpcao, Recurso recurso) throws ModelException{
+        //encontrar a opcao pelo id
+        Opcao opcao = repository.findById((long) idOpcao)
+                .orElseThrow(() -> new ModelException("Opcão não encontrada"));
+
+        //o recurso já existe no banco?
+        if(recurso.getId() != 0){
+            Recurso recursoExistente = recursoRepository.findById(recurso.getId())
+                    .orElseThrow(() -> new ModelException("Recurdo com ID" + recurso.getId() + "não encontrado"));
+
+            //impede que relacione o mesmo recurso duas vezes
+            if (opcao.getConjRecursos().contains(recursoExistente)){
+                throw new ModelException("Recurso já estã associado a esta opção");
+            }
+
+            //se o recurso já existe, adiciona na opção
+            recursoExistente.setOpcao(opcao);
+            opcao.addRecurso(recursoExistente);
+        } else {
+            //se não existe cria um novo recurso
+            recurso.setOpcao(opcao);
+            opcao.addRecurso(recurso);
+        }
+
+        //salva no banco
+        repository.save(opcao);
+    }
+
+    public void removerRecursoDaOpcao(int idOpcao, int idRecurso) throws ModelException {
+        Opcao opcao = repository.findById((long) idOpcao)
+                .orElseThrow(() -> new ModelException("Opção não encontrada"));
+
+        Recurso recurso = recursoRepository.findById(idRecurso)
+                .orElseThrow(() -> new ModelException("Recurso não encontrado"));
+
+        // aqui a gente nao apaga o recurso do banco, só remove ele da opção mesmo
+        boolean removido = opcao.removeRecurso(recurso);
+        if (!removido) {
+            throw new ModelException("Recurso não está vinculado a essa opção.");
+        }
+
+        repository.save(opcao);
+    }
+
+
     public List<OpcaoDTO> buscarTodasOpcoes() {
         return repository.findAll().stream()
                 .map(OpcaoMapper::toDTO)
@@ -61,5 +106,11 @@ public class OpcaoService {
             return true;
         }
         return false;
+    }
+
+    public OpcaoDTO buscarPorId(int id) {
+        Opcao opcao = repository.findById((long)id).orElse(null);
+        if(opcao == null) return null;
+        return OpcaoMapper.toDTO(opcao);
     }
 }
