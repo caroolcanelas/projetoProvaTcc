@@ -21,9 +21,16 @@ public class QuestaoDTO {
     private NivelQuestao nivel;
     private TipoQuestao tipo;
     private boolean validada;
+
+    //relaciona pela opcao
     private List<OpcaoDTO> conjOpcoes;
-    //private List<Integer> conjQuestoesDerivadas; //To em dúvida de como fazer esse aqui
+
+    private List<Integer> conjQuestoesDerivadas; //To em dúvida de como fazer esse aqui
+
+    //relaciona pelo recurso
     private List<RecursoDTO> conjRecursos = new ArrayList<>();
+
+    //relaciona pela tag
     private List<TagDTO> conjTags;
 
 }

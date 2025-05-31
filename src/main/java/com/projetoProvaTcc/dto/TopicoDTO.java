@@ -18,7 +18,12 @@ public class TopicoDTO {
     private String nome;
     private String conteudo;
 
-    //private Disciplina disciplina;
-    //private List<Topico> conjSubTopicos; //recursivo também :x
-    //private List<TagDTO> conjTags;
+    //retornar apenas id de disciplina
+    private Integer disciplina;
+
+    //retornant apenas id de subtopico
+    private List<Integer> conjSubTopicos; //recursivo também :x
+
+    //retornar o nome da tag
+    private List<String> conjTags;
 }

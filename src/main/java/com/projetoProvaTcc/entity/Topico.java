@@ -50,7 +50,11 @@ public class Topico {//TODO já conferido
 	//
 	// MÉTODOS
 	//
+
+	//pra não inicializar como null
     public Topico() {
+		this.conjSubTopicos = new ArrayList<>();
+		this.conjTags = new ArrayList<>();
     }
     
 	public Topico(int numOrdem, String nome, String conteudo, Disciplina disciplina) throws ModelException {
@@ -59,9 +63,6 @@ public class Topico {//TODO já conferido
 		this.setNome(nome);
 		this.setConteudo(conteudo);
 		this.setDisciplina(disciplina);
-
-		this.conjSubTopicos = new ArrayList<>();
-		this.conjTags = new ArrayList<>();
 	}
 
 	//id

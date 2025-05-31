@@ -17,6 +17,8 @@ public class DisciplinaDTO {
     private String nome;
     private int numCreditos;
     private String objetivoGeral;
-   // private List<Topico> conjTopicos; // relacionamento bidirecional
+
+    //relaciona pelo id de topico
+    private List<Integer> conjTopicos; // relacionamento bidirecional
 
 }

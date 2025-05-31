@@ -49,7 +49,7 @@ public class Questao { //TODO já conferido
 			inverseJoinColumns = @JoinColumn(name = "id_tag"))
     private List<Tag> conjTags;
 
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany
 	private List<Questao> conjQuestoesDerivadas; // relacionamento unidirecional
 
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)

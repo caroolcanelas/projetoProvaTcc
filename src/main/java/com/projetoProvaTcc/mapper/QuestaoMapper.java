@@ -4,10 +4,7 @@ import com.projetoProvaTcc.dto.OpcaoDTO;
 import com.projetoProvaTcc.dto.QuestaoDTO;
 import com.projetoProvaTcc.dto.RecursoDTO;
 import com.projetoProvaTcc.dto.TagDTO;
-import com.projetoProvaTcc.entity.Opcao;
-import com.projetoProvaTcc.entity.Questao;
-import com.projetoProvaTcc.entity.Recurso;
-import com.projetoProvaTcc.entity.Tag;
+import com.projetoProvaTcc.entity.*;
 import com.projetoProvaTcc.exception.ModelException;
 import lombok.SneakyThrows;
 
@@ -29,73 +26,41 @@ public class QuestaoMapper {
         dto.setInstrucaoInicial(questao.getInstrucaoInicial());
 
         //relacionamento com opção
-        dto.setConjOpcoes(questao.getConjOpcoes()
-                .stream()
-                .map(opcao -> {
-                    OpcaoDTO o = new OpcaoDTO();
-                    o.setId(opcao.getId());
-                    o.setConteudo(opcao.getConteudo());
-                    o.setCorreta(opcao.isCorreta());
-                    return o;
-                })
-                .collect(Collectors.toList()));
+        dto.setConjOpcoes(
+                questao.getConjOpcoes().stream()
+                        .map(o -> new OpcaoDTO(o.getId(), o.getConteudo(), o.isCorreta(), null))
+                        .collect(Collectors.toList())
+        );
 
         //relacionamento com recurso
-        dto.setConjRecursos(questao.getConjRecursos()
-                .stream()
-                .map(recurso -> {
-                    RecursoDTO o = new RecursoDTO();
-                    o.setId(recurso.getId());
-                    o.setConteudo(recurso.getConteudo());
-                    return o;
-                })
-                .collect(Collectors.toList()));
+        dto.setConjRecursos(
+                questao.getConjRecursos().stream()
+                        .map(r -> new RecursoDTO(r.getId(), r.getConteudo()))
+                        .collect(Collectors.toList())
+        );
 
         //relacionamento tag
-        dto.setConjTags(questao.getConjTags()
-                .stream()
-                .map(tag -> {
-                    TagDTO o = new TagDTO();
-                    o.setId(tag.getId());
-                    o.setTagName(tag.getTagName());
-                    o.setAssunto(tag.getAssunto());
-                    return o;
-                })
-                .collect(Collectors.toList()));
+        dto.setConjTags(
+                questao.getConjTags().stream()
+                        .map(t -> new TagDTO(t.getId(), t.getTagName(), t.getAssunto(), null, null))
+                        .collect(Collectors.toList())
+        );
 
-        //relacionamento com questao tentando passar a questão toda mas não me parece que vai dar certo
-//        dto.setConjQuestoesDerivadas(
-//                questao.getConjQuestoesDerivadas()
-//                        .stream()
-//                        .map(q -> {
-//                            QuestaoDTO qdto = new QuestaoDTO();
-//                            qdto.setId(q.getId());
-//                            qdto.setTipo(q.getTipo());
-//                            qdto.setSuporte(q.getSuporte());
-//                            qdto.setComando(q.getComando());
-//                            qdto.setNivel(q.getNivel());
-//                            qdto.setValidada(q.isValidada());
-//                            qdto.setInstrucaoInicial(q.getInstrucaoInicial());
-//
-//                            return qdto;
-//                        })
-//                        .collect(Collectors.toList())
-//        );
 
-        //tentando relacionar com ID mas também não deu certo por conta de uma coisa esperar int e outra long
-//        dto.setConjQuestoesDerivadas(
-//                questao.getConjQuestoesDerivadas()
-//                        .stream()
-//                        .map(Questao::getId)
-//                        .collect(Collectors.toList())
-//        );
-
+        //relacionar com o id de questao derivada
+        if (questao.getConjQuestoesDerivadas() != null) {
+            dto.setConjQuestoesDerivadas(
+                    questao.getConjQuestoesDerivadas().stream()
+                            .map(Questao::getId)
+                            .collect(Collectors.toList())
+            );
+        }
 
         return dto;
 
     }
 
-    public static Questao toEntity(QuestaoDTO dto, List<Opcao> opcoes, List<Recurso> recursos, List<Tag> tags) throws ModelException{
+    public static Questao toEntity(QuestaoDTO dto, List<Opcao> opcoes, List<Recurso> recursos, List<Tag> tags, List<Questao> questoesDerivadas) throws ModelException{
         Questao questao = new Questao();
         questao.setId(dto.getId());
         questao.setTipo(dto.getTipo());
@@ -107,7 +72,10 @@ public class QuestaoMapper {
         questao.setConjOpcoes(opcoes);
         questao.setConjRecursos(recursos);
         questao.setConjTags(tags);
-//        questao.setConjQuestoesDerivadas(questoesDerivadas);
+
+        if (questoesDerivadas != null) {
+            questao.setConjQuestoesDerivadas(questoesDerivadas);
+        }
 
         return questao;
     }

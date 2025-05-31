@@ -28,6 +28,12 @@ public class TopicoController {
         }
     }
 
+    @Operation(summary= "Listar um tópico por id")
+    @GetMapping("/{id}")
+    public TopicoDTO getPorId(@PathVariable int id) {
+        return topicoService.buscarPorId(id);
+    }
+
     @Operation(summary= "Listar todos os Tópicos")
     @GetMapping
     public ResponseEntity<List<TopicoDTO>> listarTodosTopicos(){
@@ -42,7 +48,7 @@ public class TopicoController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletarTopico(@PathVariable long id) {
         try {
-            boolean remove = topicoService.deletarOpcaoPorId(id);
+            boolean remove = topicoService.deletarTopicoPorId(id);
             if (remove) {
                 return ResponseEntity.noContent().build();
             } else {

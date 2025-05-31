@@ -13,6 +13,10 @@ public class TagDTO {
     private int id;
     private String tagName;
     private String assunto;
-    //private List<QuestaoDTO> conjQuestoes;
-    private List<TopicoDTO> conjTopicosAderentes;
+
+    //relaciona pelo id da questao
+    private List<Integer> conjQuestoes;
+
+    //relaciona pelo nome do topico pra deixar mais fácil
+    private List<String> conjTopicosAderentes;
 }

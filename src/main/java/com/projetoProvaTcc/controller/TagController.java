@@ -28,6 +28,17 @@ public class TagController {
         }
     }
 
+    @Operation(summary = "Busca tag por ID")
+    @GetMapping("/{id}")
+    public ResponseEntity<TagDTO> buscarPorId(@PathVariable int id) {
+        TagDTO dto = tagService.buscarPorId(id);
+        if (dto != null) {
+            return ResponseEntity.ok(dto);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 
     @Operation(summary = "Listar todas as tags")
     @GetMapping

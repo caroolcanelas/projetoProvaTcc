@@ -1,10 +1,12 @@
 package com.projetoProvaTcc.service;
 
 import com.projetoProvaTcc.dto.TopicoDTO;
+import com.projetoProvaTcc.entity.Disciplina;
 import com.projetoProvaTcc.entity.Tag;
 import com.projetoProvaTcc.entity.Topico;
 import com.projetoProvaTcc.exception.ModelException;
 import com.projetoProvaTcc.mapper.TopicoMapper;
+import com.projetoProvaTcc.repository.DisciplinaRepository;
 import com.projetoProvaTcc.repository.TagRepository;
 import com.projetoProvaTcc.repository.TopicoRepository;
 import jakarta.transaction.Transactional;
@@ -24,32 +26,41 @@ public class TopicoService {
     @Autowired
     private TagRepository tagRepository;
 
+    @Autowired
+    private DisciplinaRepository disciplinaRepository;
+
+    @Autowired
+    private TopicoRepository topicoRepository;
+
+
     @Transactional
     public TopicoDTO salvar(TopicoDTO dto) throws ModelException {
 
-        //relacionamento com tags
-//        List<Tag> tags = dto.getConjTags().stream()
-//                .map(tagDTO ->
-//                        tagRepository.findById(Long.valueOf(tagDTO.getId()))
-//                                .orElseGet(() -> {
-//                                    // Criar nova Tag se não existir
-//                                    Tag novaTag = new Tag();
-//                                    try {
-//                                        novaTag.setTagName(tagDTO.getTagName());
-//                                    } catch (ModelException e) {
-//                                        throw new RuntimeException(e);
-//                                    }
-//                                    try {
-//                                        novaTag.setAssunto(tagDTO.getAssunto());
-//                                    } catch (ModelException e) {
-//                                        throw new RuntimeException(e);
-//                                    }
-//                                    return tagRepository.save(novaTag);
-//                                })
-//                )
-//                .collect(Collectors.toList());
+        //busca id da disciplina
+        Disciplina disciplina = disciplinaRepository.findById(Long.valueOf(dto.getDisciplina()))
+                .orElseThrow(() -> new ModelException("Disciplina não encontrada"));
 
-        Topico topico = TopicoMapper.toEntity(dto);
+        //busca id do subtopico
+        List<Topico> subTopicos = dto.getConjSubTopicos().stream()
+                .map(id -> {
+                    try {
+                        return topicoRepository.findById(Long.valueOf(id))
+                                .orElseThrow(() -> new ModelException("Subtópico " + id + " não encontrado"));
+                    } catch (ModelException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .collect(Collectors.toList());
+
+        //busca pelo tagName
+        List<Tag> tags = tagRepository.findAllByTagNameIn(dto.getConjTags()); //  método para buscar o nome das tags
+
+        Topico topico = TopicoMapper.toEntity(dto, disciplina, subTopicos, tags);
+
+        for (Tag tag : tags) {
+            tag.addTopicoAderente(topico); // Isso vai garantir que a tag reconhece o topico
+        }
+
         Topico salva = repository.save(topico);
         return TopicoMapper.toDTO(salva);
     }
@@ -60,12 +71,27 @@ public class TopicoService {
                 .collect(Collectors.toList());
     }
 
-    public boolean deletarOpcaoPorId(long id) {
-        if (repository.existsById(id)) {
-            repository.deleteById(id);
-            return true;
+    public  TopicoDTO buscarPorId(int id) {
+        Topico topico = repository.findById((long) id).orElse(null);
+        if (topico == null) return null;
+        return TopicoMapper.toDTO(topico);
+    }
+
+    public boolean deletarTopicoPorId(long id) throws ModelException {
+        Topico topico = repository.findById(id).orElse(null);
+        if (topico == null) {
+            return false;
         }
-        return false;
+
+        // Remove o topico da lista de cada tag que o referencia
+        List<Tag> tagsRelacionadas = topico.getConjTags();
+        for (Tag tag : tagsRelacionadas) {
+            tag.removeTopicoAderente(topico); // Garante que a tag pare de referenciar o topico
+        }
+
+        // Agora sim pode remover
+        repository.delete(topico);
+        return true;
     }
 
 }

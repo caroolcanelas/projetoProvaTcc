@@ -28,6 +28,7 @@ public class QuestaoController {
         }
     }
 
+
     @Operation(summary= "Listar todas as questões")
     @GetMapping
     public ResponseEntity<List<QuestaoDTO>> listarTodasQuestoes(){
