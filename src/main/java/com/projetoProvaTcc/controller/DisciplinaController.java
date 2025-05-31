@@ -76,7 +76,7 @@ public class DisciplinaController {
             topico = new Topico();
             topico.setId(dto.getId());
         } else {
-            // Se for novo, aí sim usa o mapper completo (com validações)
+            // Se for novo, aí sim usa o mapper completo
             topico = TopicoMapper.toEntity(dto);
         }
 

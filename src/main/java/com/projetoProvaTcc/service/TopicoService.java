@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.ArrayList;
+
 
 
 @Service
@@ -94,4 +96,39 @@ public class TopicoService {
         return true;
     }
 
+    public void adicionarSubTopicoEmTopico(int idTopico, Topico subTopico) throws ModelException {
+
+        //encontra o topico pai pelo id
+        Topico topicoPai = topicoRepository.findById((long) idTopico)
+                .orElseThrow(() -> new ModelException("Tópico principal não encontrado."));
+
+        // Se o subtópico já existe no banco, buscamos ele
+        if (subTopico.getId() != 0) {
+            Topico existente = topicoRepository.findById((long) subTopico.getId())
+                    .orElseThrow(() -> new ModelException("Subtópico com ID " + subTopico.getId() + " não encontrado"));
+
+            topicoPai.addSubTopico(existente);
+        } else {
+            // Ou criamos um novo
+            topicoPai.addSubTopico(subTopico);
+        }
+
+        topicoRepository.save(topicoPai);
+    }
+
+
+    public void removerSubtopico(int idTopico, int idSubtopico) throws ModelException {
+        Topico topicoPai = topicoRepository.findById((long) idTopico)
+                .orElseThrow(() -> new ModelException("Tópico principal não encontrado."));
+
+        Topico subTopico = topicoRepository.findById((long) idSubtopico)
+                .orElseThrow(() -> new ModelException("Subtópico não encontrado."));
+
+        boolean removido = topicoPai.removeSubTopico(subTopico);
+        if (!removido) {
+            throw new ModelException("O subtópico informado não está associado a esse tópico.");
+        }
+
+        topicoRepository.save(topicoPai);
+    }
 }

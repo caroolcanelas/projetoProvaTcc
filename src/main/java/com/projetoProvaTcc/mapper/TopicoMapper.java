@@ -40,6 +40,7 @@ public class TopicoMapper {
             dto.setConjTags(
                     topico.getConjTags().stream()
                             .map(Tag::getTagName)
+                            .distinct()
                             .collect(Collectors.toList())
             );
         }

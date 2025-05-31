@@ -40,8 +40,8 @@ public class Topico {//TODO já conferido
 	@JoinColumn(name = "disciplina_id")
 	@JsonBackReference
 	private Disciplina disciplina; 		// relacionamento bidirecional
-    
-    @OneToMany
+
+	@OneToMany(cascade = CascadeType.ALL)
 	private List<Topico> conjSubTopicos; // relacionamento unidirecional
     
     @ManyToMany(mappedBy = "conjTopicosAderentes")
@@ -148,11 +148,15 @@ public class Topico {//TODO já conferido
 		this.conjTags.addAll(conjTags);
 	}
 
+	//conjTags - add e remove
+
 	public void addTag(Tag tag) throws ModelException{
 		if (tag == null) {
 			throw new ModelException("A tag não pode ser nula");
 		}
-		this.conjTags.add(tag);
+		if (!this.conjTags.contains(tag)) {
+			this.conjTags.add(tag);
+		}
 	}
 
 	public void removeTag(Tag tag) throws ModelException{
