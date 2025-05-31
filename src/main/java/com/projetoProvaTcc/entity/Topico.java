@@ -115,7 +115,6 @@ public class Topico {//TODO já conferido
 
 	//conjSubTopicos
 	public List<Topico> getConjSubTopicos() {
-		// Retorno uma cópia do conjunto de subtópicos
 		return this.conjSubTopicos;
 	}
 
@@ -135,6 +134,18 @@ public class Topico {//TODO já conferido
 	}
 
 	//conjTags
+
+	public List<Tag> getConjTags() {
+		return new ArrayList<>(this.conjTags);
+	}
+
+	public void setConjTags(List<Tag> conjTags) throws ModelException {
+		if (conjTags == null) {
+			throw new ModelException("O conjunto de tags não pode ser nulo!");
+		}
+		this.conjTags.clear();
+		this.conjTags.addAll(conjTags);
+	}
 
 	public void addTag(Tag tag) throws ModelException{
 		if (tag == null) {

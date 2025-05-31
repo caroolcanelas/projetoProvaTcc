@@ -1,6 +1,6 @@
 package com.projetoProvaTcc.controller;
 
-import com.projetoProvaTcc.entity.Disciplina;
+import com.projetoProvaTcc.dto.DisciplinaDTO;
 import com.projetoProvaTcc.service.DisciplinaService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +20,9 @@ public class DisciplinaController {
     //Todos os endpoint chamam a camada SERVICE onde fica a logica de interação com o banco de dados
     @Operation(summary = "Cria uma disciplina")
     @PostMapping
-    public ResponseEntity<Disciplina> criarDisciplina(@RequestBody Disciplina disciplina) {
+    public ResponseEntity<DisciplinaDTO> criarDisciplina(@RequestBody DisciplinaDTO disciplinaDTO) {
         try {
-            Disciplina salva = disciplinaService.salvar(disciplina);
+            DisciplinaDTO salva = disciplinaService.salvar(disciplinaDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(salva);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
@@ -31,12 +31,12 @@ public class DisciplinaController {
 
     @Operation(summary = "Lista todas as disciplinas")
     @GetMapping
-    public ResponseEntity<?> listarTodasDisciplinas(){
+    public ResponseEntity<List<DisciplinaDTO>> listarTodasDisciplinas(){
         try {
-            List<Disciplina> disciplinas = disciplinaService.buscarTodasDisciplinas();
+            List<DisciplinaDTO> disciplinas = disciplinaService.buscarTodasDisciplinas();
             return ResponseEntity.status(HttpStatus.OK).body(disciplinas);
         } catch (Exception e){
-            return ResponseEntity.status(500).body("Erro ao buscar disciplinas: " + e.getMessage());
+            return ResponseEntity.status(500).build();
         }
 
     }

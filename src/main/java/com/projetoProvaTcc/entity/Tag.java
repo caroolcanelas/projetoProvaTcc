@@ -126,6 +126,18 @@ public class Tag { //TODO já conferido
 		this.conjTopicosAderentes.remove(topico);
 	}
 
+	public List<Topico> getConjTopicosAderentes() {
+		return new ArrayList<>(this.conjTopicosAderentes);
+	}
+
+	public void setConjTopicosAderentes(List<Topico> conjTopicosAderentes) throws ModelException {
+		if (conjTopicosAderentes == null) {
+			throw new ModelException("O conjunto de tópicos aderentes não pode ser nulo!");
+		}
+		this.conjTopicosAderentes.clear();
+		this.conjTopicosAderentes.addAll(conjTopicosAderentes);
+	}
+
 
 	//validarnumOrdem - não sei se esse método ta certo aqui
 	public static void validarNumOrdem(int numOrdem) throws ModelException {

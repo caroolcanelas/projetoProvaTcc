@@ -3,17 +3,22 @@ package com.projetoProvaTcc.mapper;
 import com.projetoProvaTcc.dto.OpcaoDTO;
 import com.projetoProvaTcc.dto.QuestaoDTO;
 import com.projetoProvaTcc.dto.RecursoDTO;
+import com.projetoProvaTcc.dto.TagDTO;
 import com.projetoProvaTcc.entity.Opcao;
 import com.projetoProvaTcc.entity.Questao;
 import com.projetoProvaTcc.entity.Recurso;
+import com.projetoProvaTcc.entity.Tag;
 import com.projetoProvaTcc.exception.ModelException;
+import lombok.SneakyThrows;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class QuestaoMapper {
 
     public static QuestaoDTO toDTO(Questao questao) {
+
         QuestaoDTO dto = new QuestaoDTO();
         dto.setId(questao.getId());
         dto.setTipo(questao.getTipo());
@@ -46,7 +51,19 @@ public class QuestaoMapper {
                 })
                 .collect(Collectors.toList()));
 
-        //relacionamento com questao
+        //relacionamento tag
+        dto.setConjTags(questao.getConjTags()
+                .stream()
+                .map(tag -> {
+                    TagDTO o = new TagDTO();
+                    o.setId(tag.getId());
+                    o.setTagName(tag.getTagName());
+                    o.setAssunto(tag.getAssunto());
+                    return o;
+                })
+                .collect(Collectors.toList()));
+
+        //relacionamento com questao tentando passar a questão toda mas não me parece que vai dar certo
 //        dto.setConjQuestoesDerivadas(
 //                questao.getConjQuestoesDerivadas()
 //                        .stream()
@@ -65,11 +82,20 @@ public class QuestaoMapper {
 //                        .collect(Collectors.toList())
 //        );
 
+        //tentando relacionar com ID mas também não deu certo por conta de uma coisa esperar int e outra long
+//        dto.setConjQuestoesDerivadas(
+//                questao.getConjQuestoesDerivadas()
+//                        .stream()
+//                        .map(Questao::getId)
+//                        .collect(Collectors.toList())
+//        );
+
+
         return dto;
 
     }
 
-    public static Questao toEntity(QuestaoDTO dto, List<Opcao> opcoes, List<Recurso> recursos) throws ModelException {
+    public static Questao toEntity(QuestaoDTO dto, List<Opcao> opcoes, List<Recurso> recursos, List<Tag> tags) throws ModelException{
         Questao questao = new Questao();
         questao.setId(dto.getId());
         questao.setTipo(dto.getTipo());
@@ -80,7 +106,8 @@ public class QuestaoMapper {
         questao.setInstrucaoInicial(dto.getInstrucaoInicial());
         questao.setConjOpcoes(opcoes);
         questao.setConjRecursos(recursos);
-        //questao.setConjQuestoesDerivadas(questoes);
+        questao.setConjTags(tags);
+//        questao.setConjQuestoesDerivadas(questoesDerivadas);
 
         return questao;
     }

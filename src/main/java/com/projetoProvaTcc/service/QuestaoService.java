@@ -4,12 +4,15 @@ import com.projetoProvaTcc.dto.QuestaoDTO;
 import com.projetoProvaTcc.entity.Opcao;
 import com.projetoProvaTcc.entity.Questao;
 import com.projetoProvaTcc.entity.Recurso;
+import com.projetoProvaTcc.entity.Tag;
 import com.projetoProvaTcc.exception.ModelException;
 import com.projetoProvaTcc.repository.OpcaoRepository;
 import com.projetoProvaTcc.repository.QuestaoRepository;
 import com.projetoProvaTcc.repository.RecursoRepository;
+import com.projetoProvaTcc.repository.TagRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.projetoProvaTcc.mapper.QuestaoMapper;
 
@@ -29,6 +32,10 @@ public class QuestaoService {
 
     @Autowired
     private RecursoRepository recursoRepository;
+
+    @Autowired
+    private TagRepository tagRepository;
+
 
     @Transactional
     public QuestaoDTO salvar(QuestaoDTO dto) throws ModelException {
@@ -72,6 +79,27 @@ public class QuestaoService {
                 )
                 .collect(Collectors.toList());
 
+        List<Tag> tags = dto.getConjTags().stream()
+                .map(tagDTO ->
+                        tagRepository.findById(Long.valueOf(tagDTO.getId()))
+                                .orElseGet(() -> {
+                                    // Criar nova Tag se não existir
+                                    Tag novaTag = new Tag();
+                                    try {
+                                        novaTag.setTagName(tagDTO.getTagName());
+                                    } catch (ModelException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                    try {
+                                        novaTag.setAssunto(tagDTO.getAssunto());
+                                    } catch (ModelException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                    return tagRepository.save(novaTag);
+                                })
+                )
+                .collect(Collectors.toList());
+
         //a questão só busca se já existe no banco pelp id, se for nullo tudo bem, não é obrigatório
 //        List<Questao> questoesDerivadas = dto.getConjQuestoesDerivadas() == null ?
 //               new ArrayList<>() :
@@ -80,7 +108,17 @@ public class QuestaoService {
 //                               .orElseThrow(() -> new RuntimeException("Questão derivada não encontrada: " + questaoDTO.getId())))
 //                       .collect(Collectors.toList());
 
-        Questao questao = QuestaoMapper.toEntity(dto, opcoes, recursos);
+        // Buscar Questoes Derivadas pelo id no dto
+//        List<Long> questaoIds = dto.getConjQuestoesDerivadas()
+//                .stream()
+//                .map(Integer::longValue)
+//                .collect(Collectors.toList());
+//
+//        List<Questao> questoesDerivadas = questaoRepository.findAllById(questaoIds);
+
+
+        // Agora converte para Entidade
+        Questao questao = QuestaoMapper.toEntity(dto, opcoes, recursos, tags);
         Questao salva = questaoRepository.save(questao);
         return QuestaoMapper.toDTO(salva);
     }
