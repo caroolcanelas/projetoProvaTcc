@@ -50,32 +50,25 @@ public class TopicoController {
             return ResponseEntity.status(500).build();    }
     }
 
-//    @Operation(summary = "Adiciona SubTópico em tópico")
-//    @PostMapping("/{idTopico}/subTopico")
-//    public ResponseEntity<?> adicionaSubTopico(@PathVariable int idTopico, @RequestBody TopicoDTO dto) throws ModelException{
-//        Topico subTopico;
-//
-//        if(dto.getId() !=0 ){
-//            //se tem id a gente busca
-//            subTopico = new Topico();
-//            subTopico.setId(dto.getId());
-//        } else {
-//            //se for um novo subtopico ai ee cria
-//            subTopico = TopicoMapper.toEntity(dto);
-//        }
-//
-//        topicoService.adicionarSubTopicoEmTopico(idTopico, subTopico);
-//        return ResponseEntity.ok().build();
-//    }
+    @Operation(summary = "Adiciona SubTópico em tópico")
+    @PostMapping("/{idTopico}/subTopico")
+    public ResponseEntity<?> adicionaSubTopico(@PathVariable int idTopico, @RequestBody TopicoDTO dto) throws ModelException{
+        try {
+            topicoService.adicionarSubTopicoEmTopico(idTopico, dto.getConjSubTopicos());
+            return ResponseEntity.ok().body("Subtópicos adicionados com sucesso!");
+        } catch (ModelException e) {
+            return ResponseEntity.badRequest().body("Erro: " + e.getMessage());
+        }
+    }
 
 
-//    @Operation(summary = "Remove um subtópico de um tópico")
-//    @DeleteMapping("/{idTopico}/subtopico/{idSubtopico}")
-//    public ResponseEntity<?> removerSubtopico(@PathVariable int idTopico, @PathVariable int idSubtopico) throws ModelException {
-//
-//        topicoService.removerSubtopico(idTopico, idSubtopico);
-//        return ResponseEntity.noContent().build();
-//    }
+    @Operation(summary = "Remove um subtópico de um tópico")
+    @DeleteMapping("/{idTopico}/subtopico/{idSubtopico}")
+    public ResponseEntity<?> removerSubtopico(@PathVariable int idTopico, @PathVariable int idSubtopico) throws ModelException {
+
+        topicoService.removerSubtopico(idTopico, idSubtopico);
+        return ResponseEntity.noContent().build();
+    }
 
     @Operation(summary = "Exclui um tópico pelo ID")
     @DeleteMapping("/{id}")

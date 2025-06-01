@@ -96,41 +96,40 @@ public class TopicoService {
         return true;
     }
 
-//    public void adicionarSubTopicoEmTopico(int idTopico, Topico subTopico) throws ModelException {
-//
-//        //encontra o topico pai pelo id
-//        Topico topicoPai = topicoRepository.findById((long) idTopico)
-//                .orElseThrow(() -> new ModelException("Tópico principal não encontrado."));
-//
-//        // Se o subtópico já existe no banco, buscamos ele
-//        if (subTopico.getId() != 0) {
-//            Topico existente = topicoRepository.findById((long) subTopico.getId())
-//                    .orElseThrow(() -> new ModelException("Subtópico com ID " + subTopico.getId() + " não encontrado"));
-//
-//            topicoPai.addSubTopico(existente);
-//        } else {
-//            // Ou criamos um novo
-//            topicoPai.addSubTopico(subTopico);
-//        }
-//
-//        topicoRepository.save(topicoPai);
-//    }
+    @Transactional
+    public void adicionarSubTopicoEmTopico(int idTopico, List<Integer> idsSubTopicos) throws ModelException {
+        Topico topicoPai = topicoRepository.findById((long) idTopico)
+                .orElseThrow(() -> new ModelException("Tópico principal não encontrado."));
+
+        if (idsSubTopicos == null || idsSubTopicos.isEmpty()) {
+            throw new ModelException("Lista de IDs de subtópicos vazia ou nula.");
+        }
+
+        for (Integer idSub : idsSubTopicos) {
+            Topico subTopico = topicoRepository.findById((long) idSub)
+                    .orElseThrow(() -> new ModelException("Subtópico com ID " + idSub + " não encontrado"));
+            topicoPai.addSubTopico(subTopico);
+        }
+
+        topicoRepository.save(topicoPai);
+    }
 
 
-//    public void removerSubtopico(int idTopico, int idSubtopico) throws ModelException {
-//        Topico topicoPai = topicoRepository.findById((long) idTopico)
-//                .orElseThrow(() -> new ModelException("Tópico principal não encontrado."));
-//
-//        Topico subTopico = topicoRepository.findById((long) idSubtopico)
-//                .orElseThrow(() -> new ModelException("Subtópico não encontrado."));
-//
-//        boolean removido = topicoPai.removeSubTopico(subTopico);
-//        if (!removido) {
-//            throw new ModelException("O subtópico informado não está associado a esse tópico.");
-//        }
-//
-//        topicoRepository.save(topicoPai);
-//    }
+
+    public void removerSubtopico(int idTopico, int idSubtopico) throws ModelException {
+        Topico topicoPai = topicoRepository.findById((long) idTopico)
+                .orElseThrow(() -> new ModelException("Tópico principal não encontrado."));
+
+        Topico subTopico = topicoRepository.findById((long) idSubtopico)
+                .orElseThrow(() -> new ModelException("Subtópico não encontrado."));
+
+        boolean removido = topicoPai.removeSubTopico(subTopico);
+        if (!removido) {
+            throw new ModelException("O subtópico informado não está associado a esse tópico.");
+        }
+
+        topicoRepository.save(topicoPai);
+    }
 
     // add e remove de conjTags:
     @Transactional
