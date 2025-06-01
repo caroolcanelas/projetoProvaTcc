@@ -131,4 +131,10 @@ public class QuestaoService {
         }
         return false;
     }
+
+    public QuestaoDTO buscarPorId(int id) {
+        Questao questao = questaoRepository.findById((long) id).orElse(null);
+        if(questao == null) return null;
+        return QuestaoMapper.toDTO(questao);
     }
+}

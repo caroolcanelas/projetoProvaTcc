@@ -1,5 +1,6 @@
 package com.projetoProvaTcc.controller;
 
+import com.projetoProvaTcc.dto.OpcaoDTO;
 import com.projetoProvaTcc.dto.QuestaoDTO;
 import com.projetoProvaTcc.service.QuestaoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,6 +29,11 @@ public class QuestaoController {
         }
     }
 
+    @Operation(summary = "Lista uma questão por id")
+    @GetMapping("/{id}")
+    public QuestaoDTO getPorId(@PathVariable int id){
+        return questaoService.buscarPorId(id);
+    }
 
     @Operation(summary= "Listar todas as questões")
     @GetMapping
@@ -53,5 +59,7 @@ public class QuestaoController {
             return ResponseEntity.status(500).body("Erro ao excluir Questão: " + e.getMessage());
         }
     }
+
+
 
 }

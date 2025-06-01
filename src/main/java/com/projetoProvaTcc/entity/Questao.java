@@ -176,7 +176,7 @@ public class Questao { //TODO já conferido
 	//conjTag - add e remove
 
 	public List<Tag> getConjTags() {
-		return new ArrayList<>(this.conjTags);
+		return this.conjTags;
 	}
 
 	public void setConjTags(List<Tag> conjTags) throws ModelException {
