@@ -2,6 +2,7 @@ package com.projetoProvaTcc.service;
 
 import com.projetoProvaTcc.dto.RecursoDTO;
 import com.projetoProvaTcc.entity.Recurso;
+import com.projetoProvaTcc.entity.Topico;
 import com.projetoProvaTcc.exception.ModelException;
 import com.projetoProvaTcc.repository.RecursoRepository;
 import jakarta.transaction.Transactional;
@@ -32,5 +33,13 @@ public class RecursoService {
         Recurso recurso = recursoRepository.findById(id)
                 .orElseThrow(() -> new Exception("Recurso não encontrado"));
         return recurso.getConteudo();
+    }
+
+    public boolean deletarRecursoPorId(int id) throws ModelException {
+        if (recursoRepository.existsById(id)) {
+            recursoRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }

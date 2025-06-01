@@ -20,6 +20,7 @@ public class RecursoController {
     private RecursoService recursoService;
 
     // Upload
+    @Operation(summary = "Adiciona um recurso")
     @PostMapping("/upload")
     public ResponseEntity<RecursoDTO> upload(@RequestParam("arquivo") MultipartFile file) {
         try {
@@ -31,6 +32,7 @@ public class RecursoController {
     }
 
     // Download
+    @Operation(summary = "Faz o get de um recurso")
     @GetMapping("/download/{id}")
     public ResponseEntity<byte[]> download(@PathVariable int id) {
         try {
@@ -40,6 +42,21 @@ public class RecursoController {
                     .body(conteudo);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    @Operation(summary = "Exclui um recurso pelo ID")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deletarRecurso(@PathVariable int id) {
+        try {
+            boolean remove = recursoService.deletarRecursoPorId(id);
+            if (remove) {
+                return ResponseEntity.noContent().build();
+            } else {
+                return ResponseEntity.status(404).body("Recurso com ID " + id + " não encontrada.");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Erro ao excluir Recurso: " + e.getMessage());
         }
     }
 }
