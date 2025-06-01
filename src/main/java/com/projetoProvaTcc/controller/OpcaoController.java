@@ -74,6 +74,7 @@ public OpcaoDTO getPorId(@PathVariable int id){
         return ResponseEntity.ok().build();
     }
 
+
     @Operation(summary = "Remove recurso na opção")
     @DeleteMapping("/{idOpcao}/recurso/{idRecurso}")
     public ResponseEntity<?> removerRecurso(@PathVariable int idOpcao, @PathVariable int idRecurso) throws ModelException {

@@ -137,4 +137,50 @@ public class QuestaoService {
         if(questao == null) return null;
         return QuestaoMapper.toDTO(questao);
     }
+
+    public void adicionarRecursoNaQuestao (int idQuestao, Recurso recurso) throws ModelException{
+        //encontrar a questao pelo id
+        Questao questao = questaoRepository.findById((long) idQuestao)
+                .orElseThrow(() -> new ModelException("Questao não encontrada"));
+
+        //o recurso já existe no banco?
+        if(recurso.getId() != 0){
+            Recurso recursoExistente = recursoRepository.findById(recurso.getId())
+                    .orElseThrow(() -> new ModelException("Recurdo com ID" + recurso.getId() + "não encontrado"));
+
+            //impede que relacione o mesmo recurso duas vezes
+            if (questao.getConjRecursos().contains(recursoExistente)){
+                throw new ModelException("Recurso já estã associado a esta opção");
+            }
+
+            //se o recurso já existe, adiciona na questao
+            recursoExistente.setQuestao(questao);
+            questao.addRecurso(recursoExistente);
+        } else {
+            //se não existe cria um novo recurso
+            recurso.setQuestao(questao);
+            questao.addRecurso(recurso);
+        }
+
+        //salva no banco
+        questaoRepository.save(questao);
+    }
+
+    public void removerRecursoDaQuestao(int idQuestao, int idRecurso) throws ModelException {
+        Questao questao = questaoRepository.findById((long) idQuestao)
+                .orElseThrow(() -> new ModelException("Questão não encontrada"));
+
+        Recurso recurso = recursoRepository.findById(idRecurso)
+                .orElseThrow(() -> new ModelException("Recurso não encontrado"));
+
+        // aqui a gente nao apaga o recurso do banco, só remove ele da questão mesmo
+        boolean removido = questao.removeRecurso(recurso);
+        if (!removido) {
+            throw new ModelException("Recurso não está vinculado a essa questao.");
+        }
+
+        questaoRepository.save(questao);
+    }
+
+
 }

@@ -2,12 +2,16 @@ package com.projetoProvaTcc.controller;
 
 import com.projetoProvaTcc.dto.OpcaoDTO;
 import com.projetoProvaTcc.dto.QuestaoDTO;
+import com.projetoProvaTcc.entity.Recurso;
+import com.projetoProvaTcc.exception.ModelException;
 import com.projetoProvaTcc.service.QuestaoService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -60,6 +64,37 @@ public class QuestaoController {
         }
     }
 
+    @Operation(summary = "Adiciona recurso na questão")
+    @PostMapping(value = "/{idQuestao}/recurso", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> adicionarRecurso(
+            @PathVariable int idQuestao,
+            @RequestPart("arquivo") MultipartFile arquivo,
+            @RequestPart(value = "id", required = false) Integer id
+    ) throws Exception {
+
+        Recurso recurso = new Recurso();
+
+        if (id != null && id != 0) {
+            recurso.setId(id);
+        }
+
+        if (arquivo != null && !arquivo.isEmpty()) {
+            recurso.setConteudo(arquivo.getBytes());
+        } else {
+            throw new ModelException("Arquivo é obrigatório.");
+        }
+
+        questaoService.adicionarRecursoNaQuestao(idQuestao, recurso);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "Remove recurso da questão")
+    @DeleteMapping("/{idQuestao}/recurso/{idRecurso}")
+    public ResponseEntity<?> removerRecurso(@PathVariable int idQuestao, @PathVariable int idRecurso) throws ModelException {
+        questaoService.removerRecursoDaQuestao(idQuestao, idRecurso);
+        return ResponseEntity.noContent().build();
+    }
 
 
 }
