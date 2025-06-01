@@ -121,7 +121,7 @@ public class Topico {//TODO já conferido
 
 	public void setConjSubTopicos(List<Topico> conjSubTopicos) throws ModelException {
 		Topico.validarConjSubTopicos(conjSubTopicos);
-		this.conjSubTopicos = (List<Topico>) conjSubTopicos;
+		this.conjSubTopicos = conjSubTopicos;
 	}
 
 	//conjSubTopicos - add e remove
@@ -137,7 +137,7 @@ public class Topico {//TODO já conferido
 	//conjTags
 
 	public List<Tag> getConjTags() {
-		return new ArrayList<>(this.conjTags);
+		return this.conjTags;
 	}
 
 	public void setConjTags(List<Tag> conjTags) throws ModelException {
@@ -150,12 +150,15 @@ public class Topico {//TODO já conferido
 
 	//conjTags - add e remove
 
-	public void addTag(Tag tag) throws ModelException{
+	public void addTag(Tag tag) throws ModelException {
 		if (tag == null) {
 			throw new ModelException("A tag não pode ser nula");
 		}
 		if (!this.conjTags.contains(tag)) {
 			this.conjTags.add(tag);
+			if (!tag.getConjTopicosAderentes().contains(this)) {
+				tag.getConjTopicosAderentes().add(this);
+			}
 		}
 	}
 
@@ -164,6 +167,7 @@ public class Topico {//TODO já conferido
 			throw new ModelException("A tag não pode ser nula");
 		}
 		this.conjTags.remove(tag);
+		tag.getConjTopicosAderentes().remove(this);
 	}
 
 	//Validações

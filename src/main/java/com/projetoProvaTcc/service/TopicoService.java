@@ -37,12 +37,9 @@ public class TopicoService {
 
     @Transactional
     public TopicoDTO salvar(TopicoDTO dto) throws ModelException {
-
-        //busca id da disciplina
         Disciplina disciplina = disciplinaRepository.findById(Long.valueOf(dto.getDisciplina()))
                 .orElseThrow(() -> new ModelException("Disciplina não encontrada"));
 
-        //busca id do subtopico
         List<Topico> subTopicos = dto.getConjSubTopicos().stream()
                 .map(id -> {
                     try {
@@ -54,17 +51,19 @@ public class TopicoService {
                 })
                 .collect(Collectors.toList());
 
-        //busca pelo tagName
-        List<Tag> tags = tagRepository.findAllByTagNameIn(dto.getConjTags()); //  método para buscar o nome das tags
+        List<Tag> tags = tagRepository.findAllByTagNameIn(dto.getConjTags());
 
         Topico topico = TopicoMapper.toEntity(dto, disciplina, subTopicos, tags);
 
+        Topico salvo = topicoRepository.save(topico);
+
+        // Agora atualize o lado dono da relação
         for (Tag tag : tags) {
-            tag.addTopicoAderente(topico); // Isso vai garantir que a tag reconhece o topico
+            tag.getConjTopicosAderentes().add(salvo); // LADO DONO
+            tagRepository.save(tag); // salva a tabela intermediária
         }
 
-        Topico salva = repository.save(topico);
-        return TopicoMapper.toDTO(salva);
+        return TopicoMapper.toDTO(salvo);
     }
 
     public List<TopicoDTO> buscarTodosTopicos() {
@@ -73,8 +72,9 @@ public class TopicoService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public  TopicoDTO buscarPorId(int id) {
-        Topico topico = repository.findById((long) id).orElse(null);
+        Topico topico = repository.findByIdComTags((long) id);
         if (topico == null) return null;
         return TopicoMapper.toDTO(topico);
     }
@@ -96,39 +96,79 @@ public class TopicoService {
         return true;
     }
 
-    public void adicionarSubTopicoEmTopico(int idTopico, Topico subTopico) throws ModelException {
+//    public void adicionarSubTopicoEmTopico(int idTopico, Topico subTopico) throws ModelException {
+//
+//        //encontra o topico pai pelo id
+//        Topico topicoPai = topicoRepository.findById((long) idTopico)
+//                .orElseThrow(() -> new ModelException("Tópico principal não encontrado."));
+//
+//        // Se o subtópico já existe no banco, buscamos ele
+//        if (subTopico.getId() != 0) {
+//            Topico existente = topicoRepository.findById((long) subTopico.getId())
+//                    .orElseThrow(() -> new ModelException("Subtópico com ID " + subTopico.getId() + " não encontrado"));
+//
+//            topicoPai.addSubTopico(existente);
+//        } else {
+//            // Ou criamos um novo
+//            topicoPai.addSubTopico(subTopico);
+//        }
+//
+//        topicoRepository.save(topicoPai);
+//    }
 
-        //encontra o topico pai pelo id
-        Topico topicoPai = topicoRepository.findById((long) idTopico)
-                .orElseThrow(() -> new ModelException("Tópico principal não encontrado."));
 
-        // Se o subtópico já existe no banco, buscamos ele
-        if (subTopico.getId() != 0) {
-            Topico existente = topicoRepository.findById((long) subTopico.getId())
-                    .orElseThrow(() -> new ModelException("Subtópico com ID " + subTopico.getId() + " não encontrado"));
+//    public void removerSubtopico(int idTopico, int idSubtopico) throws ModelException {
+//        Topico topicoPai = topicoRepository.findById((long) idTopico)
+//                .orElseThrow(() -> new ModelException("Tópico principal não encontrado."));
+//
+//        Topico subTopico = topicoRepository.findById((long) idSubtopico)
+//                .orElseThrow(() -> new ModelException("Subtópico não encontrado."));
+//
+//        boolean removido = topicoPai.removeSubTopico(subTopico);
+//        if (!removido) {
+//            throw new ModelException("O subtópico informado não está associado a esse tópico.");
+//        }
+//
+//        topicoRepository.save(topicoPai);
+//    }
 
-            topicoPai.addSubTopico(existente);
-        } else {
-            // Ou criamos um novo
-            topicoPai.addSubTopico(subTopico);
+    // add e remove de conjTags:
+    @Transactional
+    public void adicionarTagsAoTopico(int idTopico, List<String> nomesTags) throws ModelException {
+        Topico topico = topicoRepository.findById((long) idTopico)
+                .orElseThrow(() -> new ModelException("Tópico não encontrado com ID: " + idTopico));
+
+        List<Tag> tags = tagRepository.findAllByTagNameIn(nomesTags);
+
+        if (tags.size() != nomesTags.size()) {
+            throw new ModelException("Uma ou mais tags não foram encontradas no banco.");
         }
 
-        topicoRepository.save(topicoPai);
+        for (Tag tag : tags) {
+            if (!tag.getConjTopicosAderentes().contains(topico)) {
+                tag.getConjTopicosAderentes().add(topico); // lado dono
+                tagRepository.save(tag); // importante: salva o dono
+            }
+        }
     }
 
+    public void removerTagDoTopico (int idTopico, List<String> nomeTag) throws ModelException {
+        //procurar o id do topico
+        Topico topico = repository.findById((long)idTopico)
+                .orElseThrow(()-> new ModelException("Topico não encontrado"));
 
-    public void removerSubtopico(int idTopico, int idSubtopico) throws ModelException {
-        Topico topicoPai = topicoRepository.findById((long) idTopico)
-                .orElseThrow(() -> new ModelException("Tópico principal não encontrado."));
+        List<Tag> tags = tagRepository.findAllByTagNameIn(nomeTag);
 
-        Topico subTopico = topicoRepository.findById((long) idSubtopico)
-                .orElseThrow(() -> new ModelException("Subtópico não encontrado."));
-
-        boolean removido = topicoPai.removeSubTopico(subTopico);
-        if (!removido) {
-            throw new ModelException("O subtópico informado não está associado a esse tópico.");
+        if (tags.isEmpty()) {
+            throw new ModelException("Nenhuma tag válida foi encontrada para remoção.");
         }
 
-        topicoRepository.save(topicoPai);
+        for (Tag tag : tags) {
+            topico.removeTag(tag); // usa seu método da entidade
+        }
+
+         topicoRepository.save(topico);
+
     }
+
 }

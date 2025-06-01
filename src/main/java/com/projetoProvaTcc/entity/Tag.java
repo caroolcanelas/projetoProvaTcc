@@ -129,7 +129,7 @@ public class Tag { //TODO já conferido
 	}
 
 	public List<Topico> getConjTopicosAderentes() {
-		return new ArrayList<>(this.conjTopicosAderentes);
+		return this.conjTopicosAderentes;
 	}
 
 	public void setConjTopicosAderentes(List<Topico> conjTopicosAderentes) throws ModelException {

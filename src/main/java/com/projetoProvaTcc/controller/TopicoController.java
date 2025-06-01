@@ -1,8 +1,11 @@
 package com.projetoProvaTcc.controller;
 
+import com.projetoProvaTcc.dto.TagDTO;
 import com.projetoProvaTcc.dto.TopicoDTO;
+import com.projetoProvaTcc.entity.Tag;
 import com.projetoProvaTcc.entity.Topico;
 import com.projetoProvaTcc.exception.ModelException;
+import com.projetoProvaTcc.mapper.TagMapper;
 import com.projetoProvaTcc.mapper.TopicoMapper;
 import com.projetoProvaTcc.service.TopicoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -47,32 +50,32 @@ public class TopicoController {
             return ResponseEntity.status(500).build();    }
     }
 
-    @Operation(summary = "Adiciona SubTópico em tópico")
-    @PostMapping("/{idTopico}/subTopico")
-    public ResponseEntity<?> adicionaSubTopico(@PathVariable int idTopico, @RequestBody TopicoDTO dto) throws ModelException{
-        Topico subTopico;
+//    @Operation(summary = "Adiciona SubTópico em tópico")
+//    @PostMapping("/{idTopico}/subTopico")
+//    public ResponseEntity<?> adicionaSubTopico(@PathVariable int idTopico, @RequestBody TopicoDTO dto) throws ModelException{
+//        Topico subTopico;
+//
+//        if(dto.getId() !=0 ){
+//            //se tem id a gente busca
+//            subTopico = new Topico();
+//            subTopico.setId(dto.getId());
+//        } else {
+//            //se for um novo subtopico ai ee cria
+//            subTopico = TopicoMapper.toEntity(dto);
+//        }
+//
+//        topicoService.adicionarSubTopicoEmTopico(idTopico, subTopico);
+//        return ResponseEntity.ok().build();
+//    }
 
-        if(dto.getId() !=0 ){
-            //se tem id a gente busca
-            subTopico = new Topico();
-            subTopico.setId(dto.getId());
-        } else {
-            //se for um novo subtopico ai ee cria
-            subTopico = TopicoMapper.toEntity(dto);
-        }
 
-        topicoService.adicionarSubTopicoEmTopico(idTopico, subTopico);
-        return ResponseEntity.ok().build();
-    }
-
-
-    @Operation(summary = "Remove um subtópico de um tópico")
-    @DeleteMapping("/{idTopico}/subtopico/{idSubtopico}")
-    public ResponseEntity<?> removerSubtopico(@PathVariable int idTopico, @PathVariable int idSubtopico) throws ModelException {
-
-        topicoService.removerSubtopico(idTopico, idSubtopico);
-        return ResponseEntity.noContent().build();
-    }
+//    @Operation(summary = "Remove um subtópico de um tópico")
+//    @DeleteMapping("/{idTopico}/subtopico/{idSubtopico}")
+//    public ResponseEntity<?> removerSubtopico(@PathVariable int idTopico, @PathVariable int idSubtopico) throws ModelException {
+//
+//        topicoService.removerSubtopico(idTopico, idSubtopico);
+//        return ResponseEntity.noContent().build();
+//    }
 
     @Operation(summary = "Exclui um tópico pelo ID")
     @DeleteMapping("/{id}")
@@ -86,6 +89,32 @@ public class TopicoController {
             }
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Erro ao excluir Tópico: " + e.getMessage());
+        }
+    }
+
+    //add e remove de tag
+    @Operation(summary = "Adiciona tag no topico")
+    @PostMapping("/{idTopico}/addTags")
+    public ResponseEntity<?> adicionarTags(@PathVariable int idTopico, @RequestBody TopicoDTO dto) {
+        try {
+            System.out.println(">>> CHAMOU O ENDPOINT adicionarTags <<<");
+            topicoService.adicionarTagsAoTopico(idTopico, dto.getConjTags());
+            return ResponseEntity.ok().body("Tags adicionadas com sucesso!");
+        } catch (Exception e) {
+            e.printStackTrace(); // loga no console
+            return ResponseEntity.badRequest().body("Erro: " + e.getMessage());
+        }
+
+    }
+
+    @Operation(summary = "Remove tags do tópico")
+    @DeleteMapping("/{idTopico}/removeTags")
+    public ResponseEntity<?> removerTags(@PathVariable int idTopico, @RequestBody TopicoDTO dto) {
+        try {
+            topicoService.removerTagDoTopico(idTopico, dto.getConjTags());
+            return ResponseEntity.ok().body("Tags removidas com sucesso!");
+        } catch (ModelException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
