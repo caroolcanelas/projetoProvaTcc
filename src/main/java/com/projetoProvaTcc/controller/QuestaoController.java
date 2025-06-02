@@ -136,5 +136,21 @@ public class QuestaoController {
         return ResponseEntity.noContent().build();
     }
 
+    //update
+    @Operation(summary = "Atualiza parcialmente uma questão")
+    @PatchMapping("/{idQuestao}")
+    public ResponseEntity<?> atualizarParcialmenteQuestao(
+            @PathVariable int idQuestao,
+            @RequestBody QuestaoDTO dto) {
+        try {
+            questaoService.atualizarParcialQuestao(idQuestao, dto);
+            return ResponseEntity.ok("Questão atualizada parcialmente!");
+        } catch (ModelException e) {
+            return ResponseEntity.badRequest().body("Erro: " + e.getMessage());
+        }
+    }
+
+
+
 
 }

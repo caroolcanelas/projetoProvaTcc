@@ -20,7 +20,8 @@ public class QuestaoDTO {
     private String comando;
     private NivelQuestao nivel;
     private TipoQuestao tipo;
-    private boolean validada;
+    private Boolean validada;
+
 
     //relaciona pela opcao
     private List<OpcaoDTO> conjOpcoes;
@@ -32,5 +33,6 @@ public class QuestaoDTO {
 
     //relaciona pela tag
     private List<TagDTO> conjTags;
+
 
 }

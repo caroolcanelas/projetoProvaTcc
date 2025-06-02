@@ -67,7 +67,7 @@ public class QuestaoMapper {
         questao.setSuporte(dto.getSuporte());
         questao.setComando(dto.getComando());
         questao.setNivel(dto.getNivel());
-        questao.setValidada(dto.isValidada());
+        questao.setValidada(dto.getValidada());
         questao.setInstrucaoInicial(dto.getInstrucaoInicial());
         questao.setConjOpcoes(opcoes);
         questao.setConjRecursos(recursos);

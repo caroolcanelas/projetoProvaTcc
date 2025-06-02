@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class PrjProvaApplication {
 
 	public static void main(String[] args) {
-		System.out.println(">>> INICIOU <<<");
+
 		SpringApplication.run(PrjProvaApplication.class, args);
 	}
 }

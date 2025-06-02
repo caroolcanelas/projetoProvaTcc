@@ -280,4 +280,32 @@ public class QuestaoService {
         questaoRepository.save(questaoPai);
 
     }
+
+    //update
+    public void atualizarParcialQuestao(int idQuestao, QuestaoDTO dto) throws ModelException {
+        Questao questao = questaoRepository.findById((long) idQuestao)
+                .orElseThrow(() -> new ModelException("Questão não encontrada com ID: " + idQuestao));
+
+        if (dto.getInstrucaoInicial() != null)
+            questao.setInstrucaoInicial(dto.getInstrucaoInicial());
+
+        if (dto.getSuporte() != null)
+            questao.setSuporte(dto.getSuporte());
+
+        if (dto.getComando() != null)
+            questao.setComando(dto.getComando());
+
+        if (dto.getNivel() != null)
+            questao.setNivel(dto.getNivel());
+
+        if (dto.getTipo() != null)
+            questao.setTipo(dto.getTipo());
+
+        if (dto.getValidada() != null)
+            questao.setValidada(dto.getValidada());
+
+        questaoRepository.save(questao);
+    }
+
+
 }
