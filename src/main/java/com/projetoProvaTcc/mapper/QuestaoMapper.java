@@ -6,9 +6,7 @@ import com.projetoProvaTcc.dto.RecursoDTO;
 import com.projetoProvaTcc.dto.TagDTO;
 import com.projetoProvaTcc.entity.*;
 import com.projetoProvaTcc.exception.ModelException;
-import lombok.SneakyThrows;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 

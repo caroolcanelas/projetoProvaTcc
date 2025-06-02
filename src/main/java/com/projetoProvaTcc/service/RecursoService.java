@@ -1,6 +1,8 @@
 package com.projetoProvaTcc.service;
 
+import com.projetoProvaTcc.dto.QuestaoDTO;
 import com.projetoProvaTcc.dto.RecursoDTO;
+import com.projetoProvaTcc.entity.Questao;
 import com.projetoProvaTcc.entity.Recurso;
 import com.projetoProvaTcc.entity.Topico;
 import com.projetoProvaTcc.exception.ModelException;
@@ -42,4 +44,22 @@ public class RecursoService {
         }
         return false;
     }
+
+    //update
+    public void atualizarParcialRecurso(MultipartFile arquivo, int idRecurso) throws ModelException {
+        Recurso recurso = recursoRepository.findById(idRecurso)
+                .orElseThrow(() -> new ModelException("Recurso não encontrada com ID: " + idRecurso));
+
+        try {
+            if (arquivo != null && !arquivo.isEmpty()) {
+                recurso.setConteudo(arquivo.getBytes());
+            }
+
+            recursoRepository.save(recurso);
+
+        } catch (IOException e) {
+            throw new ModelException("Erro ao processar o arquivo: " + e.getMessage());
+        }
+    }
+
 }

@@ -90,5 +90,6 @@ public class DisciplinaController {
         disciplinaService.removerTopicoDaDisciplina(idDisciplina, idTopico);
         return ResponseEntity.noContent().build();
     }
+
 }
 

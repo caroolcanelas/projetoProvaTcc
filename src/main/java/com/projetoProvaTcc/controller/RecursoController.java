@@ -1,10 +1,13 @@
 package com.projetoProvaTcc.controller;
 
+import com.projetoProvaTcc.dto.QuestaoDTO;
 import com.projetoProvaTcc.dto.RecursoDTO;
+import com.projetoProvaTcc.exception.ModelException;
 import com.projetoProvaTcc.service.RecursoService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -59,4 +62,21 @@ public class RecursoController {
             return ResponseEntity.status(500).body("Erro ao excluir Recurso: " + e.getMessage());
         }
     }
+
+    //update
+
+
+    @Operation(summary = "Atualiza parcialmente um recurso")
+    @PatchMapping(value = "/{idRecurso}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> atualizarParcialmenteRecurso
+                (@PathVariable int idRecurso,
+                 @RequestParam("arquivo") MultipartFile arquivo) {
+        try {
+            recursoService.atualizarParcialRecurso(arquivo, idRecurso);
+            return ResponseEntity.ok("Questão atualizada parcialmente!");
+        } catch (ModelException e) {
+            return ResponseEntity.badRequest().body("Erro: " + e.getMessage());
+        }
+    }
+
 }
