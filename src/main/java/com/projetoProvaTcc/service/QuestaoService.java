@@ -138,31 +138,14 @@ public class QuestaoService {
         return QuestaoMapper.toDTO(questao);
     }
 
-    public void adicionarRecursoNaQuestao (int idQuestao, Recurso recurso) throws ModelException{
-        //encontrar a questao pelo id
-        Questao questao = questaoRepository.findById((long) idQuestao)
-                .orElseThrow(() -> new ModelException("Questao não encontrada"));
+    public void adicionarRecurso(Long idQuestao, Long idRecurso) throws Exception {
+        Questao questao = questaoRepository.findById(idQuestao)
+                .orElseThrow(() -> new Exception("Questão não encontrada"));
 
-        //o recurso já existe no banco?
-        if(recurso.getId() != 0){
-            Recurso recursoExistente = recursoRepository.findById(recurso.getId())
-                    .orElseThrow(() -> new ModelException("Recurdo com ID" + recurso.getId() + "não encontrado"));
+        Recurso recurso = recursoRepository.findById(Math.toIntExact(idRecurso))
+                .orElseThrow(() -> new Exception("Recurso não encontrado"));
 
-            //impede que relacione o mesmo recurso duas vezes
-            if (questao.getConjRecursos().contains(recursoExistente)){
-                throw new ModelException("Recurso já estã associado a esta opção");
-            }
-
-            //se o recurso já existe, adiciona na questao
-            recursoExistente.setQuestao(questao);
-            questao.addRecurso(recursoExistente);
-        } else {
-            //se não existe cria um novo recurso
-            recurso.setQuestao(questao);
-            questao.addRecurso(recurso);
-        }
-
-        //salva no banco
+        questao.addRecurso(recurso);
         questaoRepository.save(questao);
     }
 

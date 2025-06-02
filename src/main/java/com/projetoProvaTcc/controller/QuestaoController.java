@@ -64,28 +64,13 @@ public class QuestaoController {
         }
     }
 
-    @Operation(summary = "Adiciona recurso na questão")
-    @PostMapping(value = "/{idQuestao}/recurso", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> adicionarRecurso(
-            @PathVariable int idQuestao,
-            @RequestPart("arquivo") MultipartFile arquivo,
-            @RequestPart(value = "id", required = false) Integer id
+    @Operation(summary = "Associa um recurso já existente a uma questão")
+    @PostMapping("/{idQuestao}/recurso")
+    public ResponseEntity<?> adicionarRecursoExistente(
+            @PathVariable Long idQuestao,
+            @RequestBody Long idRecurso
     ) throws Exception {
-
-        Recurso recurso = new Recurso();
-
-        if (id != null && id != 0) {
-            recurso.setId(id);
-        }
-
-        if (arquivo != null && !arquivo.isEmpty()) {
-            recurso.setConteudo(arquivo.getBytes());
-        } else {
-            throw new ModelException("Arquivo é obrigatório.");
-        }
-
-        questaoService.adicionarRecursoNaQuestao(idQuestao, recurso);
-
+        questaoService.adicionarRecurso(idQuestao, idRecurso);
         return ResponseEntity.ok().build();
     }
 

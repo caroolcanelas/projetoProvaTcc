@@ -2,6 +2,7 @@ package com.projetoProvaTcc.service;
 
 import com.projetoProvaTcc.dto.OpcaoDTO;
 import com.projetoProvaTcc.entity.Opcao;
+import com.projetoProvaTcc.entity.Questao;
 import com.projetoProvaTcc.entity.Recurso;
 import com.projetoProvaTcc.exception.ModelException;
 import com.projetoProvaTcc.mapper.OpcaoMapper;
@@ -49,31 +50,14 @@ public class OpcaoService {
         return OpcaoMapper.toDTO(salva);
     }
 
-    public void adicionarRecursoNaOpcao (int idOpcao, Recurso recurso) throws ModelException{
-        //encontrar a opcao pelo id
-        Opcao opcao = repository.findById((long) idOpcao)
-                .orElseThrow(() -> new ModelException("Opcão não encontrada"));
+    public void adicionarRecursoNaOpcao(Long idOpcao, Long idRecurso) throws Exception {
+        Opcao opcao = repository.findById(idOpcao)
+                .orElseThrow(() -> new Exception("Questão não encontrada"));
 
-        //o recurso já existe no banco?
-        if(recurso.getId() != 0){
-            Recurso recursoExistente = recursoRepository.findById(recurso.getId())
-                    .orElseThrow(() -> new ModelException("Recurdo com ID" + recurso.getId() + "não encontrado"));
+        Recurso recurso = recursoRepository.findById(Math.toIntExact(idRecurso))
+                .orElseThrow(() -> new Exception("Recurso não encontrado"));
 
-            //impede que relacione o mesmo recurso duas vezes
-            if (opcao.getConjRecursos().contains(recursoExistente)){
-                throw new ModelException("Recurso já estã associado a esta opção");
-            }
-
-            //se o recurso já existe, adiciona na opção
-            recursoExistente.setOpcao(opcao);
-            opcao.addRecurso(recursoExistente);
-        } else {
-            //se não existe cria um novo recurso
-            recurso.setOpcao(opcao);
-            opcao.addRecurso(recurso);
-        }
-
-        //salva no banco
+        opcao.addRecurso(recurso);
         repository.save(opcao);
     }
 

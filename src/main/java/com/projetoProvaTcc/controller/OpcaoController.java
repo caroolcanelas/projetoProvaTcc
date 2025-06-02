@@ -49,28 +49,13 @@ public OpcaoDTO getPorId(@PathVariable int id){
     return opcaoService.buscarPorId(id);
 }
 
-    @Operation(summary = "Adiciona recurso na opção")
-    @PostMapping(value = "/{idOpcao}/recurso", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> adicionarRecurso(
-            @PathVariable int idOpcao,
-            @RequestPart("arquivo") MultipartFile arquivo,
-            @RequestPart(value = "id", required = false) Integer id
+    @Operation(summary = "Associa um recurso já existente a uma opção")
+    @PostMapping("/{idOpcao}/recurso")
+    public ResponseEntity<?> adicionarRecursoExistente(
+            @PathVariable Long idOpcao,
+            @RequestBody Long idRecurso
     ) throws Exception {
-
-        Recurso recurso = new Recurso();
-
-        if (id != null && id != 0) {
-            recurso.setId(id);
-        }
-
-        if (arquivo != null && !arquivo.isEmpty()) {
-            recurso.setConteudo(arquivo.getBytes());
-        } else {
-            throw new ModelException("Arquivo é obrigatório.");
-        }
-
-        opcaoService.adicionarRecursoNaOpcao(idOpcao, recurso);
-
+        opcaoService.adicionarRecursoNaOpcao(idOpcao, idRecurso);
         return ResponseEntity.ok().build();
     }
 
