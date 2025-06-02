@@ -248,4 +248,36 @@ public class QuestaoService {
 
 
     }
+
+    public void adicionarQuestaoDerivadaEmQuestao(int idQuestao, List<Integer> idsQuestoesDerivadas) throws ModelException {
+        Questao questaoPai = questaoRepository.findById((long) idQuestao)
+                .orElseThrow(()-> new ModelException("Questão principal não encontrada"));
+
+        if(idsQuestoesDerivadas == null || idsQuestoesDerivadas.isEmpty() ){
+            throw new ModelException("Lista de IDs de questão derivada vazia ou nula");
+        }
+
+        for(Integer idQDerivada : idsQuestoesDerivadas){
+            Questao questaoDerivada = questaoRepository.findById((long) idQDerivada)
+                    .orElseThrow(()-> new ModelException("Questão derivada com ID" + idQDerivada + "não encontrado"));
+            questaoPai.addQuestaoDerivada(questaoDerivada);
+        }
+        questaoRepository.save(questaoPai);
+    }
+
+    public void removerQuestaoDerivadaDeQuestao(int idQuestao, int idQuestaoDerivada) throws ModelException {
+        Questao questaoPai = questaoRepository.findById((long) idQuestao)
+                .orElseThrow(()-> new ModelException("Questão não encontrada."));
+
+        Questao questaoDerivada = questaoRepository.findById((long) idQuestaoDerivada)
+                .orElseThrow(()-> new ModelException("Questão Derivada não encontrada."));
+
+        boolean removido = questaoPai.removeQuestaoDerivada(questaoDerivada);
+        if(!removido){
+            throw new ModelException("A questão derivada informada não esta associada a essa questão");
+        }
+
+        questaoRepository.save(questaoPai);
+
+    }
 }

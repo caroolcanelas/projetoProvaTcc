@@ -204,16 +204,16 @@ public class Questao { //TODO já conferido
 	}
 
 	//questoesDerivadas -- add e remove
-	public boolean addQuestaoDerivada(Questao questao) throws ModelException{
-		Questao.validarQuestao(questao);
-		if (this.conjQuestoesDerivadas.contains(questao)) { // Evita duplicatas
+	public boolean addQuestaoDerivada(Questao questaoDerivada) throws ModelException{
+		Questao.validarQuestao(questaoDerivada);
+		if (this.conjQuestoesDerivadas.contains(questaoDerivada)) { // Evita duplicatas
 			return false;
 		}
-		return this.conjQuestoesDerivadas.add(questao);
+		return this.conjQuestoesDerivadas.add(questaoDerivada);
 	}
 
-	public boolean removeQuestaoDerivada(Questao questao) throws ModelException{
-		return this.conjQuestoesDerivadas.remove(questao);
+	public boolean removeQuestaoDerivada(Questao questaoDerivada) throws ModelException{
+		return this.conjQuestoesDerivadas.remove(questaoDerivada);
 	}
 
 	// questoesDerivadas

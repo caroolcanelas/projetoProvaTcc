@@ -1,6 +1,7 @@
 package com.projetoProvaTcc.controller;
 
 import com.projetoProvaTcc.dto.QuestaoDTO;
+import com.projetoProvaTcc.dto.TopicoDTO;
 import com.projetoProvaTcc.exception.ModelException;
 import com.projetoProvaTcc.service.QuestaoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -116,6 +117,23 @@ public class QuestaoController {
         } catch (ModelException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    //add questao derivada
+    @Operation(summary = "Adiciona Questão Derivada em Questão")
+    @PostMapping("/{idQuestao}/questaoDerivada")
+    public ResponseEntity<?> adicionaQuestaoDerivada(@PathVariable int idQuestao, @RequestBody QuestaoDTO dto) throws ModelException{
+        questaoService.adicionarQuestaoDerivadaEmQuestao(idQuestao, dto.getConjQuestoesDerivadas());
+        return ResponseEntity.ok().body("Questão Derivada adicionados com sucesso!");
+    }
+
+    //deletar questao derivada
+    @Operation(summary = "Remove uma questão derivada de uma questão")
+    @DeleteMapping("/{idQuestao}/questaoDerivada/{idQuestaoDerivada}")
+    public ResponseEntity<?> removerQuestaoDerivada(@PathVariable int idQuestao, @PathVariable int idQuestaoDerivada) throws ModelException {
+
+        questaoService.removerQuestaoDerivadaDeQuestao(idQuestao, idQuestaoDerivada);
+        return ResponseEntity.noContent().build();
     }
 
 
