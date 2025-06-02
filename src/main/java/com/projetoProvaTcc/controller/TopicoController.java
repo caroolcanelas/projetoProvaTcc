@@ -87,7 +87,7 @@ public class TopicoController {
 
     //add e remove de tag
     @Operation(summary = "Adiciona tag no topico")
-    @PostMapping("/{idTopico}/addTags")
+    @PostMapping("/{idTopico}/addTag")
     public ResponseEntity<?> adicionarTags(@PathVariable int idTopico, @RequestBody TopicoDTO dto) {
         try {
             System.out.println(">>> CHAMOU O ENDPOINT adicionarTags <<<");

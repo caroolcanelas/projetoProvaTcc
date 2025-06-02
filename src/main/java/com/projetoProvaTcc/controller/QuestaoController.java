@@ -1,17 +1,14 @@
 package com.projetoProvaTcc.controller;
 
-import com.projetoProvaTcc.dto.OpcaoDTO;
 import com.projetoProvaTcc.dto.QuestaoDTO;
-import com.projetoProvaTcc.entity.Recurso;
 import com.projetoProvaTcc.exception.ModelException;
 import com.projetoProvaTcc.service.QuestaoService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -96,6 +93,29 @@ public class QuestaoController {
     public ResponseEntity<?> removerOpcao(@PathVariable int idQuestao, @PathVariable int idOpcao) throws ModelException {
         questaoService.removerOpcaoDaQuestao(idQuestao, idOpcao);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Adiciona tag na questão")
+    @PostMapping("/{idQuestao}/addTag")
+    public ResponseEntity<?> adicionarTags(@PathVariable int idQuestao, @RequestBody List<String> nomesTags) {
+        try {
+            questaoService.adicionarTagsNaQuestao(idQuestao, nomesTags);
+            return ResponseEntity.ok().body("Tags adicionadas com sucesso!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("Erro: " + e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Remove tags da questão")
+    @DeleteMapping("/{idQuestao}/removeTags")
+    public ResponseEntity<?> removerTags(@PathVariable int idQuestao, @RequestBody List<String> nomesTags) {
+        try {
+            questaoService.removerTagDaQuestao(idQuestao, nomesTags);
+            return ResponseEntity.ok().body("Tags removidas com sucesso!");
+        } catch (ModelException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
 

@@ -1,6 +1,7 @@
 package com.projetoProvaTcc.service;
 
 import com.projetoProvaTcc.dto.QuestaoDTO;
+import com.projetoProvaTcc.dto.TagDTO;
 import com.projetoProvaTcc.entity.*;
 import com.projetoProvaTcc.exception.ModelException;
 import com.projetoProvaTcc.repository.OpcaoRepository;
@@ -40,33 +41,33 @@ public class QuestaoService {
 
         //se a opção nao existir ele cria
         List<Opcao> opcoes = dto.getConjOpcoes().stream()
-            .map(opcaoDTO ->
-                opcaoRepository.findById(Long.valueOf(opcaoDTO.getId()))
-                        .orElseGet(() -> {
-                            // Criar nova Opcao se não existir
-                            Opcao novaOpcao = new Opcao();
-                            try {
-                                novaOpcao.setConteudo(opcaoDTO.getConteudo());
-                            } catch (ModelException e) {
-                                throw new RuntimeException(e);
-                            }
-                            try {
-                                novaOpcao.setCorreta(opcaoDTO.isCorreta());
-                            } catch (ModelException e) {
-                                throw new RuntimeException(e);
-                            }
-                            return opcaoRepository.save(novaOpcao);
-                        })
-        )
+                .map(opcaoDTO ->
+                        opcaoRepository.findById(Long.valueOf(opcaoDTO.getId()))
+                                .orElseGet(() -> {
+                                    // Criar nova Opcao se não existir
+                                    Opcao novaOpcao = new Opcao();
+                                    try {
+                                        novaOpcao.setConteudo(opcaoDTO.getConteudo());
+                                    } catch (ModelException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                    try {
+                                        novaOpcao.setCorreta(opcaoDTO.isCorreta());
+                                    } catch (ModelException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                    return opcaoRepository.save(novaOpcao);
+                                })
+                )
                 .collect(Collectors.toList());
 
         //se o recurso não existir ele (confesso que não sei muito como fazer esse post pra testar
         List<Recurso> recursos = dto.getConjRecursos().stream()
                 .map(recursoDTO ->
                         recursoRepository.findById(recursoDTO.getId())
-                                .orElseGet(()->{
+                                .orElseGet(() -> {
                                     Recurso novoRecurso = new Recurso();
-                                    try{
+                                    try {
                                         novoRecurso.setConteudo(recursoDTO.getConteudo());
                                     } catch (ModelException e) {
                                         throw new RuntimeException(e);
@@ -137,7 +138,7 @@ public class QuestaoService {
     //buscar opção por id
     public QuestaoDTO buscarPorId(int id) {
         Questao questao = questaoRepository.findById((long) id).orElse(null);
-        if(questao == null) return null;
+        if (questao == null) return null;
         return QuestaoMapper.toDTO(questao);
     }
 
@@ -173,14 +174,14 @@ public class QuestaoService {
     }
 
     //adicionar opção na questão (apenas opção existente)
-    public void adicionarOpcaoNaQuestao (int idQuestao, int idOpcao ) throws Exception{
+    public void adicionarOpcaoNaQuestao(int idQuestao, int idOpcao) throws Exception {
         System.out.println("Buscando questão com ID: " + idQuestao);
 
-        Questao questao = questaoRepository.findById((long)idQuestao)
-                .orElseThrow(()-> new ModelException("Questão não encontrada"));
+        Questao questao = questaoRepository.findById((long) idQuestao)
+                .orElseThrow(() -> new ModelException("Questão não encontrada"));
 
-        Opcao opcao = opcaoRepository.findById((long)idOpcao)
-                .orElseThrow(()-> new ModelException("Opção não encontrada"));
+        Opcao opcao = opcaoRepository.findById((long) idOpcao)
+                .orElseThrow(() -> new ModelException("Opção não encontrada"));
 
         //checa se tem duplicata, se não tem salva
         if (!questao.getConjOpcoes().contains(opcao)) {
@@ -195,7 +196,7 @@ public class QuestaoService {
         Questao questao = questaoRepository.findById((long) idQuestao)
                 .orElseThrow(() -> new ModelException("Questão não encontrada"));
 
-        Opcao opcao = opcaoRepository.findById((long)idOpcao)
+        Opcao opcao = opcaoRepository.findById((long) idOpcao)
                 .orElseThrow(() -> new ModelException("Opção não encontrado"));
 
         // aqui a gente nao apaga a opção do banco, só remove ele da questão mesmo
@@ -207,5 +208,44 @@ public class QuestaoService {
         questaoRepository.save(questao);
     }
 
+    //adicionar tag da questãp
+    public void adicionarTagsNaQuestao(int idQuestao, List<String> nomesTags) throws ModelException {
+        Questao questao = questaoRepository.findById((long) idQuestao)
+                .orElseThrow(() -> new ModelException("Questão não encontrada com ID: " + idQuestao));
 
+        List<Tag> tags = tagRepository.findAllByTagNameIn(nomesTags);
+
+        if (tags.size() != nomesTags.size()) {
+            throw new ModelException("Uma ou mais tags não foram encontradas no banco.");
+        }
+
+        for (Tag tag : tags) {
+            if (!questao.getConjTags().contains(tag)) {
+                questao.addTag(tag);
+            }
+        }
+
+        questaoRepository.save(questao);
+    }
+
+    //remover tag da questão
+    public void removerTagDaQuestao(int idQuestao, List<String> nomesTags) throws ModelException {
+        //procurar o id da questão
+        Questao questao = questaoRepository.findById((long) idQuestao)
+                .orElseThrow(() -> new ModelException("Questão não encontrado"));
+
+        List<Tag> tags = tagRepository.findAllByTagNameIn(nomesTags);
+
+        if (tags.isEmpty()) {
+            throw new ModelException("Nenhuma tag válida foi encontrada para remoção.");
+        }
+
+        for (Tag tag : tags) {
+            questao.removeTag(tag); // usa seu método da entidade
+        }
+
+        questaoRepository.save(questao);
+
+
+    }
 }
