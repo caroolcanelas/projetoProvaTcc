@@ -70,7 +70,7 @@ public class QuestaoController {
             @PathVariable Long idQuestao,
             @RequestBody Long idRecurso
     ) throws Exception {
-        questaoService.adicionarRecurso(idQuestao, idRecurso);
+        questaoService.adicionarRecursoNaQuestao(idQuestao, idRecurso);
         return ResponseEntity.ok().build();
     }
 
@@ -78,6 +78,23 @@ public class QuestaoController {
     @DeleteMapping("/{idQuestao}/recurso/{idRecurso}")
     public ResponseEntity<?> removerRecurso(@PathVariable int idQuestao, @PathVariable int idRecurso) throws ModelException {
         questaoService.removerRecursoDaQuestao(idQuestao, idRecurso);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Associa uma opção já existente a uma questão")
+    @PostMapping("/{idQuestao}/opcao/")
+    public ResponseEntity<?> adicionarOpcaoNaQuestao(
+            @PathVariable int idQuestao,
+            @RequestBody int idOpcao
+    ) throws Exception {
+        questaoService.adicionarOpcaoNaQuestao(idQuestao, idOpcao);
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "Remove opção da questão")
+    @DeleteMapping("/{idQuestao}/opcao/{idOpcao}")
+    public ResponseEntity<?> removerOpcao(@PathVariable int idQuestao, @PathVariable int idOpcao) throws ModelException {
+        questaoService.removerOpcaoDaQuestao(idQuestao, idOpcao);
         return ResponseEntity.noContent().build();
     }
 

@@ -35,6 +35,7 @@ public class QuestaoService {
 
 
     @Transactional
+    //salvar nova opção
     public QuestaoDTO salvar(QuestaoDTO dto) throws ModelException {
 
         //se a opção nao existir ele cria
@@ -124,6 +125,7 @@ public class QuestaoService {
                 .collect(Collectors.toList());
     }
 
+    //deletar opção por id
     public boolean deletarQuestaoPorId(long id) {
         if (questaoRepository.existsById(id)) {
             questaoRepository.deleteById(id);
@@ -132,23 +134,28 @@ public class QuestaoService {
         return false;
     }
 
+    //buscar opção por id
     public QuestaoDTO buscarPorId(int id) {
         Questao questao = questaoRepository.findById((long) id).orElse(null);
         if(questao == null) return null;
         return QuestaoMapper.toDTO(questao);
     }
 
-    public void adicionarRecurso(Long idQuestao, Long idRecurso) throws Exception {
+    //adicionar recurso na questão
+    public void adicionarRecursoNaQuestao(Long idQuestao, Long idRecurso) throws Exception {
         Questao questao = questaoRepository.findById(idQuestao)
                 .orElseThrow(() -> new Exception("Questão não encontrada"));
 
         Recurso recurso = recursoRepository.findById(Math.toIntExact(idRecurso))
                 .orElseThrow(() -> new Exception("Recurso não encontrado"));
 
-        questao.addRecurso(recurso);
-        questaoRepository.save(questao);
+        if (!questao.getConjRecursos().contains(recurso)) {
+            questao.addRecurso(recurso);
+            questaoRepository.save(questao);
+        }
     }
 
+    //remover recurso da questão
     public void removerRecursoDaQuestao(int idQuestao, int idRecurso) throws ModelException {
         Questao questao = questaoRepository.findById((long) idQuestao)
                 .orElseThrow(() -> new ModelException("Questão não encontrada"));
@@ -160,6 +167,41 @@ public class QuestaoService {
         boolean removido = questao.removeRecurso(recurso);
         if (!removido) {
             throw new ModelException("Recurso não está vinculado a essa questao.");
+        }
+
+        questaoRepository.save(questao);
+    }
+
+    //adicionar opção na questão (apenas opção existente)
+    public void adicionarOpcaoNaQuestao (int idQuestao, int idOpcao ) throws Exception{
+        System.out.println("Buscando questão com ID: " + idQuestao);
+
+        Questao questao = questaoRepository.findById((long)idQuestao)
+                .orElseThrow(()-> new ModelException("Questão não encontrada"));
+
+        Opcao opcao = opcaoRepository.findById((long)idOpcao)
+                .orElseThrow(()-> new ModelException("Opção não encontrada"));
+
+        //checa se tem duplicata, se não tem salva
+        if (!questao.getConjOpcoes().contains(opcao)) {
+            questao.addOpcao(opcao);
+            questaoRepository.save(questao);
+        }
+
+    }
+
+    //remover opcao da questão
+    public void removerOpcaoDaQuestao(int idQuestao, int idOpcao) throws ModelException {
+        Questao questao = questaoRepository.findById((long) idQuestao)
+                .orElseThrow(() -> new ModelException("Questão não encontrada"));
+
+        Opcao opcao = opcaoRepository.findById((long)idOpcao)
+                .orElseThrow(() -> new ModelException("Opção não encontrado"));
+
+        // aqui a gente nao apaga a opção do banco, só remove ele da questão mesmo
+        boolean removido = questao.removeOpcao(opcao);
+        if (!removido) {
+            throw new ModelException("Opção não está vinculado a essa questao.");
         }
 
         questaoRepository.save(questao);
