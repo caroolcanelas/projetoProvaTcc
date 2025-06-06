@@ -51,6 +51,18 @@ public class DisciplinaController {
         return disciplinaService.buscarPorId(id);
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<DisciplinaDTO> atualizarParcialmenteDisciplina(
+            @PathVariable int id,
+            @RequestBody DisciplinaDTO dto) {
+        try {
+            DisciplinaDTO atualizada = disciplinaService.atualizar(id, dto);
+            return ResponseEntity.ok(atualizada);
+        } catch (ModelException e) {
+            return ResponseEntity.badRequest().body(null); // ou retornar mensagem
+        }
+    }
+
     @Operation(summary = "Exclui uma disciplina pelo ID")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletarDisciplina(@PathVariable long id) { //nao tem body. apenas passa id na URL

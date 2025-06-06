@@ -12,13 +12,14 @@ import java.util.List;
 public class OpcaoDTO {
     private int id;
     private String conteudo;
-    private boolean correta;
+    private Boolean correta;
 
     //relaciona pelo recurso
     private List<RecursoDTO> conjRecursos;
 
     public OpcaoDTO(int id) {
     }
+
 }
 
 

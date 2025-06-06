@@ -50,6 +50,18 @@ public class TopicoController {
             return ResponseEntity.status(500).build();    }
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> atualizarParcial(@PathVariable int id, @RequestBody TopicoDTO dto) {
+        try {
+            TopicoDTO atualizado = topicoService.atualizar(id, dto);
+            return ResponseEntity.ok(atualizado);
+        } catch (ModelException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno: " + e.getMessage());
+        }
+    }
+
     @Operation(summary = "Adiciona SubTópico em tópico")
     @PostMapping("/{idTopico}/subTopico")
     public ResponseEntity<?> adicionaSubTopico(@PathVariable int idTopico, @RequestBody TopicoDTO dto) throws ModelException{

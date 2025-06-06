@@ -60,6 +60,54 @@ public class DisciplinaService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public DisciplinaDTO atualizar(int idAtual, DisciplinaDTO dto) throws ModelException {
+        Disciplina disciplina = repository.findById((long) idAtual)
+                .orElseThrow(() -> new ModelException("Disciplina com ID " + idAtual + " não encontrada"));
+
+        // Atualiza o ID (raro e delicado)
+        if (dto.getId() != null && dto.getId() != idAtual) {
+            if (repository.existsById((long) dto.getId())) {
+                throw new ModelException("Já existe uma disciplina com o ID " + dto.getId());
+            }
+            disciplina.setId(dto.getId()); // novo ID
+        }
+
+        // Atualiza o código
+        if (dto.getCodigo() != null) {
+            disciplina.setCodigo(dto.getCodigo());
+        }
+
+        if (dto.getNome() != null) {
+            disciplina.setNome(dto.getNome());
+        }
+
+        if (dto.getNumCreditos() != null) {
+            disciplina.setNumCreditos(dto.getNumCreditos());
+        }
+
+        if (dto.getObjetivoGeral() != null) {
+            disciplina.setObjetivoGeral(dto.getObjetivoGeral());
+        }
+
+        if (dto.getConjTopicos() != null) {
+            List<Topico> topicos = dto.getConjTopicos().stream()
+                    .map(tid -> topicoRepository.findById(Long.valueOf(tid))
+                            .orElseThrow(() -> new ModelException("Tópico com ID " + tid + " não encontrado")))
+                    .collect(Collectors.toList());
+
+            for (Topico t : topicos) {
+                t.setDisciplina(disciplina);
+            }
+
+            disciplina.setConjTopicos(topicos);
+        }
+
+        Disciplina salva = repository.save(disciplina);
+        return DisciplinaMapper.toDTO(salva);
+    }
+
+
     public boolean deletarDisciplinaPorId(long id) {
         if (repository.existsById(id)) {
             repository.deleteById(id);

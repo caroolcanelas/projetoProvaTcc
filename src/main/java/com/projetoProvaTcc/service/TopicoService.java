@@ -79,6 +79,60 @@ public class TopicoService {
         return TopicoMapper.toDTO(topico);
     }
 
+    @Transactional
+    public TopicoDTO atualizar(int id, TopicoDTO dto) throws ModelException {
+        Topico existente = topicoRepository.findById((long) id)
+                .orElseThrow(() -> new ModelException("Tópico com id " + id + " não encontrado."));
+
+        // Atualizar campos simples se vierem no DTO
+        if (dto.getNome() != null) {
+            existente.setNome(dto.getNome());
+        }
+        if (dto.getConteudo() != null) {
+            existente.setConteudo(dto.getConteudo());
+        }
+        if (dto.getNumOrdem() != null) {
+            existente.setNumOrdem(dto.getNumOrdem());
+        }
+
+        // Atualizar Disciplina se fornecido
+        if (dto.getDisciplina() != null) {
+            Disciplina disciplina = disciplinaRepository.findById(Long.valueOf(dto.getDisciplina()))
+                    .orElseThrow(() -> new ModelException("Disciplina não encontrada."));
+            existente.setDisciplina(disciplina);
+        }
+
+        // Atualizar subtópicos se fornecidos
+        if (dto.getConjSubTopicos() != null) {
+            List<Topico> subTopicos = dto.getConjSubTopicos().stream()
+                    .map(idSub -> {
+                        try {
+                            return topicoRepository.findById(Long.valueOf(idSub))
+                                    .orElseThrow(() -> new ModelException("Subtópico " + idSub + " não encontrado"));
+                        } catch (ModelException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .collect(Collectors.toList());
+            existente.setConjSubTopicos(subTopicos);
+        }
+
+        // Atualizar tags se fornecidas
+        if (dto.getConjTags() != null) {
+            List<Tag> tags = tagRepository.findAllByTagNameIn(dto.getConjTags());
+            existente.setConjTags(tags);
+            for (Tag tag : tags) {
+                if (!tag.getConjTopicosAderentes().contains(existente)) {
+                    tag.getConjTopicosAderentes().add(existente);
+                    tagRepository.save(tag);
+                }
+            }
+        }
+
+        Topico atualizado = topicoRepository.save(existente);
+        return TopicoMapper.toDTO(atualizado);
+    }
+
     public boolean deletarTopicoPorId(long id) throws ModelException {
         Topico topico = repository.findById(id).orElse(null);
         if (topico == null) {

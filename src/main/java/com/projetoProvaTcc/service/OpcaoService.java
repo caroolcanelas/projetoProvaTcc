@@ -92,6 +92,42 @@ public class OpcaoService {
         return false;
     }
 
+    @Transactional
+    public OpcaoDTO atualizarl(int id, OpcaoDTO dto) throws ModelException {
+        Opcao opcao = repository.findById((long) id)
+                .orElseThrow(() -> new ModelException("Opção com ID " + id + " não encontrada."));
+
+        // Atualiza apenas os campos não-nulos
+        if (dto.getConteudo() != null) {
+            opcao.setConteudo(dto.getConteudo());
+        }
+
+        if (dto.getCorreta() != null) {
+            opcao.setCorreta(dto.getCorreta());
+        }
+
+        if (dto.getConjRecursos() != null) {
+            List<Recurso> recursos = dto.getConjRecursos().stream()
+                    .map(rDto -> recursoRepository.findById(rDto.getId())
+                            .orElseGet(() -> {
+                                Recurso novo = new Recurso();
+                                try {
+                                    novo.setConteudo(rDto.getConteudo());
+                                } catch (ModelException e) {
+                                    throw new RuntimeException(e);
+                                }
+                                return recursoRepository.save(novo);
+                            }))
+                    .collect(Collectors.toList());
+
+            recursos.forEach(r -> r.setOpcao(opcao));
+            opcao.setConjRecursos(recursos);
+        }
+
+        Opcao atualizado = repository.save(opcao);
+        return OpcaoMapper.toDTO(atualizado);
+    }
+
     public OpcaoDTO buscarPorId(int id) {
         Opcao opcao = repository.findById((long)id).orElse(null);
         if(opcao == null) return null;
