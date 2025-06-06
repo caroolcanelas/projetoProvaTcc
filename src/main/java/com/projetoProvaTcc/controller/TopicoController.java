@@ -1,6 +1,12 @@
 package com.projetoProvaTcc.controller;
 
+import com.projetoProvaTcc.dto.TagDTO;
 import com.projetoProvaTcc.dto.TopicoDTO;
+import com.projetoProvaTcc.entity.Tag;
+import com.projetoProvaTcc.entity.Topico;
+import com.projetoProvaTcc.exception.ModelException;
+import com.projetoProvaTcc.mapper.TagMapper;
+import com.projetoProvaTcc.mapper.TopicoMapper;
 import com.projetoProvaTcc.service.TopicoService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +34,12 @@ public class TopicoController {
         }
     }
 
+    @Operation(summary= "Listar um tópico por id")
+    @GetMapping("/{id}")
+    public TopicoDTO getPorId(@PathVariable int id) {
+        return topicoService.buscarPorId(id);
+    }
+
     @Operation(summary= "Listar todos os Tópicos")
     @GetMapping
     public ResponseEntity<List<TopicoDTO>> listarTodosTopicos(){
@@ -38,11 +50,31 @@ public class TopicoController {
             return ResponseEntity.status(500).build();    }
     }
 
+    @Operation(summary = "Adiciona SubTópico em tópico")
+    @PostMapping("/{idTopico}/subTopico")
+    public ResponseEntity<?> adicionaSubTopico(@PathVariable int idTopico, @RequestBody TopicoDTO dto) throws ModelException{
+        try {
+            topicoService.adicionarSubTopicoEmTopico(idTopico, dto.getConjSubTopicos());
+            return ResponseEntity.ok().body("Subtópicos adicionados com sucesso!");
+        } catch (ModelException e) {
+            return ResponseEntity.badRequest().body("Erro: " + e.getMessage());
+        }
+    }
+
+
+    @Operation(summary = "Remove um subtópico de um tópico")
+    @DeleteMapping("/{idTopico}/subtopico/{idSubtopico}")
+    public ResponseEntity<?> removerSubtopico(@PathVariable int idTopico, @PathVariable int idSubtopico) throws ModelException {
+
+        topicoService.removerSubtopico(idTopico, idSubtopico);
+        return ResponseEntity.noContent().build();
+    }
+
     @Operation(summary = "Exclui um tópico pelo ID")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletarTopico(@PathVariable long id) {
         try {
-            boolean remove = topicoService.deletarOpcaoPorId(id);
+            boolean remove = topicoService.deletarTopicoPorId(id);
             if (remove) {
                 return ResponseEntity.noContent().build();
             } else {
@@ -50,6 +82,32 @@ public class TopicoController {
             }
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Erro ao excluir Tópico: " + e.getMessage());
+        }
+    }
+
+    //add e remove de tag
+    @Operation(summary = "Adiciona tag no topico")
+    @PostMapping("/{idTopico}/addTag")
+    public ResponseEntity<?> adicionarTags(@PathVariable int idTopico, @RequestBody TopicoDTO dto) {
+        try {
+            System.out.println(">>> CHAMOU O ENDPOINT adicionarTags <<<");
+            topicoService.adicionarTagsAoTopico(idTopico, dto.getConjTags());
+            return ResponseEntity.ok().body("Tags adicionadas com sucesso!");
+        } catch (Exception e) {
+            e.printStackTrace(); // loga no console
+            return ResponseEntity.badRequest().body("Erro: " + e.getMessage());
+        }
+
+    }
+
+    @Operation(summary = "Remove tags do tópico")
+    @DeleteMapping("/{idTopico}/removeTags")
+    public ResponseEntity<?> removerTags(@PathVariable int idTopico, @RequestBody TopicoDTO dto) {
+        try {
+            topicoService.removerTagDoTopico(idTopico, dto.getConjTags());
+            return ResponseEntity.ok().body("Tags removidas com sucesso!");
+        } catch (ModelException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 

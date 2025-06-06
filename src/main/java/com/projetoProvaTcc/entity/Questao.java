@@ -4,9 +4,7 @@ import com.projetoProvaTcc.exception.ModelException;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 public class Questao { //TODO já conferido
@@ -51,13 +49,13 @@ public class Questao { //TODO já conferido
 			inverseJoinColumns = @JoinColumn(name = "id_tag"))
     private List<Tag> conjTags;
 
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany
 	private List<Questao> conjQuestoesDerivadas; // relacionamento unidirecional
 
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Opcao> conjOpcoes ;            // relacionamento unidirecional
 
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Recurso> conjRecursos;
 
 	//
@@ -178,7 +176,7 @@ public class Questao { //TODO já conferido
 	//conjTag - add e remove
 
 	public List<Tag> getConjTags() {
-		return new ArrayList<>(this.conjTags);
+		return this.conjTags;
 	}
 
 	public void setConjTags(List<Tag> conjTags) throws ModelException {
@@ -206,16 +204,16 @@ public class Questao { //TODO já conferido
 	}
 
 	//questoesDerivadas -- add e remove
-	public boolean addQuestaoDerivada(Questao questao) throws ModelException{
-		Questao.validarQuestao(questao);
-		if (this.conjQuestoesDerivadas.contains(questao)) { // Evita duplicatas
+	public boolean addQuestaoDerivada(Questao questaoDerivada) throws ModelException{
+		Questao.validarQuestao(questaoDerivada);
+		if (this.conjQuestoesDerivadas.contains(questaoDerivada)) { // Evita duplicatas
 			return false;
 		}
-		return this.conjQuestoesDerivadas.add(questao);
+		return this.conjQuestoesDerivadas.add(questaoDerivada);
 	}
 
-	public boolean removeQuestaoDerivada(Questao questao) throws ModelException{
-		return this.conjQuestoesDerivadas.remove(questao);
+	public boolean removeQuestaoDerivada(Questao questaoDerivada) throws ModelException{
+		return this.conjQuestoesDerivadas.remove(questaoDerivada);
 	}
 
 	// questoesDerivadas
@@ -312,7 +310,26 @@ public class Questao { //TODO já conferido
 
 
 	public void validarQuestao() throws ModelException {
-		// TODO Codificar esse método depois		
+		if (this.conjOpcoes == null || this.conjOpcoes.isEmpty()) {
+			throw new ModelException("A questão deve conter pelo menos uma opção.");
+		}
+
+		boolean temCorreta = this.conjOpcoes.stream().anyMatch(Opcao::isCorreta);
+		if (!temCorreta) {
+			throw new ModelException("A questão deve conter pelo menos uma opção correta.");
+		}
+
+		if (this.conjTags == null || this.conjTags.isEmpty()) {
+			throw new ModelException("A questão deve conter pelo menos uma tag.");
+		}
+
+		if (this.conjRecursos == null) {
+			throw new ModelException("A lista de recursos não pode ser nula.");
+		}
+
+		if (this.conjQuestoesDerivadas == null) {
+			throw new ModelException("A lista de questões derivadas não pode ser nula.");
+		}
 	}
 	
 }

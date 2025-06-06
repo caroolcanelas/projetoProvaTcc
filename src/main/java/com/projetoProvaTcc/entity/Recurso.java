@@ -25,8 +25,15 @@ public class Recurso { //TODO já conferido
 	@JoinColumn(name = "opcao_id")  // Aqui cria a FK!
 	private Opcao opcao;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "questao_id")  // Aqui cria a FK!
+	private Questao questao;
+
 	public Opcao getOpcao() { return opcao; }
 	public void setOpcao(Opcao opcao) { this.opcao = opcao; }
+
+	public Questao getQuestao() { return questao; }
+	public void setQuestao(Questao questao) { this.questao = questao; }
 
 
 	//

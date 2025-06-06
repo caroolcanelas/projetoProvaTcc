@@ -1,22 +1,24 @@
 package com.projetoProvaTcc.dto;
 
+import com.projetoProvaTcc.entity.Topico;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+
 @Data // Gera getters, setters, toString, equals e hashCode
 @NoArgsConstructor // Gera construtor sem argumentos
 @AllArgsConstructor //Gera construtor com argumentos
-public class TagDTO {
+public class DisciplinaDTO {
     private int id;
-    private String tagName;
-    private String assunto;
+    private String codigo;
+    private String nome;
+    private int numCreditos;
+    private String objetivoGeral;
 
-    //relaciona pelo id da questao
-    private List<Integer> conjQuestoes;
+    //relaciona pelo id de topico
+    private List<Integer> conjTopicos; // relacionamento bidirecional
 
-    //relaciona pelo nome do topico pra deixar mais fácil
-    private List<String> conjTopicosAderentes;
 }

@@ -1,5 +1,6 @@
 package com.projetoProvaTcc.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import com.projetoProvaTcc.exception.ModelException;
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ public class Disciplina { // TODO já conferido
     // ATRIBUTOS DE RELACIONAMENTO
     // 
     @OneToMany(mappedBy = "disciplina", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Topico> conjTopicos; // relacionamento bidirecional
 
     // 

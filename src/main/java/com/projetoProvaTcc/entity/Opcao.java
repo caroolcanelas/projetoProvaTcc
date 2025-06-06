@@ -26,7 +26,7 @@ public class Opcao { //TODO já conferido
 	//
 	// ATRIBUTOS DE RELACIONAMENTO
 	//    
-    @OneToMany(mappedBy = "opcao", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Recurso> conjRecursos ;
 
 	//

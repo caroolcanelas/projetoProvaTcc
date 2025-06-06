@@ -39,18 +39,20 @@ public class Tag { //TODO já conferido
     @ManyToMany(mappedBy = "conjTags") 
 	private List<Questao> conjQuestoes; // relacionamento bidirecional
 
-    
-    @ManyToMany(fetch = FetchType.LAZY) 
-    @JoinTable(name = "esta_aderente_a", 
-               joinColumns = @JoinColumn(name = "id_topico"),
-               inverseJoinColumns = @JoinColumn(name = "id_tag"))
-    private List<Topico>   conjTopicosAderentes;
+
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "esta_aderente_a",
+			joinColumns = @JoinColumn(name = "id_tag"),
+			inverseJoinColumns = @JoinColumn(name = "id_topico"))
+	private List<Topico> conjTopicosAderentes;
     
 
 	//
 	// MÉTODOS
 	//
-    public Tag() {    	
+    public Tag() {
+		this.conjQuestoes = new ArrayList<>();
+		this.conjTopicosAderentes = new ArrayList<>();
     }
     
 	public Tag(String tagName, String assunto) throws ModelException {
@@ -91,14 +93,14 @@ public class Tag { //TODO já conferido
 	}
 
 	//conjQuestoes
-	public Set<Questao> getConjQuestoes() {
+	public List<Questao> getConjQuestoes() {
 		// Retorno uma cópia do conjunto de questões
-		return new HashSet<Questao>(this.conjQuestoes);
+		return new ArrayList<>(this.conjQuestoes);
 	}
 
-	public void setConjQuestoes(Set<Questao> conjQuestoes) throws ModelException {
+	public void setConjQuestoes(List<Questao> conjQuestoes) throws ModelException {
 		Tag.validarConjQuestoes(conjQuestoes);
-		this.conjQuestoes = (List<Questao>) conjQuestoes;
+		this.conjQuestoes = new ArrayList<>(conjQuestoes);
 	}
 
 	//conjQuestoes - add e remove
@@ -124,6 +126,18 @@ public class Tag { //TODO já conferido
 			throw new ModelException("O tópico não pode ser nula");
 		}
 		this.conjTopicosAderentes.remove(topico);
+	}
+
+	public List<Topico> getConjTopicosAderentes() {
+		return this.conjTopicosAderentes;
+	}
+
+	public void setConjTopicosAderentes(List<Topico> conjTopicosAderentes) throws ModelException {
+		if (conjTopicosAderentes == null) {
+			throw new ModelException("O conjunto de tópicos aderentes não pode ser nulo!");
+		}
+		this.conjTopicosAderentes.clear();
+		this.conjTopicosAderentes.addAll(conjTopicosAderentes);
 	}
 
 
@@ -162,7 +176,7 @@ public class Tag { //TODO já conferido
 	}
 
 	//ValidarConjQuestoes
-	public static void validarConjQuestoes(Set<Questao> conjQuestoes) throws ModelException {
+	public static void validarConjQuestoes(List<Questao> conjQuestoes) throws ModelException {
 		if (conjQuestoes == null)
 			throw new ModelException("O conjunto de questões não pode ser nulo!");
 	}

@@ -40,8 +40,8 @@ public class Topico {//TODO já conferido
 	@JoinColumn(name = "disciplina_id")
 	@JsonBackReference
 	private Disciplina disciplina; 		// relacionamento bidirecional
-    
-    @OneToMany
+
+	@OneToMany(cascade = CascadeType.ALL)
 	private List<Topico> conjSubTopicos; // relacionamento unidirecional
     
     @ManyToMany(mappedBy = "conjTopicosAderentes")
@@ -50,7 +50,11 @@ public class Topico {//TODO já conferido
 	//
 	// MÉTODOS
 	//
+
+	//pra não inicializar como null
     public Topico() {
+		this.conjSubTopicos = new ArrayList<>();
+		this.conjTags = new ArrayList<>();
     }
     
 	public Topico(int numOrdem, String nome, String conteudo, Disciplina disciplina) throws ModelException {
@@ -59,9 +63,6 @@ public class Topico {//TODO já conferido
 		this.setNome(nome);
 		this.setConteudo(conteudo);
 		this.setDisciplina(disciplina);
-
-		this.conjSubTopicos = new ArrayList<>();
-		this.conjTags = new ArrayList<>();
 	}
 
 	//id
@@ -115,13 +116,12 @@ public class Topico {//TODO já conferido
 
 	//conjSubTopicos
 	public List<Topico> getConjSubTopicos() {
-		// Retorno uma cópia do conjunto de subtópicos
 		return this.conjSubTopicos;
 	}
 
 	public void setConjSubTopicos(List<Topico> conjSubTopicos) throws ModelException {
 		Topico.validarConjSubTopicos(conjSubTopicos);
-		this.conjSubTopicos = (List<Topico>) conjSubTopicos;
+		this.conjSubTopicos = conjSubTopicos;
 	}
 
 	//conjSubTopicos - add e remove
@@ -136,11 +136,30 @@ public class Topico {//TODO já conferido
 
 	//conjTags
 
-	public void addTag(Tag tag) throws ModelException{
+	public List<Tag> getConjTags() {
+		return this.conjTags;
+	}
+
+	public void setConjTags(List<Tag> conjTags) throws ModelException {
+		if (conjTags == null) {
+			throw new ModelException("O conjunto de tags não pode ser nulo!");
+		}
+		this.conjTags.clear();
+		this.conjTags.addAll(conjTags);
+	}
+
+	//conjTags - add e remove
+
+	public void addTag(Tag tag) throws ModelException {
 		if (tag == null) {
 			throw new ModelException("A tag não pode ser nula");
 		}
-		this.conjTags.add(tag);
+		if (!this.conjTags.contains(tag)) {
+			this.conjTags.add(tag);
+			if (!tag.getConjTopicosAderentes().contains(this)) {
+				tag.getConjTopicosAderentes().add(this);
+			}
+		}
 	}
 
 	public void removeTag(Tag tag) throws ModelException{
@@ -148,6 +167,7 @@ public class Topico {//TODO já conferido
 			throw new ModelException("A tag não pode ser nula");
 		}
 		this.conjTags.remove(tag);
+		tag.getConjTopicosAderentes().remove(this);
 	}
 
 	//Validações

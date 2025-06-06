@@ -2,6 +2,7 @@ package com.projetoProvaTcc.service;
 
 import com.projetoProvaTcc.dto.OpcaoDTO;
 import com.projetoProvaTcc.entity.Opcao;
+import com.projetoProvaTcc.entity.Questao;
 import com.projetoProvaTcc.entity.Recurso;
 import com.projetoProvaTcc.exception.ModelException;
 import com.projetoProvaTcc.mapper.OpcaoMapper;
@@ -49,6 +50,34 @@ public class OpcaoService {
         return OpcaoMapper.toDTO(salva);
     }
 
+    public void adicionarRecursoNaOpcao(Long idOpcao, Long idRecurso) throws Exception {
+        Opcao opcao = repository.findById(idOpcao)
+                .orElseThrow(() -> new Exception("Questão não encontrada"));
+
+        Recurso recurso = recursoRepository.findById(Math.toIntExact(idRecurso))
+                .orElseThrow(() -> new Exception("Recurso não encontrado"));
+
+        opcao.addRecurso(recurso);
+        repository.save(opcao);
+    }
+
+    public void removerRecursoDaOpcao(int idOpcao, int idRecurso) throws ModelException {
+        Opcao opcao = repository.findById((long) idOpcao)
+                .orElseThrow(() -> new ModelException("Opção não encontrada"));
+
+        Recurso recurso = recursoRepository.findById(idRecurso)
+                .orElseThrow(() -> new ModelException("Recurso não encontrado"));
+
+        // aqui a gente nao apaga o recurso do banco, só remove ele da opção mesmo
+        boolean removido = opcao.removeRecurso(recurso);
+        if (!removido) {
+            throw new ModelException("Recurso não está vinculado a essa opção.");
+        }
+
+        repository.save(opcao);
+    }
+
+
     public List<OpcaoDTO> buscarTodasOpcoes() {
         return repository.findAll().stream()
                 .map(OpcaoMapper::toDTO)
@@ -61,5 +90,11 @@ public class OpcaoService {
             return true;
         }
         return false;
+    }
+
+    public OpcaoDTO buscarPorId(int id) {
+        Opcao opcao = repository.findById((long)id).orElse(null);
+        if(opcao == null) return null;
+        return OpcaoMapper.toDTO(opcao);
     }
 }

@@ -3,9 +3,8 @@ package com.projetoProvaTcc.mapper;
 import com.projetoProvaTcc.dto.OpcaoDTO;
 import com.projetoProvaTcc.dto.QuestaoDTO;
 import com.projetoProvaTcc.dto.RecursoDTO;
-import com.projetoProvaTcc.entity.Opcao;
-import com.projetoProvaTcc.entity.Questao;
-import com.projetoProvaTcc.entity.Recurso;
+import com.projetoProvaTcc.dto.TagDTO;
+import com.projetoProvaTcc.entity.*;
 import com.projetoProvaTcc.exception.ModelException;
 
 import java.util.List;
@@ -14,6 +13,7 @@ import java.util.stream.Collectors;
 public class QuestaoMapper {
 
     public static QuestaoDTO toDTO(Questao questao) {
+
         QuestaoDTO dto = new QuestaoDTO();
         dto.setId(questao.getId());
         dto.setTipo(questao.getTipo());
@@ -24,63 +24,56 @@ public class QuestaoMapper {
         dto.setInstrucaoInicial(questao.getInstrucaoInicial());
 
         //relacionamento com opção
-        dto.setConjOpcoes(questao.getConjOpcoes()
-                .stream()
-                .map(opcao -> {
-                    OpcaoDTO o = new OpcaoDTO();
-                    o.setId(opcao.getId());
-                    o.setConteudo(opcao.getConteudo());
-                    o.setCorreta(opcao.isCorreta());
-                    return o;
-                })
-                .collect(Collectors.toList()));
+        dto.setConjOpcoes(
+                questao.getConjOpcoes().stream()
+                        .map(o -> new OpcaoDTO(o.getId(), o.getConteudo(), o.isCorreta(), null))
+                        .collect(Collectors.toList())
+        );
 
         //relacionamento com recurso
-        dto.setConjRecursos(questao.getConjRecursos()
-                .stream()
-                .map(recurso -> {
-                    RecursoDTO o = new RecursoDTO();
-                    o.setId(recurso.getId());
-                    o.setConteudo(recurso.getConteudo());
-                    return o;
-                })
-                .collect(Collectors.toList()));
+        dto.setConjRecursos(
+                questao.getConjRecursos().stream()
+                        .map(r -> new RecursoDTO(r.getId(), r.getConteudo()))
+                        .collect(Collectors.toList())
+        );
 
-        //relacionamento com questao
-//        dto.setConjQuestoesDerivadas(
-//                questao.getConjQuestoesDerivadas()
-//                        .stream()
-//                        .map(q -> {
-//                            QuestaoDTO qdto = new QuestaoDTO();
-//                            qdto.setId(q.getId());
-//                            qdto.setTipo(q.getTipo());
-//                            qdto.setSuporte(q.getSuporte());
-//                            qdto.setComando(q.getComando());
-//                            qdto.setNivel(q.getNivel());
-//                            qdto.setValidada(q.isValidada());
-//                            qdto.setInstrucaoInicial(q.getInstrucaoInicial());
-//
-//                            return qdto;
-//                        })
-//                        .collect(Collectors.toList())
-//        );
+        //relacionamento tag
+        dto.setConjTags(
+                questao.getConjTags().stream()
+                        .map(t -> new TagDTO(t.getId(), t.getTagName(), t.getAssunto(), null, null))
+                        .collect(Collectors.toList())
+        );
+
+
+        //relacionar com o id de questao derivada
+        if (questao.getConjQuestoesDerivadas() != null) {
+            dto.setConjQuestoesDerivadas(
+                    questao.getConjQuestoesDerivadas().stream()
+                            .map(Questao::getId)
+                            .collect(Collectors.toList())
+            );
+        }
 
         return dto;
 
     }
 
-    public static Questao toEntity(QuestaoDTO dto, List<Opcao> opcoes, List<Recurso> recursos) throws ModelException {
+    public static Questao toEntity(QuestaoDTO dto, List<Opcao> opcoes, List<Recurso> recursos, List<Tag> tags, List<Questao> questoesDerivadas) throws ModelException{
         Questao questao = new Questao();
         questao.setId(dto.getId());
         questao.setTipo(dto.getTipo());
         questao.setSuporte(dto.getSuporte());
         questao.setComando(dto.getComando());
         questao.setNivel(dto.getNivel());
-        questao.setValidada(dto.isValidada());
+        questao.setValidada(dto.getValidada());
         questao.setInstrucaoInicial(dto.getInstrucaoInicial());
         questao.setConjOpcoes(opcoes);
         questao.setConjRecursos(recursos);
-        //questao.setConjQuestoesDerivadas(questoes);
+        questao.setConjTags(tags);
+
+        if (questoesDerivadas != null) {
+            questao.setConjQuestoesDerivadas(questoesDerivadas);
+        }
 
         return questao;
     }
