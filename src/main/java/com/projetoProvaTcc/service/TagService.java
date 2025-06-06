@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -57,6 +58,44 @@ public class TagService {
                 .map(TagMapper::toDTO)
                 .orElse(null);
     }
+
+    @Transactional
+    public TagDTO atualizar(Long id, Map<String, Object> updates) throws ModelException {
+        Tag tag = repository.findById(id).orElse(null);
+        if (tag == null) {
+            return null;
+        }
+
+        // Atualiza os campos recebidos no map
+        if (updates.containsKey("tagName")) {
+            String tagName = (String) updates.get("tagName");
+            tag.setTagName(tagName);
+        }
+
+        if (updates.containsKey("assunto")) {
+            String assunto = (String) updates.get("assunto");
+            tag.setAssunto(assunto);
+        }
+
+        if (updates.containsKey("conjTopicosAderentes")) {
+            List<String> nomesTopicos = (List<String>) updates.get("conjTopicosAderentes");
+            List<Topico> topicos = topicoRepository.findAllByNomeIn(nomesTopicos);
+            tag.setConjTopicosAderentes(topicos);
+        }
+
+        if (updates.containsKey("conjQuestoes")) {
+            List<Integer> idsQuestoesInt = (List<Integer>) updates.get("conjQuestoes");
+            List<Long> idsQuestoes = idsQuestoesInt.stream()
+                    .map(Integer::longValue)
+                    .collect(Collectors.toList());
+            List<Questao> questoes = questaoRepository.findAllById(idsQuestoes);
+            tag.setConjQuestoes(questoes);
+        }
+
+        Tag salvo = repository.save(tag);
+        return TagMapper.toDTO(salvo);
+    }
+
 
     public boolean deletarTagPorId(long id) {
         if (repository.existsById(id)) {

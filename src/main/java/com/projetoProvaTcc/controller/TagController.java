@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/tag")
@@ -48,6 +49,20 @@ public class TagController {
             return ResponseEntity.status(HttpStatus.OK).body(tags);
         } catch (Exception e) {
             return ResponseEntity.status(500).build();
+        }
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<TagDTO> atualizarParcial(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
+        try {
+            TagDTO atualizado = tagService.atualizar(id, updates);
+            if (atualizado != null) {
+                return ResponseEntity.ok(atualizado);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(null);
         }
     }
 
