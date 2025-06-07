@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor //Gera construtor com argumentos
 public class TopicoDTO {
     private int id;
-    private int numOrdem;
+    private Integer numOrdem;
     private String nome;
     private String conteudo;
 
