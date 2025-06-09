@@ -4,6 +4,7 @@ import com.projetoProvaTcc.exception.ModelException;
 import jakarta.persistence.*;
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -50,15 +51,35 @@ public class Professor {
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Disciplina> conjDisciplinas ;  // relacionamento unidirecional
 
+	//uma questão pode ser validada por um professor, e um professor pode validar várias questões.
+	@OneToMany(mappedBy = "professorValidador")
+	private List<Questao> conjQuestoesValidadas = new ArrayList<>();
+
 	//
 	// MÉTODOS
 	//
-	public Professor(int m, String n, String e, String s) throws ModelException {
+
+	public Professor() {
 		super();
-		this.setMatricula(m);
-		this.setNome(n);
-		this.setEmail(e);
-		this.setSenha(s);
+		this.conjQuestoesValidadas = new ArrayList<>();
+		this.conjDisciplinas = new ArrayList<>();
+	}
+
+	public Professor(String nome, String email, String senha, int matricula) throws ModelException {
+		this();
+		this.setMatricula(matricula);
+		this.setNome(nome);
+		this.setEmail(email);
+		this.setSenha(senha);
+	}
+
+
+	public long getId() {
+		return this.id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
 	}
 
 	private void setMatricula(int matr) throws ModelException {
@@ -80,6 +101,25 @@ public class Professor {
 		Professor.validarSenha(senha);
 		this.senha = senha;
 	}
+
+	//conjDisciplinas
+	public List<Disciplina> getConjDisciplinas(){
+		return conjDisciplinas;
+	}
+
+	public void setConjDisciplinas(List<Disciplina> conjDisciplinas){
+		this.conjDisciplinas = conjDisciplinas;
+	}
+
+	//conjQuestoesValidadas
+	public List<Questao> getConjQuestoesValidadas() {
+		return conjQuestoesValidadas;
+	}
+
+	public void setConjQuestoesValidadas(List<Questao> conjQuestoesValidadas) {
+		this.conjQuestoesValidadas = conjQuestoesValidadas;
+	}
+
 
 	// Métodos de validação
 	public static void validarMatr(int numMatr) throws ModelException {
@@ -117,4 +157,6 @@ public class Professor {
         if(senha.length() > TAMANHO_MAXIMO_SENHA)
 			throw new ModelException("A quantidade de caracter da senha não pode ultrapassar a " + TAMANHO_MAXIMO_SENHA);
 	}
+
+
 }

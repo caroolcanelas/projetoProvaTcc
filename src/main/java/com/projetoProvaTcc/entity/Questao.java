@@ -58,6 +58,11 @@ public class Questao { //TODO já conferido
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Recurso> conjRecursos;
 
+	@ManyToOne
+	@JoinColumn(name = "professor_id", nullable = false)
+	private Professor professorValidador;
+
+
 	//
 	// MÉTODOS
 	// 
@@ -71,15 +76,19 @@ public class Questao { //TODO já conferido
 
 
 	public Questao(String instrucaoInicial, String suporte, String comando,
-				   NivelQuestao nivel, TipoQuestao tipo, boolean validada) throws ModelException {
-		this(); // Chama o construtor padrão para inicializar as coleções
+				   NivelQuestao nivel, TipoQuestao tipo, Professor professorValidador) throws ModelException {
+		this(); // Inicializa as coleções
 		this.setInstrucaoInicial(instrucaoInicial);
 		this.setSuporte(suporte);
 		this.setComando(comando);
 		this.setNivel(nivel);
 		this.setTipo(tipo);
-		this.setValidada(validada);
+		this.setProfessorValidador(professorValidador);
+
+		// Define automaticamente se foi validada com base no professor
+		this.setValidada(professorValidador != null);
 	}
+
 	
 	public int getId() {
 		return this.id;
@@ -306,6 +315,16 @@ public class Questao { //TODO já conferido
 	public static void validarRecurso (Recurso recurso) throws ModelException {
 		if(recurso == null)
 			throw new ModelException("O recurso não pode ser nulo");
+	}
+
+	//professor validador
+	public Professor getProfessorValidador() {
+		return professorValidador;
+	}
+
+	// Setter
+	public void setProfessorValidador(Professor professorValidador) {
+		this.professorValidador = professorValidador;
 	}
 
 

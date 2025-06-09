@@ -34,5 +34,7 @@ public class QuestaoDTO {
     //relaciona pela tag
     private List<TagDTO> conjTags;
 
+    //relacionamento com professor - tentando retornar apenas com a matricula
+    //private Long matriculaProfessorValidador;
 
 }

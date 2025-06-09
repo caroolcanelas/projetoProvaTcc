@@ -12,7 +12,9 @@ public class ProfessorDTO {
     private String nome;
     private String email;
     private String senha;
-    private String matricula;
+    private int matricula;
 
     //relacionamento de professor com disciplina
+
+    //relacinamento com questao valdiada
 }

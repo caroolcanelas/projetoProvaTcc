@@ -44,6 +44,8 @@ public class Disciplina { // TODO já conferido
     @JsonManagedReference
     private List<Topico> conjTopicos; // relacionamento bidirecional
 
+    //relação com turma?
+
     // 
     // MÉTODOS
     //
