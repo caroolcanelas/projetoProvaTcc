@@ -1,10 +1,12 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [mensagem, setMensagem] = useState("");
+  const navigate = useNavigate();
 
   const fazerLogin = async (e) => {
     e.preventDefault();
@@ -13,9 +15,21 @@ export default function Login() {
         email,
         senha,
       });
-      setMensagem(resposta.data);
+
+      // Simulação de retorno do backend com dados do professor
+      const dadosProfessor = {
+        nome: "Carla Ribeiro",
+        email,
+        matricula: 1003
+      };
+
+      // Salvar no localStorage
+      localStorage.setItem("professor", JSON.stringify(dadosProfessor));
+
+      // Redirecionar
+      navigate("/dashboard");
     } catch (erro) {
-      setMensagem("Erro: " + erro.response?.data || erro.message);
+      setMensagem("Erro: " + (erro.response?.data || erro.message));
     }
   };
 
