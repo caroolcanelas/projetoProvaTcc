@@ -44,6 +44,10 @@ public class Disciplina { // TODO já conferido
     @JsonManagedReference
     private List<Topico> conjTopicos; // relacionamento bidirecional
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "professor_id")
+    private Professor professor;
+
     //relação com turma?
 
     // 
@@ -62,7 +66,7 @@ public class Disciplina { // TODO já conferido
         this.conjTopicos = new ArrayList<>();
     }
 
-	public int getId() {
+    public int getId() {
 		return this.id;
 	}
 
@@ -115,6 +119,14 @@ public class Disciplina { // TODO já conferido
 		Disciplina.validarConjTopicos(conjTopicos);
 		this.conjTopicos = (List<Topico>) conjTopicos;
 	}
+
+    public Professor getProfessor() {
+        return professor;
+    }
+
+    public void setProfessor(Professor professor) {
+        this.professor = professor;
+    }
 
 	public boolean addTopico(Topico topico) throws ModelException {
 		Disciplina.validarTopico(topico);

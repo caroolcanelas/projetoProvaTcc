@@ -62,7 +62,8 @@ public class Questao { //TODO já conferido
 	@JoinColumn(name = "professor_id", nullable = false)
 	private Professor professorValidador;
 
-
+	//
+	// Precisamos de professorCriador ? da questao, no caso
 	//
 	// MÉTODOS
 	// 

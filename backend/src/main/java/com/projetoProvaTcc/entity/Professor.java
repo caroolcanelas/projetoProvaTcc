@@ -48,7 +48,7 @@ public class Professor {
 	@Column(nullable = false, length = TAMANHO_MAXIMO_SENHA)
 	private String senha;
 
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "professor", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Disciplina> conjDisciplinas ;  // relacionamento unidirecional
 
 	//uma questão pode ser validada por um professor, e um professor pode validar várias questões.
@@ -82,7 +82,7 @@ public class Professor {
 		this.id = id;
 	}
 
-	private void setMatricula(int matr) throws ModelException {
+	public void setMatricula(int matr) throws ModelException {
 		Professor.validarMatr(matr);
 		this.matricula = matr;
 	}
@@ -118,6 +118,18 @@ public class Professor {
 
 	public void setConjQuestoesValidadas(List<Questao> conjQuestoesValidadas) {
 		this.conjQuestoesValidadas = conjQuestoesValidadas;
+	}
+
+	// add e remove disciplina de professor
+
+	public void addDisciplina(Disciplina disciplina) {
+		this.conjDisciplinas.add(disciplina);
+		disciplina.setProfessor(this);
+	}
+
+	public void removeDisciplina(Disciplina disciplina) {
+		this.conjDisciplinas.remove(disciplina);
+		disciplina.setProfessor(null);
 	}
 
 

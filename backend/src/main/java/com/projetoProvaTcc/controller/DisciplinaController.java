@@ -82,7 +82,6 @@ public class DisciplinaController {
     @PostMapping("/{idDisciplina}/topico")
     public ResponseEntity<?> adicionarTopico(@PathVariable int idDisciplina, @RequestBody TopicoDTO dto) throws ModelException {
         Topico topico;
-
         if (dto.getId() != 0) {
             // Se o ID está presente, só precisa dele para o service buscar
             topico = new Topico();

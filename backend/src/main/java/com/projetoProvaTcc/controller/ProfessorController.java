@@ -1,5 +1,6 @@
 package com.projetoProvaTcc.controller;
 
+import com.projetoProvaTcc.dto.DisciplinaDTO;
 import com.projetoProvaTcc.dto.LoginDTO;
 import com.projetoProvaTcc.dto.ProfessorDTO;
 import com.projetoProvaTcc.entity.Professor;
@@ -47,6 +48,31 @@ public class ProfessorController {
                 ResponseEntity.noContent().build() :
                 ResponseEntity.notFound().build();
     }
+
+    @PostMapping("/{id}/disciplinas/{disciplinaId}")
+    public ResponseEntity<?> adicionarDisciplina(
+            @PathVariable Long id,
+            @PathVariable Long disciplinaId) {
+        try {
+            service.adicionarDisciplina(id,disciplinaId);
+            return ResponseEntity.ok("Disciplina associada com sucesso.");
+        } catch (ModelException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{id}/disciplinas/{disciplinaId}")
+    public ResponseEntity<?> removerDisciplina(
+            @PathVariable Long id,
+            @PathVariable Long disciplinaId) {
+        try {
+            service.removerDisciplina(id, disciplinaId);
+            return ResponseEntity.ok("Disciplina desassociada com sucesso.");
+        } catch (ModelException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
