@@ -2,6 +2,8 @@ package com.projetoProvaTcc.entity;
 
 import com.projetoProvaTcc.exception.ModelException;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +60,11 @@ public class Questao { //TODO já conferido
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Recurso> conjRecursos;
 
-	@ManyToOne
+    // Setter
+    //professor validador
+    @Setter
+    @Getter
+    @ManyToOne
 	@JoinColumn(name = "professor_id", nullable = false)
 	private Professor professorValidador;
 
@@ -318,18 +324,7 @@ public class Questao { //TODO já conferido
 			throw new ModelException("O recurso não pode ser nulo");
 	}
 
-	//professor validador
-	public Professor getProfessorValidador() {
-		return professorValidador;
-	}
-
-	// Setter
-	public void setProfessorValidador(Professor professorValidador) {
-		this.professorValidador = professorValidador;
-	}
-
-
-	public void validarQuestao() throws ModelException {
+    public void validarQuestao() throws ModelException {
 		if (this.conjOpcoes == null || this.conjOpcoes.isEmpty()) {
 			throw new ModelException("A questão deve conter pelo menos uma opção.");
 		}

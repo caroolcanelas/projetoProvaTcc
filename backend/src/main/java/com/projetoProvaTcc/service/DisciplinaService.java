@@ -28,12 +28,11 @@ public class DisciplinaService {
     //anotação para se caso der certo, salva a info no banco, se falhar ao final, tudo que foi feito no metodo é desfeito
     @Transactional
     public DisciplinaDTO salvar(DisciplinaDTO dto) throws ModelException {
-
-        //procura o id do topico
+        // Transforma lista de IDs de tópicos para lista de entidades Topico
         List<Topico> topicos = dto.getConjTopicos().stream()
                 .map(id -> {
                     try {
-                        return topicoRepository.findById(Long.valueOf(id))
+                        return topicoRepository.findById(id.longValue())
                                 .orElseThrow(() -> new ModelException("Tópico com ID " + id + " não encontrado"));
                     } catch (ModelException e) {
                         throw new RuntimeException(e);
@@ -41,20 +40,22 @@ public class DisciplinaService {
                 })
                 .collect(Collectors.toList());
 
-
         Disciplina disciplina = DisciplinaMapper.toEntity(dto, topicos);
 
-        for (Topico t : topicos) {
-            t.setDisciplina(disciplina);
-        }
-
+        topicos.forEach(t -> {
+            try {
+                t.setDisciplina(disciplina);
+            } catch (ModelException e) {
+                throw new RuntimeException(e);
+            }
+        });
         disciplina.setConjTopicos(topicos);
 
         Disciplina salva = repository.save(disciplina);
-        return DisciplinaMapper.toDTO(salva);  // Salva a entidade no banco
+        return DisciplinaMapper.toDTO(salva);
     }
 
-    public List<DisciplinaDTO> buscarTodasDisciplinas(){
+    public List<DisciplinaDTO> buscarTodasDisciplinas() {
         return repository.findAllWithTopicos().stream()
                 .map(DisciplinaMapper::toDTO)
                 .collect(Collectors.toList());
@@ -106,9 +107,9 @@ public class DisciplinaService {
     }
 
 
-    public boolean deletarDisciplinaPorId(long id) {
-        if (repository.existsById(id)) {
-            repository.deleteById(id);
+    public boolean deletarDisciplinaPorId(Long id) {
+        if (repository.existsById((long) Math.toIntExact(id))) {
+            repository.deleteById((long) Math.toIntExact(id));
             return true;
         }
         return false;
@@ -116,7 +117,7 @@ public class DisciplinaService {
 
     public void adicionarTopicoNaDisciplina(int idDisciplina, Topico topico) throws ModelException {
         //encontra a disciplina pelo id
-        Disciplina disciplina = repository.findById((long)idDisciplina)
+        Disciplina disciplina = repository.findById((long) idDisciplina)
                 .orElseThrow(() -> new ModelException("Disciplina não encontrada"));
 
         //confere se o tópico já existe no banco
@@ -143,7 +144,7 @@ public class DisciplinaService {
     }
 
     public void removerTopicoDaDisciplina(int idDisciplina, int idTopico) throws ModelException {
-        Disciplina disciplina = repository.findById((long)idDisciplina)
+        Disciplina disciplina = repository.findById((long) idDisciplina)
                 .orElseThrow(() -> new ModelException("Disciplina não encontrada"));
 
         Topico topico = topicoRepository.findById((long)idTopico)

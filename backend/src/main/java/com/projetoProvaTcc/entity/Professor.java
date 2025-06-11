@@ -3,6 +3,7 @@ package com.projetoProvaTcc.entity;
 import com.projetoProvaTcc.exception.ModelException;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,7 @@ public class Professor {
 
 	@Getter
 	@Column(nullable = false, unique = true, length = TAMANHO_MAXIMO_MATR)
-	private int matricula;
+	private Integer matricula;
 
 	@Getter
     @Column(nullable = false, length = TAMANHO_MAXIMO_NOME)
@@ -48,11 +49,17 @@ public class Professor {
 	@Column(nullable = false, length = TAMANHO_MAXIMO_SENHA)
 	private String senha;
 
-	@OneToMany(mappedBy = "professor", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    //conjDisciplinas
+    @Setter
+    @Getter
+    @OneToMany(mappedBy = "professor", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Disciplina> conjDisciplinas ;  // relacionamento unidirecional
 
-	//uma questão pode ser validada por um professor, e um professor pode validar várias questões.
-	@OneToMany(mappedBy = "professorValidador")
+    //conjQuestoesValidadas
+    //uma questão pode ser validada por um professor, e um professor pode validar várias questões.
+	@Getter
+    @Setter
+    @OneToMany(mappedBy = "professorValidador")
 	private List<Questao> conjQuestoesValidadas = new ArrayList<>();
 
 	//
@@ -102,25 +109,7 @@ public class Professor {
 		this.senha = senha;
 	}
 
-	//conjDisciplinas
-	public List<Disciplina> getConjDisciplinas(){
-		return conjDisciplinas;
-	}
-
-	public void setConjDisciplinas(List<Disciplina> conjDisciplinas){
-		this.conjDisciplinas = conjDisciplinas;
-	}
-
-	//conjQuestoesValidadas
-	public List<Questao> getConjQuestoesValidadas() {
-		return conjQuestoesValidadas;
-	}
-
-	public void setConjQuestoesValidadas(List<Questao> conjQuestoesValidadas) {
-		this.conjQuestoesValidadas = conjQuestoesValidadas;
-	}
-
-	// add e remove disciplina de professor
+    // add e remove disciplina de professor
 
 	public void addDisciplina(Disciplina disciplina) {
 		this.conjDisciplinas.add(disciplina);
@@ -132,7 +121,16 @@ public class Professor {
 		disciplina.setProfessor(null);
 	}
 
+	//add e remove questao validada de professor
+	public void addQuestaoValidada(Questao questao) {
+		this.conjQuestoesValidadas.add(questao);
+		questao.setProfessorValidador(this);
+	}
 
+	public void removeQuestaoValidada(Questao questao) {
+		this.conjQuestoesValidadas.remove(questao);
+		questao.setProfessorValidador(null);
+	}
 	// Métodos de validação
 	public static void validarMatr(int numMatr) throws ModelException {
 		if(numMatr < 0)

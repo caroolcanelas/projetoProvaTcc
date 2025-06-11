@@ -1,8 +1,10 @@
 package com.projetoProvaTcc.dto;
 
 import com.projetoProvaTcc.entity.Disciplina;
+import com.projetoProvaTcc.entity.Questao;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,10 +20,12 @@ public class ProfessorDTO {
     private String nome;
     private String email;
     private String senha; //precisa ainda ?
-    private int matricula;
+    private Integer matricula;
 
     //relacionamento de professor com disciplina
-    private List<Long> conjDisciplinas;
+    private List<Integer> conjDisciplinas;
 
     //relacinamento com questao validado
+    private List<Questao> questoesValidadasIds; // IDs das questões validadas
+
 }

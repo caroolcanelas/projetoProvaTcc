@@ -18,7 +18,7 @@ public class ProfessorMapper {
         dto.setMatricula(professor.getMatricula());
 
         if (professor.getConjDisciplinas() != null) {
-            List<Long> ids = professor.getConjDisciplinas().stream()
+            List<Integer> ids = professor.getConjDisciplinas().stream()
                     .map(Disciplina::getId)
                     .collect(Collectors.toList());
             dto.setConjDisciplinas(ids);

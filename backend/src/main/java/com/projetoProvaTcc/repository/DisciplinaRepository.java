@@ -13,5 +13,4 @@ public interface DisciplinaRepository extends JpaRepository<Disciplina, Long> {
     //métodod pra buscar todas as disciplinas relacionadas com topicos
     @Query("SELECT d FROM Disciplina d LEFT JOIN FETCH d.conjTopicos")
     List<Disciplina> findAllWithTopicos();
-
 }
