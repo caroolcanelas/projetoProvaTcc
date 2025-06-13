@@ -3,10 +3,7 @@ package com.projetoProvaTcc.service;
 import com.projetoProvaTcc.dto.QuestaoDTO;
 import com.projetoProvaTcc.entity.*;
 import com.projetoProvaTcc.exception.ModelException;
-import com.projetoProvaTcc.repository.OpcaoRepository;
-import com.projetoProvaTcc.repository.QuestaoRepository;
-import com.projetoProvaTcc.repository.RecursoRepository;
-import com.projetoProvaTcc.repository.TagRepository;
+import com.projetoProvaTcc.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +27,9 @@ public class QuestaoService {
 
     @Autowired
     private TagRepository tagRepository;
+
+    @Autowired
+    private ProfessorRepository professorRepository;
 
 
     @Transactional
@@ -111,7 +111,7 @@ public class QuestaoService {
 
 
         // Agora converte para Entidade
-        Questao questao = QuestaoMapper.toEntity(dto, opcoes, recursos, tags, questaoDerivada);
+        Questao questao = QuestaoMapper.toEntity(dto, opcoes, recursos, tags, questaoDerivada,professorRepository );
         questao.validarQuestao(); //valida a questão antes de salvar
         Questao salva = questaoRepository.save(questao);
         return QuestaoMapper.toDTO(salva);

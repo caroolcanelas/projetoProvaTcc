@@ -6,6 +6,7 @@ import com.projetoProvaTcc.dto.RecursoDTO;
 import com.projetoProvaTcc.dto.TagDTO;
 import com.projetoProvaTcc.entity.*;
 import com.projetoProvaTcc.exception.ModelException;
+import com.projetoProvaTcc.repository.ProfessorRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -54,11 +55,16 @@ public class QuestaoMapper {
             );
         }
 
+        //relacionamento com prof
+        if (questao.getProfessorValidador() != null) {
+            dto.setMatriculaProfessorValidador(questao.getProfessorValidador().getMatricula());
+        }
+
         return dto;
 
     }
 
-    public static Questao toEntity(QuestaoDTO dto, List<Opcao> opcoes, List<Recurso> recursos, List<Tag> tags, List<Questao> questoesDerivadas) throws ModelException{
+    public static Questao toEntity(QuestaoDTO dto, List<Opcao> opcoes, List<Recurso> recursos, List<Tag> tags, List<Questao> questoesDerivadas, ProfessorRepository professorRepository) throws ModelException{
         Questao questao = new Questao();
         questao.setId(dto.getId());
         questao.setTipo(dto.getTipo());
@@ -73,6 +79,16 @@ public class QuestaoMapper {
 
         if (questoesDerivadas != null) {
             questao.setConjQuestoesDerivadas(questoesDerivadas);
+        }
+
+        // busca o professor pela matrícula e seta na entidade
+        if (dto.getMatriculaProfessorValidador() != null) {
+            Professor prof = professorRepository
+                    .findByMatricula(dto.getMatriculaProfessorValidador())
+                    .orElseThrow(() -> new ModelException("Professor com matrícula " + dto.getMatriculaProfessorValidador() + " não encontrado"));
+            questao.setProfessorValidador(prof);
+        } else {
+            throw new ModelException("Matrícula do professor validador é obrigatória.");
         }
 
         return questao;
