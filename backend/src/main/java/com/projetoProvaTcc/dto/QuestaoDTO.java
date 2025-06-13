@@ -24,15 +24,15 @@ public class QuestaoDTO {
 
 
     //relaciona pela opcao
-    private List<OpcaoDTO> conjOpcoes;
+    private List<OpcaoDTO> conjOpcoes= new ArrayList<>();
 
-    private List<Integer> conjQuestoesDerivadas; //To em dúvida de como fazer esse aqui
+    private List<Integer> conjQuestoesDerivadas =new ArrayList<>(); //To em dúvida de como fazer esse aqui
 
     //relaciona pelo recurso
     private List<RecursoDTO> conjRecursos = new ArrayList<>();
 
     //relaciona pela tag
-    private List<TagDTO> conjTags;
+    private List<TagDTO> conjTags = new ArrayList<>();
 
     //relacionamento com professor - tentando retornar apenas com a matricula
     private Integer matriculaProfessorValidador; // matrícula do professor validador

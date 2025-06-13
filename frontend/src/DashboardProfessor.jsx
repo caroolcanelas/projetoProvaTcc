@@ -1,15 +1,21 @@
 import { useEffect, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
+import "./DashboardProfessor.css";
 
 export default function DashboardProfessor() {
   const [professor, setProfessor] = useState(null);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
-  const [enunciado, setEnunciado] = useState("");
-  const [nivel, setNivel] = useState("BASICA");
+  const [instrucaoInicial, setInstrucaoInicial] = useState("");
+  const [suporte, setSuporte] = useState("");
+  const [comando, setComando] = useState("");
+  const [nivel, setNivel] = useState("FACIL");
+  const [tipo, setTipo] = useState("RESPOSTA_UNICA");
+  const [validada, setValidada] = useState(false);
   const [opcoes, setOpcoes] = useState([
-    { conteudo: "", correta: false },
-    { conteudo: "", correta: false },
+    { conteudo: "", correta: false, conjRecursos: [] }
   ]);
+const [tags, setTags] = useState([{ tagName: "", assunto: "" }]);
+
 
   useEffect(() => {
     const dados = localStorage.getItem("professor");
@@ -18,38 +24,63 @@ export default function DashboardProfessor() {
     }
   }, []);
 
-  const adicionarOpcao = () => {
-    setOpcoes([...opcoes, { conteudo: "", correta: false }]);
-  };
+  const enviarQuestao = async () => {
+    const opcoesValidas = opcoes.filter(op => op.conteudo.trim() !== "");
+    if (opcoesValidas.length === 0) {
+      alert("Adicione pelo menos uma opção com conteúdo.");
+      return;
+    }
 
-  const atualizarOpcao = (index, campo, valor) => {
-    const novas = [...opcoes];
-    novas[index][campo] = valor;
-    setOpcoes(novas);
-  };
-
-  const enviarQuestao = () => {
     const novaQuestao = {
-      enunciado,
+      instrucaoInicial,
+      suporte,
+      comando,
       nivel,
-      opcoes,
-      professorValidador: professor?.matricula,
+      tipo,
+      validada,
+      matriculaProfessorValidador: professor?.matricula,
+      conjOpcoes: opcoesValidas,
+      conjQuestoesDerivadas: [],
+        conjTags: tags.filter(tag => tag.tagName.trim() !== ""),
     };
-    console.log("Questão criada:", novaQuestao);
-    alert("Questão simulada no console (integração futura)");
-    setMostrarFormulario(false);
+
+    try {
+      const response = await fetch("http://localhost:8080/api/questao", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(novaQuestao),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        alert("Questão salva com sucesso!");
+        console.log("Questão salva:", data);
+        // resetar
+        setMostrarFormulario(false);
+        setInstrucaoInicial("");
+        setSuporte("");
+        setComando("");
+        setNivel("FACIL");
+        setTipo("RESPOSTA_UNICA");
+        setValidada(false);
+        setOpcoes([{ conteudo: "", correta: false }]);
+        setTags([{ tagName: "", assunto: "" }]);
+      } else {
+        const erro = await response.text();
+        alert("Erro ao salvar questão: " + erro);
+      }
+    } catch (err) {
+      alert("Erro na comunicação com o servidor: " + err.message);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-[#fdfaf4] flex items-center justify-center font-sans">
-      <div className="bg-[#fef4e8] border border-[#dfc8b5] shadow-lg rounded-lg p-8 flex gap-12">
-        {/* Lado esquerdo: dados do professor */}
-        <div className="w-64 bg-white p-4 rounded shadow relative">
-          <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#d7bfa3] px-3 py-1 text-white rounded">
-            Professor
-          </div>
+    <div className="dashboard-container">
+      <div className="card">
+        <div className="professor-info">
+          <div className="professor-label">Professor</div>
           {professor && (
-            <div className="mt-6">
+            <div className="professor-dados">
               <p><strong>Nome:</strong> {professor.nome}</p>
               <p><strong>Email:</strong> {professor.email}</p>
               <p><strong>Matrícula:</strong> {professor.matricula}</p>
@@ -57,79 +88,180 @@ export default function DashboardProfessor() {
           )}
         </div>
 
-        {/* Lado direito: opções e formulario */}
-        <div className="flex flex-col gap-4 w-[600px]">
-          <div className="bg-white p-4 rounded shadow">
-            <h2 className="text-lg font-bold mb-2 text-[#5a3e2b]">Ações Rápidas</h2>
-            <button
-              onClick={() => setMostrarFormulario(true)}
-              className="bg-[#a87c6f] text-white px-4 py-2 rounded hover:bg-[#946a5f]"
-            >
+        <div className="conteudo-formulario">
+          <div className="form-actions">
+            <h2 className="titulo">Ações Rápidas</h2>
+            <button onClick={() => setMostrarFormulario(true)} className="btn-adicionar">
               Adicionar nova questão
             </button>
           </div>
 
           {mostrarFormulario && (
-            <div className="bg-[#fff] border border-[#ddd] p-4 rounded shadow">
-              <h3 className="text-md font-bold text-[#5a3e2b] mb-2">Nova Questão</h3>
-              <label className="block text-sm font-medium">Enunciado</label>
+            <div className="form-nova-questao">
+              <h3 className="titulo-secundario">Nova Questão</h3>
+
+              <label className="label">Instrução Inicial</label>
               <Editor
                 apiKey="m4g95hooo3d5yju8qbccwha9ihsyjtg2ii7xyl83t13ffyru"
-                value={enunciado}
-                init={{ height: 200 }}
-                onEditorChange={(nova) => setEnunciado(nova)}
+                value={instrucaoInicial}
+                init={{ height: 150 }}
+                onEditorChange={(nova) => setInstrucaoInicial(nova)}
               />
 
-              <label className="block mt-4 text-sm font-medium">Nível</label>
-              <select
-                className="border rounded px-2 py-1"
-                value={nivel}
-                onChange={(e) => setNivel(e.target.value)}
-              >
-                <option value="BASICA">Básica</option>
+              <label className="label">Suporte</label>
+              <Editor
+                apiKey="m4g95hooo3d5yju8qbccwha9ihsyjtg2ii7xyl83t13ffyru"
+                value={suporte}
+                init={{ height: 150 }}
+                onEditorChange={(nova) => setSuporte(nova)}
+              />
+
+              <label className="label">Comando</label>
+              <Editor
+                apiKey="m4g95hooo3d5yju8qbccwha9ihsyjtg2ii7xyl83t13ffyru"
+                value={comando}
+                init={{ height: 150 }}
+                onEditorChange={(nova) => setComando(nova)}
+              />
+
+              <label className="label">Nível</label>
+              <select className="input" value={nivel} onChange={(e) => setNivel(e.target.value)}>
+                <option value="FACIL">Fácil</option>
                 <option value="INTERMEDIARIA">Intermediária</option>
-                <option value="AVANCADA">Avançada</option>
+                <option value="DIFICIL">Difícil</option>
               </select>
 
-              <div className="mt-4">
-                <label className="block text-sm font-medium">Opções</label>
-                {opcoes.map((op, idx) => (
-                  <div key={idx} className="mb-2">
-                    <Editor
-                      apiKey="m4g95hooo3d5yju8qbccwha9ihsyjtg2ii7xyl83t13ffyru"
-                      value={op.conteudo}
-                      init={{ height: 100 }}
-                      onEditorChange={(nova) => atualizarOpcao(idx, "conteudo", nova)}
-                    />
-                    <label className="inline-flex items-center gap-2 mt-1">
+              <label className="label">Tipo</label>
+              <select className="input" value={tipo} onChange={(e) => setTipo(e.target.value)}>
+                <option value="RESPOSTA_UNICA">Resposta única</option>
+                <option value="RESPOSTA_MULTIPLA">Resposta múltipla</option>
+                <option value="ASSERCAO_RAZAO">Asserção razão</option>
+              </select>
+
+              <label className="label">Validada</label>
+              <input
+                type="checkbox"
+                checked={validada}
+                onChange={(e) => setValidada(e.target.checked)}
+              />
+
+              <div className="opcoes-container">
+                <label className="label">Opções</label>
+                {opcoes.map((opcao, index) => (
+                  <div key={index} className="opcao-bloco">
+                    <div className="opcao-linha">
                       <input
-                        type="checkbox"
-                        checked={op.correta}
-                        onChange={(e) => atualizarOpcao(idx, "correta", e.target.checked)}
+                        type="text"
+                        className="input flex-1"
+                        placeholder={`Opção ${index + 1}`}
+                        value={opcao.conteudo}
+                        onChange={(e) => {
+                          const novas = [...opcoes];
+                          novas[index].conteudo = e.target.value;
+                          setOpcoes(novas);
+                        }}
                       />
-                      Correta?
-                    </label>
+                      <label className="checkbox-label">
+                        <input
+                          type="checkbox"
+                          checked={opcao.correta}
+                          onChange={(e) => {
+                            const novas = [...opcoes];
+                            novas[index].correta = e.target.checked;
+                            setOpcoes(novas);
+                          }}
+                        />
+                        &nbsp;Correta
+                      </label>
+                    </div>
+
+                    <div className="mt-2">
+                      <label className="text-sm block">Recursos</label>
+                      <input
+                        type="file"
+                        multiple
+                        onChange={(e) => {
+                          const novas = [...opcoes];
+                          const arquivos = Array.from(e.target.files).map((file) => ({
+                            nome: file.name,
+                            tipo: file.type,
+                            tamanho: file.size,
+                            // conteúdo em base64 poderia ser adicionado aqui se necessário
+                          }));
+                          novas[index].conjRecursos = arquivos;
+                          setOpcoes(novas);
+                        }}
+                      />
+                      {opcao.conjRecursos && opcao.conjRecursos.length > 0 && (
+                        <ul className="text-xs mt-1 ml-2 list-disc">
+                          {opcao.conjRecursos.map((r, i) => (
+                            <li key={i}>{r.nome} ({(r.tamanho / 1024).toFixed(1)} KB)</li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
                   </div>
                 ))}
+
+
+
                 <button
-                  onClick={adicionarOpcao}
-                  className="text-sm text-blue-600 mt-2"
+                  type="button"
+                  onClick={() => setOpcoes([...opcoes, { conteudo: "", correta: false, conjRecursos: [] }])}
+                  className="btn-add-opcao"
                 >
                   + Adicionar opção
                 </button>
               </div>
 
-              <button
-                onClick={enviarQuestao}
-                className="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-              >
+
+<div className="tags-container">
+  <label className="label">Tags</label>
+  {tags.map((tag, index) => (
+    <div key={index} className="tag-linha">
+      <input
+        type="text"
+        className="input"
+        placeholder="Nome da tag"
+        value={tag.tagName}
+        onChange={(e) => {
+          const novas = [...tags];
+          novas[index].tagName = e.target.value;
+          setTags(novas);
+        }}
+      />
+      <input
+        type="text"
+        className="input"
+        placeholder="Assunto relacionado"
+        value={tag.assunto}
+        onChange={(e) => {
+          const novas = [...tags];
+          novas[index].assunto = e.target.value;
+          setTags(novas);
+        }}
+      />
+    </div>
+  ))}
+
+  <button
+    type="button"
+    onClick={() => setTags([...tags, { tagName: "", assunto: "" }])}
+    className="btn-add-opcao"
+  >
+    + Adicionar tag
+  </button>
+</div>
+
+
+              <button onClick={enviarQuestao} className="btn-salvar">
                 Salvar questão
               </button>
             </div>
           )}
 
-          <div className="bg-[#fffaf3] p-4 rounded shadow border border-dashed border-[#d3bda5]">
-            <p className="text-sm text-[#5a3e2b]">
+          <div className="info-box">
+            <p>
               Mais funcionalidades virão aqui, como consulta de questões, edição e dashboard de desempenho.
             </p>
           </div>
