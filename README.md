@@ -15,6 +15,7 @@ Sistema web completo desenvolvido para fins acadêmicos, com o objetivo de simul
 - Upload de Recursos (imagens, áudios, etc.) vinculados às opções
 - Validação de Questões
 - API documentada com Swagger
+- Importar em batch para o banco
 
 ---
 
@@ -98,6 +99,7 @@ http://localhost:8080/swagger-ui/index.html
 - ✅ React + Tailwind embutido no Spring
 - ✅ API REST estruturada
 - ✅ Dashboard pós-login
+- ✅ Import em batch para arquivos csv
 - ⚙️ Validações de campos avançadas (em andamento)
 
 ---
@@ -147,7 +149,6 @@ http://localhost:8080/swagger-ui/index.html
   "numOrdem": 4,
   "nome": "Algebra",
   "conteudo": "Estudos de algebra",
-  "disciplina": 1,
 }
 ```
 
