@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -52,6 +53,7 @@ public class TagController {
         }
     }
 
+    @Operation(summary = "Atualiza parcialmente uma tag")
     @PatchMapping("/{id}")
     public ResponseEntity<TagDTO> atualizarParcial(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
         try {
@@ -78,6 +80,18 @@ public class TagController {
             }
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Erro ao excluir Tag: " + e.getMessage());
+        }
+    }
+
+    //import batch de tags via csv
+    @Operation(summary = "Faz o upload em batch de tags")
+    @PostMapping("/importar-csv")
+    public ResponseEntity<String> importarTagsViaCsv(@RequestParam("arquivo") MultipartFile file) {
+        try {
+            tagService.importarTagsViaCsv(file);
+            return ResponseEntity.ok("Importação de tags realizada com sucesso!");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Erro na importação: " + e.getMessage());
         }
     }
 }

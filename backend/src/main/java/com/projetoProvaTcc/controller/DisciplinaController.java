@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -51,6 +52,7 @@ public class DisciplinaController {
         return disciplinaService.buscarPorId(id);
     }
 
+    @Operation(summary = "Atualiza parcialmente uma disciplina")
     @PatchMapping("/{id}")
     public ResponseEntity<DisciplinaDTO> atualizarParcialmenteDisciplina(
             @PathVariable int id,
@@ -100,6 +102,18 @@ public class DisciplinaController {
     public ResponseEntity<?> removerTopico(@PathVariable int idDisciplina, @PathVariable int idTopico) throws ModelException {
         disciplinaService.removerTopicoDaDisciplina(idDisciplina, idTopico);
         return ResponseEntity.noContent().build();
+    }
+
+    //import batch de disciplinas via csv
+    @Operation(summary="Faz o upload em batch de disciplinas")
+    @PostMapping("/importar-csv")
+    public ResponseEntity<String> importarDisciplinasViaCsv(@RequestParam("arquivo")MultipartFile file){
+        try{
+            disciplinaService.importarDisiplinasViaCsv(file);
+            return ResponseEntity.ok("Importação de disciplinas realizada com sucesso! ");
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body("Erro na importação" + e.getMessage());
+        }
     }
 
 }

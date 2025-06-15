@@ -8,8 +8,13 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.projetoProvaTcc.mapper.QuestaoMapper;
+import org.springframework.web.multipart.MultipartFile;
 
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -305,4 +310,43 @@ public class QuestaoService {
     }
 
 
+    public void importarQuestoesViaCsv(MultipartFile file) throws Exception {
+
+        //buffer reader le o arquivo linha a linha
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+            List<Questao> questoes = new ArrayList<>();
+
+            String linha; //cada linha
+            boolean primeiraLinha = true; //para pular o cabeçalho
+
+            while ((linha = reader.readLine()) != null) { //enquanto ainda tiver linhas
+                if (primeiraLinha) { // se for a primeira linha, pulamos e continuamos
+                    primeiraLinha = false;
+                    continue;
+                }
+
+                String[] dados = linha.split(","); //cada linha é separada por vírgula
+
+                Questao questao = new Questao();
+                questao.setInstrucaoInicial(dados[0].replace("\"", ""));
+                questao.setSuporte(dados[1].replace("\"", ""));
+                questao.setComando(dados[2].replace("\"", ""));
+                questao.setNivel(NivelQuestao.valueOf(dados[3].trim()));
+                questao.setTipo(TipoQuestao.valueOf(dados[4].trim()));
+                questao.setValidada(Boolean.parseBoolean(dados[5].trim()));
+
+                Professor professor = professorRepository.findByMatricula(Integer.parseInt(dados[6]))
+                        .orElseThrow(() -> new ModelException("Professor não encontrado"));
+                questao.setProfessorValidador(professor);
+
+                questoes.add(questao);
+            }
+
+            questaoRepository.saveAll(questoes);
+        } catch (IOException e) {
+            throw new Exception("Erro ao ler o arquivo CSV", e);
+        } catch (Exception e) {
+            throw new Exception("Erro ao processar dados do CSV: " + e.getMessage(), e);
+        }
+    }
 }
