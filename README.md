@@ -127,6 +127,7 @@ http://localhost:8080/swagger-ui/index.html
   "validada": false,
   "conjTags": [1, 2],
   "conjOpcoes": [10, 11],
+  "matriculaProfessorValidador": 1001
 }
 ```
 
