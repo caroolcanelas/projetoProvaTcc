@@ -19,13 +19,9 @@ public class ProfessorDTO {
     private Long id;
     private String nome;
     private String email;
-    private String senha; //precisa ainda ?
     private Integer matricula;
 
     //relacionamento de professor com disciplina
     private List<Integer> conjDisciplinas;
-
-    //relacinamento com questao validado
-    private List<Questao> questoesValidadasIds; // IDs das questões validadas
 
 }

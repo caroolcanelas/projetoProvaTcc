@@ -17,15 +17,19 @@ public class ProfessorMapper {
         dto.setEmail(professor.getEmail());
         dto.setMatricula(professor.getMatricula());
 
+        // Mapeia apenas os IDs das disciplinas
         if (professor.getConjDisciplinas() != null) {
-            List<Integer> ids = professor.getConjDisciplinas().stream()
+            List<Integer> disciplinaIds = professor.getConjDisciplinas().stream()
                     .map(Disciplina::getId)
                     .collect(Collectors.toList());
-            dto.setConjDisciplinas(ids);
+            dto.setConjDisciplinas(disciplinaIds);
         }
+
+        // Questões validadas não são incluídas no DTO básico
+        // (são gerenciadas pelos endpoints específicos)
+
         return dto;
     }
-
 
     public static Professor toEntity(ProfessorDTO dto, List<Disciplina> disciplinas) throws ModelException {
         Professor professor = new Professor();
@@ -34,12 +38,14 @@ public class ProfessorMapper {
         professor.setEmail(dto.getEmail());
         professor.setMatricula(dto.getMatricula());
 
+        // Associa disciplinas (se fornecidas)
         if (disciplinas != null) {
             professor.setConjDisciplinas(disciplinas);
-            for (Disciplina d : disciplinas) {
-                d.setProfessor(professor);
-            }
+            disciplinas.forEach(d -> d.setProfessor(professor));
         }
+
+        // Questões validadas não são setadas na criação
+        // (são gerenciadas pelos endpoints específicos)
 
         return professor;
     }
