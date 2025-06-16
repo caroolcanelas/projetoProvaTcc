@@ -9,8 +9,11 @@ import com.projetoProvaTcc.exception.ModelException;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:5173")
@@ -106,6 +109,20 @@ public class ProfessorController {
             return ResponseEntity.ok("Login realizado com sucesso! Professor: " + professor.getNome());
         } catch (ModelException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Erro: " + e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Importa professores em lote via CSV")
+    @PostMapping(value = "/importar-csv", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> importarProfessores(@RequestParam("arquivo") MultipartFile file) {
+        try {
+            service.importarProfessoresViaCsv(file);
+            return ResponseEntity.ok("Professores importados com sucesso!");
+        } catch (ModelException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body("Falha na importação: " + e.getMessage());
         }
     }
 
