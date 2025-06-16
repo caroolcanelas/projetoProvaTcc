@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -76,6 +77,17 @@ public OpcaoDTO getPorId(@PathVariable int id){
             }
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Erro ao excluir Opção: " + e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Importa opções em lote via CSV")
+    @PostMapping("/importar-csv")
+    public ResponseEntity<String> importarOpcoes(@RequestParam("arquivo") MultipartFile file) {
+        try {
+            opcaoService.importarOpcoesViaCsv(file);
+            return ResponseEntity.ok("Opções importadas com sucesso!");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Falha na importação: " + e.getMessage());
         }
     }
 

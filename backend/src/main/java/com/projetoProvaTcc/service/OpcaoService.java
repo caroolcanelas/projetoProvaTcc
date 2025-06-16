@@ -11,7 +11,12 @@ import com.projetoProvaTcc.repository.RecursoRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -131,5 +136,33 @@ public class OpcaoService {
         Opcao opcao = repository.findById((long)id).orElse(null);
         if(opcao == null) return null;
         return OpcaoMapper.toDTO(opcao);
+    }
+
+    @Transactional
+    public void importarOpcoesViaCsv(MultipartFile file) throws Exception {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+            List<Opcao> opcoes = new ArrayList<>();
+            boolean primeiraLinha = true;
+
+            String linha;
+            while ((linha = reader.readLine()) != null) {
+                if (primeiraLinha) {
+                    primeiraLinha = false;
+                    continue; // Ignora cabeçalho
+                }
+
+                String[] dados = linha.split(","); // Formato: conteudo,correta (ex: "Texto da opção,true")
+                Opcao opcao = new Opcao();
+                opcao.setConteudo(dados[0].replace("\"", "").trim());
+                opcao.setCorreta(Boolean.parseBoolean(dados[1].replace("\"", "").trim()));
+
+                opcoes.add(opcao);
+            }
+            repository.saveAll(opcoes);
+        } catch (IOException e) {
+            throw new Exception("Erro ao ler arquivo CSV: " + e.getMessage());
+        } catch (ModelException e) {
+            throw new Exception("Erro de validação: " + e.getMessage());
+        }
     }
 }

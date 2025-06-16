@@ -64,6 +64,12 @@
 			<version>2.2.0</version> <!-- Use a versão estável mais recente -->
 		</dependency>
 
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-compress</artifactId>
+			<version>1.21</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
