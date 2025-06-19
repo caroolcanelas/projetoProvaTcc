@@ -56,9 +56,9 @@ public class TagController {
 
     @Operation(summary = "Atualiza parcialmente uma tag")
     @PatchMapping("/{id}")
-    public ResponseEntity<TagDTO> atualizarParcial(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
+    public ResponseEntity<TagDTO> atualizarParcial(@PathVariable Long id, @RequestBody TagDTO dto) {
         try {
-            TagDTO atualizado = tagService.atualizar(id, updates);
+            TagDTO atualizado = tagService.atualizar(id, dto);
             if (atualizado != null) {
                 return ResponseEntity.ok(atualizado);
             } else {

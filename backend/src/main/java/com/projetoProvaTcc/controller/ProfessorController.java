@@ -34,17 +34,20 @@ public class ProfessorController {
         }
     }
 
+    @Operation(summary = "Lista todos professores")
     @GetMapping
     public List<ProfessorDTO> listar() {
         return service.listarTodos();
     }
 
+    @Operation(summary = "Busca um professor especifico por id")
     @GetMapping("/{id}")
     public ResponseEntity<ProfessorDTO> buscarPorId(@PathVariable Long id) {
         ProfessorDTO dto = service.buscarPorId(id);
         return dto != null ? ResponseEntity.ok(dto) : ResponseEntity.notFound().build();
     }
 
+    @Operation(summary = "Exclui um professor pelo id")
     @DeleteMapping("/{id}")
     public ResponseEntity<ProfessorDTO> deletar(@PathVariable Long id) {
         return service.deletarPorId(id) ?
@@ -52,6 +55,7 @@ public class ProfessorController {
                 ResponseEntity.notFound().build();
     }
 
+    @Operation(summary = "Adiciona uma disciplina ja existente a um professor")
     @PostMapping("/{id}/disciplinas/{disciplinaId}")
     public ResponseEntity<?> adicionarDisciplina(
             @PathVariable Long id,
@@ -64,6 +68,7 @@ public class ProfessorController {
         }
     }
 
+    @Operation(summary = "Remove uma disciplina do professor")
     @DeleteMapping("/{id}/disciplinas/{disciplinaId}")
     public ResponseEntity<?> removerDisciplina(
             @PathVariable Long id,
@@ -76,6 +81,7 @@ public class ProfessorController {
         }
     }
 
+    @Operation(summary = "Realiza login com professor existente")
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
         try {

@@ -1,5 +1,6 @@
 package com.projetoProvaTcc.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,13 +12,18 @@ import java.util.List;
 @NoArgsConstructor // Gera construtor sem argumentos
 @AllArgsConstructor //Gera construtor com argumentos
 public class TagDTO {
+
+    @Schema(hidden = true)
     private int id;
+
     private String tagName;
     private String assunto;
 
     //relaciona pelo id da questao
+    @Schema(hidden = true)
     private List<Integer> conjQuestoes = new ArrayList<>();
 
     //relaciona pelo nome do topico pra deixar mais fácil
+    @Schema(hidden = true)
     private List<String> conjTopicosAderentes = new ArrayList<>();
 }
