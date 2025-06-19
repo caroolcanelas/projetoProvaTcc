@@ -127,8 +127,17 @@ http://localhost:8080/swagger-ui/index.html
   "nivel": "FACIL",
   "tipo": "RESPOSTA_UNICA",
   "validada": false,
-  "conjTags": [1, 2],
-  "conjOpcoes": [10, 11],
+    "conjOpcoes": [
+    {
+      "conteudo": "string",
+      "correta": true
+    }
+  ],
+"conjTags":[
+{
+  "tagName": "Matemática",
+  "assunto": "Ciências matemáticas"
+}],
   "matriculaProfessorValidador": 1001
 }
 ```
