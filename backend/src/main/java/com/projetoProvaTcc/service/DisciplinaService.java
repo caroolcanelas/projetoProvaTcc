@@ -10,7 +10,12 @@ import com.projetoProvaTcc.repository.TopicoRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -160,5 +165,42 @@ public class DisciplinaService {
         Disciplina disciplina = repository.findById((long) id).orElse(null);
         if (disciplina == null) return null;
         return DisciplinaMapper.toDTO(disciplina);
+    }
+
+    //import em batch
+    public void importarDisiplinasViaCsv(MultipartFile file) throws Exception {
+
+        try(BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))){
+            List<Disciplina> disciplinas = new ArrayList<>();
+
+            String linha;
+            boolean primeiraLinha = true;
+
+            while ((linha = reader.readLine()) != null) {
+                if (primeiraLinha) {
+                    primeiraLinha = false;
+                    continue;
+                }
+
+
+                String[] dados = linha.split(",");
+
+                Disciplina disciplina = new Disciplina();
+                disciplina.setCodigo(dados[0].replace("\"", ""));
+                disciplina.setNome(dados[1].replace("\"", ""));
+                disciplina.setNumCreditos(Integer.parseInt(dados[2].replace("\"", "")));
+                disciplina.setObjetivoGeral(dados[3].replace("\"", ""));
+
+                disciplinas.add(disciplina);
+            }
+
+            repository.saveAll(disciplinas);
+        } catch (IOException e){
+            throw new Exception("Erro ao ler o arquivo CSV", e);
+        } catch (Exception e){
+            throw new Exception("Erro ao processar dados do CSV: " + e.getMessage(), e);
+
+        }
+
     }
 }

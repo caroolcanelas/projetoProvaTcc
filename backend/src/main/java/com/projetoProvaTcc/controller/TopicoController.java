@@ -6,8 +6,10 @@ import com.projetoProvaTcc.service.TopicoService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -45,6 +47,7 @@ public class TopicoController {
             return ResponseEntity.status(500).build();    }
     }
 
+    @Operation(summary = "Atualiza parcialmente um tópico")
     @PatchMapping("/{id}")
     public ResponseEntity<?> atualizarParcial(@PathVariable int id, @RequestBody TopicoDTO dto) {
         try {
@@ -118,4 +121,15 @@ public class TopicoController {
         }
     }
 
+    //import batch de topicos via csv
+    @Operation(summary = "Faz o upload em batch de tópicos")
+    @PostMapping(value = "/importar-csv",  consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> importarTopicosViaCsv(@RequestParam("arquivo") MultipartFile file) {
+        try {
+            topicoService.importarTopicosViaCsv(file);
+            return ResponseEntity.ok("Importação de tópicos realizada com sucesso!");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Erro na importação: " + e.getMessage());
+        }
+    }
 }

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data // Gera getters, setters, toString, equals e hashCode
@@ -19,8 +20,8 @@ public class TopicoDTO {
     private Integer disciplina;
 
     //retornant apenas id de subtopico
-    private List<Integer> conjSubTopicos; //recursivo também :x
+    private List<Integer> conjSubTopicos = new ArrayList<>(); //recursivo também :x
 
     //retornar o nome da tag
-    private List<String> conjTags;
+    private List<String> conjTags= new ArrayList<>();
 }

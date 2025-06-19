@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/recursos")
+@CrossOrigin(origins = "*")
 public class RecursoController {
 
     @Autowired
@@ -21,7 +22,7 @@ public class RecursoController {
 
     // Upload
     @Operation(summary = "Adiciona um recurso")
-    @PostMapping("/upload")
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<RecursoDTO> upload(@RequestParam("arquivo") MultipartFile file) {
         try {
             RecursoDTO recursoDTO = recursoService.salvarArquivo(file);
@@ -73,6 +74,23 @@ public class RecursoController {
             return ResponseEntity.ok("Questão atualizada parcialmente!");
         } catch (ModelException e) {
             return ResponseEntity.badRequest().body("Erro: " + e.getMessage());
+        }
+    }
+
+    //Todos os arquivos contidos no CSV, devem existir no ZIP
+    @Operation(summary = "Importa recursos em lote via CSV e ZIP")
+    @PostMapping(value = "/importar-lote", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> importarRecursosEmLote(
+            @RequestParam("csv") MultipartFile csvFile,
+            @RequestParam("zip") MultipartFile zipFile
+    ) {
+        try {
+            recursoService.importarRecursosViaCsv(csvFile, zipFile);
+            return ResponseEntity.ok("Recursos importados com sucesso!");
+        } catch (ModelException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Erro durante a importação: " + e.getMessage());
         }
     }
 

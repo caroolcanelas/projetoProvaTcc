@@ -13,7 +13,12 @@ import com.projetoProvaTcc.repository.QuestaoRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -151,5 +156,37 @@ public class ProfessorService {
         return professor;
     }
 
+    @Transactional
+    public void importarProfessoresViaCsv(MultipartFile file) throws Exception {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+            List<Professor> professores = new ArrayList<>();
+            boolean primeiraLinha = true;
+
+            String linha;
+            while ((linha = reader.readLine()) != null) {
+                if (primeiraLinha) {
+                    primeiraLinha = false;
+                    continue; // Ignora cabeçalho
+                }
+
+                String[] dados = linha.split(","); // Formato: nome,email,matricula
+                if (dados.length < 3) {
+                    throw new ModelException("Linha inválida no CSV: " + linha);
+                }
+
+                Professor professor = new Professor();
+                professor.setEmail(dados[0].trim());
+                professor.setMatricula(Integer.parseInt(dados[1].trim()));
+                professor.setNome(dados[2].trim());
+                professor.setSenha(dados[3].trim());
+                professores.add(professor);
+            }
+            professorRepository.saveAll(professores);
+        } catch (IOException | ModelException e) {
+            throw new Exception("Erro na importação: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            throw new ModelException("Matrícula deve ser um número inteiro");
+        }
+    }
 
 }

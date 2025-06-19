@@ -1,9 +1,7 @@
 package com.projetoProvaTcc.service;
 
 import com.projetoProvaTcc.dto.TopicoDTO;
-import com.projetoProvaTcc.entity.Disciplina;
-import com.projetoProvaTcc.entity.Tag;
-import com.projetoProvaTcc.entity.Topico;
+import com.projetoProvaTcc.entity.*;
 import com.projetoProvaTcc.exception.ModelException;
 import com.projetoProvaTcc.mapper.TopicoMapper;
 import com.projetoProvaTcc.repository.DisciplinaRepository;
@@ -12,7 +10,12 @@ import com.projetoProvaTcc.repository.TopicoRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -222,4 +225,37 @@ public class TopicoService {
 
     }
 
+    public void importarTopicosViaCsv(MultipartFile file) throws Exception {
+
+        //buffer reader le o arquivo linha a linha
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+            List<Topico> topicos = new ArrayList<>();
+
+            String linha; //cada linha
+            boolean primeiraLinha = true; //para pular o cabeçalho
+
+            while ((linha = reader.readLine()) != null) { //enquanto ainda tiver linhas
+                if (primeiraLinha) { // se for a primeira linha, pulamos e continuamos
+                    primeiraLinha = false;
+                    continue;
+                }
+
+                String[] dados = linha.split(","); //cada linha é separada por vírgula
+
+                Topico topico = new Topico();
+                topico.setNumOrdem(Integer.parseInt(dados[0].replace("\"", "")));
+                topico.setNome(dados[1].replace("\"", ""));
+                topico.setConteudo(dados[2].replace("\"", ""));
+
+
+                topicos.add(topico);
+            }
+
+            topicoRepository.saveAll(topicos);
+        } catch (IOException e) {
+            throw new Exception("Erro ao ler o arquivo CSV", e);
+        } catch (Exception e) {
+            throw new Exception("Erro ao processar dados do CSV: " + e.getMessage(), e);
+        }
+    }
 }

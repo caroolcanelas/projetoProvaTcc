@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -18,6 +19,6 @@ public class DisciplinaDTO {
     private String objetivoGeral;
 
     //relaciona pelo id de topico
-    private List<Integer> conjTopicos; // relacionamento bidirecional
+    private List<Integer> conjTopicos = new ArrayList<>(); // relacionamento bidirecional
 
 }
