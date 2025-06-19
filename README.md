@@ -124,11 +124,20 @@ http://localhost:8080/swagger-ui/index.html
   "instrucaoInicial": "Leia o texto abaixo...",
   "suporte": "Imagem ou texto de apoio",
   "comando": "Responda corretamente",
-  "nivel": "BASICA",
-  "tipo": "MULTIPLA_ESCOLHA",
+  "nivel": "FACIL",
+  "tipo": "RESPOSTA_UNICA",
   "validada": false,
-  "conjTags": [1, 2],
-  "conjOpcoes": [10, 11],
+    "conjOpcoes": [
+    {
+      "conteudo": "string",
+      "correta": true
+    }
+  ],
+"conjTags":[
+{
+  "tagName": "Matemática",
+  "assunto": "Ciências matemáticas"
+}],
   "matriculaProfessorValidador": 1001
 }
 ```
