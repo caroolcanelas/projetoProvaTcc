@@ -169,15 +169,16 @@ public class ProfessorService {
                     continue; // Ignora cabeçalho
                 }
 
-                String[] dados = linha.split(","); // Formato: nome,email,matricula,senha
-                if (dados.length < 4) {
+                String[] dados = linha.split(","); // Formato: nome,email,matricula
+                if (dados.length < 3) {
                     throw new ModelException("Linha inválida no CSV: " + linha);
                 }
 
                 Professor professor = new Professor();
-                professor.setNome(dados[0].trim());
-                professor.setEmail(dados[1].trim());
-                professor.setMatricula(Integer.parseInt(dados[2].trim()));
+                professor.setEmail(dados[0].trim());
+                professor.setMatricula(Integer.parseInt(dados[1].trim()));
+                professor.setNome(dados[2].trim());
+                professor.setSenha(dados[3].trim());
                 professores.add(professor);
             }
             professorRepository.saveAll(professores);

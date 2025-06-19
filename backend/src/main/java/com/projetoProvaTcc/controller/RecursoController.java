@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/recursos")
+@CrossOrigin(origins = "*")
 public class RecursoController {
 
     @Autowired
@@ -76,6 +77,7 @@ public class RecursoController {
         }
     }
 
+    //Todos os arquivos contidos no CSV, devem existir no ZIP
     @Operation(summary = "Importa recursos em lote via CSV e ZIP")
     @PostMapping(value = "/importar-lote", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> importarRecursosEmLote(

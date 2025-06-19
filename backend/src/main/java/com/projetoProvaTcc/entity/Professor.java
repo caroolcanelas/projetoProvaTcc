@@ -19,8 +19,6 @@ public class Professor {
 	final public static int TAMANHO_MAXIMO_NOME = 40;
 	final public static int TAMANHO_MAXIMO_EMAIL = 100;
 	final public static int TAMANHO_MAXIMO_MATR = 10;
-	final public static int TAMANHO_MAXIMO_SENHA = 10;
-
 
 	final private static String _REGEX_EMAIL = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
 	                                         + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
@@ -46,7 +44,7 @@ public class Professor {
 	private String email;
 
 	@Getter
-	@Column(nullable = false, length = TAMANHO_MAXIMO_SENHA)
+	@Column(nullable = false, length = 10)
 	private String senha;
 
     //conjDisciplinas
@@ -81,11 +79,11 @@ public class Professor {
 	}
 
 
-	public long getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -104,7 +102,7 @@ public class Professor {
 		this.email = email;
 	}
 
-	private void setSenha(String senha) throws ModelException {
+	public void setSenha(String senha) throws ModelException {
 		Professor.validarSenha(senha);
 		this.senha = senha;
 	}
@@ -164,8 +162,8 @@ public class Professor {
 	public static void validarSenha(String senha) throws ModelException {
 		if (senha == null || senha.length() == 0)
 			throw new ModelException("A senha não pode ser nula!");
-        if(senha.length() > TAMANHO_MAXIMO_SENHA)
-			throw new ModelException("A quantidade de caracter da senha não pode ultrapassar a " + TAMANHO_MAXIMO_SENHA);
+        if(senha.length() > 10)
+			throw new ModelException("A quantidade de caracter da senha não pode ultrapassar a " + 10);
 	}
 
 

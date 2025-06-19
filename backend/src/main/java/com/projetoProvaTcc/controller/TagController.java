@@ -5,6 +5,7 @@ import com.projetoProvaTcc.service.TagService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -85,7 +86,7 @@ public class TagController {
 
     //import batch de tags via csv
     @Operation(summary = "Faz o upload em batch de tags")
-    @PostMapping("/importar-csv")
+    @PostMapping(value = "/importar-csv",  consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> importarTagsViaCsv(@RequestParam("arquivo") MultipartFile file) {
         try {
             tagService.importarTagsViaCsv(file);

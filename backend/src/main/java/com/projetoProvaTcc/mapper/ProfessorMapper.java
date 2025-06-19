@@ -15,6 +15,7 @@ public class ProfessorMapper {
         dto.setId(professor.getId());
         dto.setNome(professor.getNome());
         dto.setEmail(professor.getEmail());
+        dto.setSenha(professor.getSenha());
         dto.setMatricula(professor.getMatricula());
 
         // Mapeia apenas os IDs das disciplinas
@@ -36,6 +37,7 @@ public class ProfessorMapper {
         professor.setId(dto.getId());
         professor.setNome(dto.getNome());
         professor.setEmail(dto.getEmail());
+        professor.setSenha(dto.getSenha());
         professor.setMatricula(dto.getMatricula());
 
         // Associa disciplinas (se fornecidas)

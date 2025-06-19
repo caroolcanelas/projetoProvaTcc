@@ -6,6 +6,7 @@ import com.projetoProvaTcc.service.TopicoService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -122,7 +123,7 @@ public class TopicoController {
 
     //import batch de topicos via csv
     @Operation(summary = "Faz o upload em batch de tópicos")
-    @PostMapping("/importar-csv")
+    @PostMapping(value = "/importar-csv",  consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> importarTopicosViaCsv(@RequestParam("arquivo") MultipartFile file) {
         try {
             topicoService.importarTopicosViaCsv(file);
