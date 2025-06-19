@@ -22,7 +22,7 @@ public class RecursoController {
 
     // Upload
     @Operation(summary = "Adiciona um recurso")
-    @PostMapping("/upload")
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<RecursoDTO> upload(@RequestParam("arquivo") MultipartFile file) {
         try {
             RecursoDTO recursoDTO = recursoService.salvarArquivo(file);

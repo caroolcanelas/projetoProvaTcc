@@ -76,32 +76,6 @@ public class ProfessorController {
         }
     }
 
-    // Endpoint para adicionar uma questão a um professor
-    @PostMapping("/{matricula}/questoes/{idQuestao}")
-    public ResponseEntity<String> adicionarQuestao(
-            @PathVariable int matricula,
-            @PathVariable Long idQuestao) {
-        try {
-            service.adicionarQuestaoAProfessor(matricula, idQuestao);
-            return ResponseEntity.ok("Questão adicionada ao professor com sucesso.");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Erro: " + e.getMessage());
-        }
-    }
-
-    // Endpoint para remover uma questão de um professor
-    @DeleteMapping("/{matricula}/questoes/{idQuestao}")
-    public ResponseEntity<String> removerQuestao(
-            @PathVariable int matricula,
-            @PathVariable Long idQuestao) {
-        try {
-            service.removerQuestaoDeProfessor(matricula, idQuestao);
-            return ResponseEntity.ok("Questão removida do professor com sucesso.");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Erro: " + e.getMessage());
-        }
-    }
-
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
         try {
