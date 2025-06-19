@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data // Gera getters, setters, toString, equals e hashCode
@@ -15,8 +16,8 @@ public class TagDTO {
     private String assunto;
 
     //relaciona pelo id da questao
-    private List<Integer> conjQuestoes;
+    private List<Integer> conjQuestoes = new ArrayList<>();
 
     //relaciona pelo nome do topico pra deixar mais fácil
-    private List<String> conjTopicosAderentes;
+    private List<String> conjTopicosAderentes = new ArrayList<>();
 }

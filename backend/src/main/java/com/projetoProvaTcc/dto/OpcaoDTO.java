@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data // Gera getters, setters, toString, equals e hashCode
@@ -15,9 +16,7 @@ public class OpcaoDTO {
     private Boolean correta;
 
     //relaciona pelo recurso
-    private List<RecursoDTO> conjRecursos;
-
-
+    private List<RecursoDTO> conjRecursos = new ArrayList<>();
 }
 
 
