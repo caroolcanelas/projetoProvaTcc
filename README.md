@@ -125,7 +125,7 @@ http://localhost:8080/swagger-ui/index.html
   "suporte": "Imagem ou texto de apoio",
   "comando": "Responda corretamente",
   "nivel": "FACIL",
-  "tipo": "MULTIPLA_ESCOLHA",
+  "tipo": "RESPOSTA_UNICA",
   "validada": false,
   "conjTags": [1, 2],
   "conjOpcoes": [10, 11],
