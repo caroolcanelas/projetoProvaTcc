@@ -148,6 +148,47 @@ public class TagService {
         }
     }
 
+    @Transactional
+    public void adicionarTopicosNaTag(String nomeTag, List<String> nomesTopicos) throws ModelException {
+        List<Tag> tags = repository.findAllByTagNameIn(List.of(nomeTag));
+        if (tags.isEmpty()) {
+            throw new ModelException("Tag não encontrada com o nome: " + nomeTag);
+        }
+        Tag tag = tags.get(0);
+
+        List<Topico> topicos = topicoRepository.findAllByNomeIn(nomesTopicos);
+        if (topicos.isEmpty()) {
+            throw new ModelException("Nenhum tópico encontrado com os nomes fornecidos.");
+        }
+
+        for (Topico topico : topicos) {
+            if (!tag.getConjTopicosAderentes().contains(topico)) {
+                tag.getConjTopicosAderentes().add(topico);
+            }
+        }
+
+        repository.save(tag);
+    }
+
+    @Transactional
+    public void removerTopicosDaTag(String nomeTag, List<String> nomesTopicos) throws ModelException {
+        List<Tag> tags = repository.findAllByTagNameIn(List.of(nomeTag));
+        if (tags.isEmpty()) {
+            throw new ModelException("Tag não encontrada com o nome: " + nomeTag);
+        }
+        Tag tag = tags.get(0);
+
+        List<Topico> topicos = topicoRepository.findAllByNomeIn(nomesTopicos);
+        if (topicos.isEmpty()) {
+            throw new ModelException("Nenhum tópico encontrado com os nomes fornecidos.");
+        }
+
+        tag.getConjTopicosAderentes().removeAll(topicos);
+
+        repository.save(tag);
+    }
+
+
 
     public void importarTagsViaCsv(MultipartFile file) throws Exception {
         //buffer reader le o arquivo linha a linha

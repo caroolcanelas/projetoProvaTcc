@@ -99,6 +99,8 @@ public class TagController {
         }
     }
 
+
+    //remover questao de tag
     @Operation(summary = "Remove uma questão da  tag")
     @DeleteMapping("/remove-questao/{idQuestao}")
     public ResponseEntity<String> removerQuestaoDasTags(
@@ -112,6 +114,31 @@ public class TagController {
         }
     }
 
+    @Operation(summary = "Adiciona tópicos na tag informada")
+    @PostMapping("/{nomeTag}/add-topicos")
+    public ResponseEntity<String> adicionarTopicosNaTag(
+            @PathVariable String nomeTag,
+            @RequestBody List<String> nomesTopicos) {
+        try {
+            tagService.adicionarTopicosNaTag(nomeTag, nomesTopicos);
+            return ResponseEntity.ok("Tópicos adicionados na tag com sucesso!");
+        } catch (ModelException e) {
+            return ResponseEntity.badRequest().body("Erro: " + e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Remove tópicos da tag informada")
+    @DeleteMapping("/{nomeTag}/remove-topicos")
+    public ResponseEntity<String> removerTopicosDaTag(
+            @PathVariable String nomeTag,
+            @RequestBody List<String> nomesTopicos) {
+        try {
+            tagService.removerTopicosDaTag(nomeTag, nomesTopicos);
+            return ResponseEntity.ok("Tópicos removidos da tag com sucesso!");
+        } catch (ModelException e) {
+            return ResponseEntity.badRequest().body("Erro: " + e.getMessage());
+        }
+    }
 
 
     //import batch de tags via csv
