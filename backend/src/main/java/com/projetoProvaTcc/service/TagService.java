@@ -108,6 +108,47 @@ public class TagService {
         return false;
     }
 
+    @Transactional
+    public void adicionarQuestaoNaTag(List<String> nomesTags, int idQuestao) throws ModelException {
+
+        List<Tag> tags = repository.findAllByTagNameIn(nomesTags);
+        if (tags.isEmpty()) {
+            throw new ModelException("Nenhuma tag encontrada com os nomes fornecidos.");
+        }
+        Questao questao = questaoRepository.findById((long) idQuestao)
+                .orElseThrow(() -> new ModelException("Questão não encontrada com ID: " + idQuestao));
+
+        for (Tag tag : tags) {
+            if (!tag.getConjQuestoes().contains(questao)) {
+                tag.getConjQuestoes().add(questao);
+                questao.getConjTags().add(tag);
+                questaoRepository.save(questao);
+            }
+        }
+    }
+
+    @Transactional
+    public void removerQuestaoDasTags(List<String> nomesTags, int idQuestao) throws ModelException {
+        List<Tag> tags = repository.findAllByTagNameIn(nomesTags);
+        if (tags.isEmpty()) {
+            throw new ModelException("Nenhuma tag encontrada com os nomes fornecidos.");
+        }
+
+        Questao questao = questaoRepository.findById((long) idQuestao)
+                .orElseThrow(() -> new ModelException("Questão não encontrada com ID: " + idQuestao));
+
+        for (Tag tag : tags) {
+            if (tag.getConjQuestoes().contains(questao)) {
+                // Remove dos dois lados
+                tag.getConjQuestoes().remove(questao);
+                questao.getConjTags().remove(tag);
+
+                questaoRepository.save(questao);
+            }
+        }
+    }
+
+
     public void importarTagsViaCsv(MultipartFile file) throws Exception {
         //buffer reader le o arquivo linha a linha
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {

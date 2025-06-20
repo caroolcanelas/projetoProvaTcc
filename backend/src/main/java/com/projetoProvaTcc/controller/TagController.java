@@ -1,6 +1,7 @@
 package com.projetoProvaTcc.controller;
 
 import com.projetoProvaTcc.dto.TagDTO;
+import com.projetoProvaTcc.exception.ModelException;
 import com.projetoProvaTcc.service.TagService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,6 +84,35 @@ public class TagController {
             return ResponseEntity.status(500).body("Erro ao excluir Tag: " + e.getMessage());
         }
     }
+
+    //adiciona questao na tag
+    @Operation(summary = "Adiciona uma questão a tag")
+    @PostMapping("/add-questao/{idQuestao}")
+    public ResponseEntity<String> adicionarQuestaoNasTags(
+            @RequestBody List<String> nomesTags,
+            @PathVariable int idQuestao) {
+        try {
+            tagService.adicionarQuestaoNaTag(nomesTags, idQuestao);
+            return ResponseEntity.ok("Questão adicionada às tags com sucesso!");
+        } catch (ModelException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Remove uma questão da  tag")
+    @DeleteMapping("/remove-questao/{idQuestao}")
+    public ResponseEntity<String> removerQuestaoDasTags(
+            @RequestBody List<String> nomesTags,
+            @PathVariable int idQuestao) {
+        try {
+            tagService.removerQuestaoDasTags(nomesTags, idQuestao);
+            return ResponseEntity.ok("Questão removida das tags com sucesso!");
+        } catch (ModelException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+
 
     //import batch de tags via csv
     @Operation(summary = "Faz o upload em batch de tags")
