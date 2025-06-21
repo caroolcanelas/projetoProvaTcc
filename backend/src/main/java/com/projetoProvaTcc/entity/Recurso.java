@@ -21,6 +21,9 @@ public class Recurso { //TODO já conferido
 	@Column(name = "conteudo", columnDefinition = "LONGBLOB")
 	private byte[] conteudo;
 
+	private String nomeArquivo;
+	private String tipoArquivo;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "opcao_id")  // Aqui cria a FK!
 	private Opcao opcao;
@@ -68,14 +71,17 @@ public class Recurso { //TODO já conferido
 		this.id = id;
 	}
 
-	public byte[] getConteudo() {
-		return this.conteudo;
-	}
-
+	public byte[] getConteudo() { return conteudo; }
 	public void setConteudo(byte[] conteudo) throws ModelException {
-		Recurso.validarConteudo(conteudo);
+		validarConteudo(conteudo);
 		this.conteudo = conteudo;
 	}
+
+	public String getNomeArquivo() { return nomeArquivo; }
+	public void setNomeArquivo(String nomeArquivo) { this.nomeArquivo = nomeArquivo; }
+
+	public String getTipoArquivo() { return tipoArquivo; }
+	public void setTipoArquivo(String tipoArquivo) { this.tipoArquivo = tipoArquivo; }
 
 	public static void validarConteudo(byte[] conteudo) throws ModelException {
 		if (conteudo == null || conteudo.length == 0)

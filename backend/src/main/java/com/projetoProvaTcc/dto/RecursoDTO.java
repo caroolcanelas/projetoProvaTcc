@@ -17,6 +17,4 @@ public class RecursoDTO {
     private int id;
     private byte[] conteudo;
 
-    public RecursoDTO(int id) {
-    }
 }

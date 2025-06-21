@@ -4,6 +4,7 @@ import com.projetoProvaTcc.dto.RecursoDTO;
 import com.projetoProvaTcc.entity.Opcao;
 import com.projetoProvaTcc.entity.Recurso;
 import com.projetoProvaTcc.exception.ModelException;
+import com.projetoProvaTcc.mapper.RecursoMapper;
 import com.projetoProvaTcc.repository.OpcaoRepository;
 import com.projetoProvaTcc.repository.RecursoRepository;
 import jakarta.transaction.Transactional;
@@ -30,15 +31,22 @@ public class RecursoService {
     @Autowired
     private OpcaoRepository opcaoRepository;
 
-    public RecursoDTO salvarArquivo(MultipartFile file) throws IOException, ModelException {
-        byte[] conteudo = file.getBytes();
+    @Autowired
+    private RecursoMapper recursoMapper;
+
+    public RecursoDTO salvarArquivo(MultipartFile file) throws Exception {
+
+        //conferir se o arquivo é vazio
+        if (file.isEmpty()) {
+            throw new Exception("Arquivo vazio");
+        }
 
         Recurso recurso = new Recurso();
-        recurso.setConteudo(conteudo); // aqui já valida se está vazio
+        recurso.setConteudo(file.getBytes());
 
         recurso = recursoRepository.save(recurso);
 
-        return new RecursoDTO(recurso.getId()); // só retorna ID
+        return recursoMapper.toDTO(recurso);
     }
 
     public byte[] buscarConteudoPorId(int id) throws Exception {
