@@ -40,7 +40,7 @@ public class Disciplina { // TODO já conferido
     //
     // ATRIBUTOS DE RELACIONAMENTO
     // 
-    @OneToMany(mappedBy = "disciplina", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "disciplina", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Topico> conjTopicos; // relacionamento bidirecional
 
@@ -132,9 +132,13 @@ public class Disciplina { // TODO já conferido
 		Disciplina.validarTopico(topico);
 		return this.conjTopicos.add(topico);
 	}
-	
+
 	public boolean removeTopico(Topico topico) throws ModelException {
-		return this.conjTopicos.remove(topico);
+        boolean removed = this.conjTopicos.remove(topico);
+        if (removed) {
+            topico.setDisciplina(null);  // 🔥 ISSO É OBRIGATÓRIO!
+        }
+        return removed;
 	}
 	
 	// Métodos de validação
@@ -161,7 +165,7 @@ public class Disciplina { // TODO já conferido
                     TAMANHO_MAXIMO_NOME + " caracteres!");
         for (int i = 0; i < nome.length(); i++) {
             char c = nome.charAt(i);
-            if( !Character.isAlphabetic(c) && !Character.isSpaceChar(c) && c != '\'')
+            if( !Character.isAlphabetic(c) && !Character.isDigit(c) && !Character.isSpaceChar(c) && c != '\'')
                 throw new ModelException("O caracter na posição " + i + " é inválido: " + c);
         }
     }

@@ -100,6 +100,7 @@ public class DisciplinaService {
                     })
                     .collect(Collectors.toList());
 
+            // Atualiza o vínculo de cada tópico com a disciplina
             for (Topico t : topicos) {
                 t.setDisciplina(disciplina);
             }
