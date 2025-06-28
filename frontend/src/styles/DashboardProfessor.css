@@ -157,3 +157,76 @@
   gap: 0.5rem;
   margin-bottom: 0.5rem;
 }
+
+.btn-ver-questoes {
+  margin-left: 10px;
+  background-color: #5b8def;
+  color: white;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.lista-questoes {
+  margin-top: 30px;
+  background-color: #f7f7f7;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.questao-item {
+  margin-bottom: 15px;
+  padding: 10px;
+  border-bottom: 1px dashed #ccc;
+}
+
+.grid-questoes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.questao-card {
+  background: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 18px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+
+.questao-campo {
+  margin-bottom: 12px;
+}
+
+.questao-campo strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #444;
+}
+
+.questao-campo > div,
+.questao-campo ul {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 8px;
+}
+
+.questao-lista {
+  list-style: disc;
+  margin-left: 20px;
+  padding-left: 5px;
+}
+
+.questao-meta {
+  margin-top: 12px;
+}
+
+.questao-meta small {
+  display: inline-block;
+  margin-right: 16px;
+  color: #666;
+}
