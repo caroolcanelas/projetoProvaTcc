@@ -76,6 +76,7 @@ public class DisciplinaController {
             } else {
                 return ResponseEntity.status(404).body("Disciplina com ID " + id + " não encontrada.");
             }
+
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Erro ao excluir disciplina: " + e.getMessage());
         }

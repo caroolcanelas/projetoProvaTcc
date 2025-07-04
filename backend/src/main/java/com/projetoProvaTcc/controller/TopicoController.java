@@ -4,6 +4,9 @@ import com.projetoProvaTcc.dto.TopicoDTO;
 import com.projetoProvaTcc.exception.ModelException;
 import com.projetoProvaTcc.service.TopicoService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,6 +25,20 @@ public class TopicoController {
 
     @Operation(summary = "Cria um tópico")
     @PostMapping
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = TopicoDTO.class),
+                    examples = @ExampleObject(value = """
+            {
+              "numOrdem": 0,
+              "nome": "string",
+              "conteudo": "string",
+              "disciplina": 0
+            }
+        """)
+            )
+    )
     public ResponseEntity<TopicoDTO> criarTopico(@RequestBody TopicoDTO topicoDTO) {
         try {
             TopicoDTO salva = topicoService.salvar(topicoDTO);
@@ -62,7 +79,20 @@ public class TopicoController {
 
     @Operation(summary = "Adiciona SubTópico em tópico")
     @PostMapping("/{idTopico}/subTopico")
-    public ResponseEntity<?> adicionaSubTopico(@PathVariable int idTopico, @RequestBody TopicoDTO dto) throws ModelException{
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = TopicoDTO.class),
+                    examples = @ExampleObject(value = """
+            {
+              "conjSubTopicos": [0]
+            }
+        """)
+            )
+    )
+    public ResponseEntity<?> adicionaSubTopico(
+            @PathVariable int idTopico,
+            @RequestBody TopicoDTO dto) throws ModelException {
         try {
             topicoService.adicionarSubTopicoEmTopico(idTopico, dto.getConjSubTopicos());
             return ResponseEntity.ok().body("Subtópicos adicionados com sucesso!");
@@ -70,7 +100,6 @@ public class TopicoController {
             return ResponseEntity.badRequest().body("Erro: " + e.getMessage());
         }
     }
-
 
     @Operation(summary = "Remove um subtópico de um tópico")
     @DeleteMapping("/{idTopico}/subtopico/{idSubtopico}")
@@ -98,9 +127,19 @@ public class TopicoController {
     //add e remove de tag
     @Operation(summary = "Adiciona tag no topico")
     @PostMapping("/{idTopico}/addTag")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = TopicoDTO.class),
+                    examples = @ExampleObject(value = """
+            {
+              "conjTags": [0]
+            }
+        """)
+            )
+    )
     public ResponseEntity<?> adicionarTags(@PathVariable int idTopico, @RequestBody TopicoDTO dto) {
         try {
-            System.out.println(">>> CHAMOU O ENDPOINT adicionarTags <<<");
             topicoService.adicionarTagsAoTopico(idTopico, dto.getConjTags());
             return ResponseEntity.ok().body("Tags adicionadas com sucesso!");
         } catch (Exception e) {
