@@ -49,7 +49,13 @@ export default function DashboardProfessor() {
         <div className="conteudo-formulario">
           <div className="form-actions">
             <h2 className="titulo">Ações Rápidas</h2>
-            <button onClick={() => setMostrarFormulario(true)} className="btn-adicionar">
+            <button
+              onClick={() => {
+                setMostrarFormulario(true);
+                setMostrarQuestoes(false);
+              }}
+              className="btn-adicionar"
+            >
               Adicionar nova questão
             </button>
             <button
