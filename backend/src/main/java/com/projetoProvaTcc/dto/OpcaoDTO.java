@@ -20,6 +20,7 @@ public class OpcaoDTO {
     private Boolean correta;
 
     //relaciona pelo recurso
+    @Schema(hidden = true)
     private List<RecursoDTO> conjRecursos = new ArrayList<>();
 }
 

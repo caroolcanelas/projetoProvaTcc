@@ -23,6 +23,7 @@ public class ProfessorDTO {
 
 
     //relacionamento de professor com disciplina
+    @Schema(hidden = true)
     private List<Integer> conjDisciplinas = new ArrayList<>();;
 
 }

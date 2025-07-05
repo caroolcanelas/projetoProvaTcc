@@ -24,8 +24,10 @@ public class TopicoDTO {
     private Integer disciplina;
 
     //retornant apenas id de subtopico
+    @Schema(hidden = true)
     private List<Integer> conjSubTopicos = new ArrayList<>(); //recursivo também :x
 
     //retornar o nome da tag
+    @Schema(hidden = true)
     private List<String> conjTags= new ArrayList<>();
 }

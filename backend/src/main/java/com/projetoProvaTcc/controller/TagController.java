@@ -1,8 +1,8 @@
 package com.projetoProvaTcc.controller;
 
 import com.projetoProvaTcc.dto.TagDTO;
-import com.projetoProvaTcc.dto.TopicoDTO;
 import com.projetoProvaTcc.exception.ModelException;
+import com.projetoProvaTcc.dto.TopicoDTO;
 import com.projetoProvaTcc.service.TagService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("api/tag")
 public class TagController {

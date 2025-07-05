@@ -20,8 +20,10 @@ public class TagDTO {
     private String assunto;
 
     //relaciona pelo id da questao
+    @Schema(hidden = true)
     private List<Integer> conjQuestoes = new ArrayList<>();
 
     //relaciona pelo nome do topico pra deixar mais fácil
+    @Schema(hidden = true)
     private List<String> conjTopicosAderentes = new ArrayList<>();
 }
