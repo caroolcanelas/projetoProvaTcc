@@ -56,8 +56,12 @@ public class QuestaoController {
 
     @Operation(summary = "Lista uma questão por id")
     @GetMapping("/{id}")
-    public QuestaoDTO getPorId(@PathVariable int id){
-        return questaoService.buscarPorId(id);
+    public ResponseEntity<QuestaoDTO> getPorId(@PathVariable int id){
+        QuestaoDTO dto = questaoService.buscarPorId(id);
+        if (dto == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // ou .body("Questão não encontrada")
+        }
+        return ResponseEntity.ok(dto);
     }
 
     @Operation(summary= "Listar todas as questões")

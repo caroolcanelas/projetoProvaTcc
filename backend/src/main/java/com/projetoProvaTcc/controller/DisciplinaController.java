@@ -66,8 +66,12 @@ public class DisciplinaController {
 
     @Operation(summary= "Listar uma disciplina por id")
     @GetMapping("/{id}")
-    public DisciplinaDTO getPorId(@PathVariable int id) {
-        return disciplinaService.buscarPorId(id);
+    public ResponseEntity<DisciplinaDTO> getPorId(@PathVariable int id) {
+        DisciplinaDTO dto = disciplinaService.buscarPorId(id);
+        if (dto == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // ou .body("Disciplina não encontrada")
+        }
+        return ResponseEntity.ok(dto);
     }
 
     @Operation(summary = "Atualiza parcialmente uma disciplina")

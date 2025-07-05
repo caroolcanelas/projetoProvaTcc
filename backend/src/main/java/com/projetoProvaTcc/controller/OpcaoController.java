@@ -59,8 +59,12 @@ public class OpcaoController {
 
     @Operation(summary = "Lista uma opção por id")
     @GetMapping("/{id}")
-    public OpcaoDTO getPorId(@PathVariable int id){
-        return opcaoService.buscarPorId(id);
+    public ResponseEntity<OpcaoDTO> getPorId(@PathVariable int id){
+        OpcaoDTO dto = opcaoService.buscarPorId(id);
+        if (dto == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // ou .body("Opção não encontrada")
+        }
+        return ResponseEntity.ok(dto);
     }
 
     @Operation(summary = "Associa um recurso já existente a uma opção")

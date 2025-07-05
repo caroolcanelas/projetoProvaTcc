@@ -50,8 +50,12 @@ public class TopicoController {
 
     @Operation(summary= "Listar um tópico por id")
     @GetMapping("/{id}")
-    public TopicoDTO getPorId(@PathVariable int id) {
-        return topicoService.buscarPorId(id);
+    public ResponseEntity<TopicoDTO> getPorId(@PathVariable int id) {
+        TopicoDTO dto = topicoService.buscarPorId(id);
+        if (dto == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // ou .body("Tópico não encontrado")
+        }
+        return ResponseEntity.ok(dto);
     }
 
     @Operation(summary= "Listar todos os Tópicos")
