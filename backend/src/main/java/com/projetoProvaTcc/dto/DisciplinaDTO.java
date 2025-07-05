@@ -22,7 +22,6 @@ public class DisciplinaDTO {
     private String objetivoGeral;
 
     //relaciona pelo id de topico
-    @Schema(hidden = true)
     private List<Integer> conjTopicos = new ArrayList<>(); // relacionamento bidirecional
 
 }

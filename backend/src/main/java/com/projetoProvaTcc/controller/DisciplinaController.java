@@ -7,6 +7,9 @@ import com.projetoProvaTcc.exception.ModelException;
 import com.projetoProvaTcc.mapper.TopicoMapper;
 import com.projetoProvaTcc.service.DisciplinaService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,6 +29,20 @@ public class DisciplinaController {
     //Todos os endpoint chamam a camada SERVICE onde fica a logica de interação com o banco de dados
     @Operation(summary = "Cria uma disciplina")
     @PostMapping
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = TopicoDTO.class),
+                    examples = @ExampleObject(value = """
+            {
+              "codigo": "string",
+              "nome": "string",
+              "numCreditos": 0,
+              "objetivoGeral": "string"
+             }
+        """)
+            )
+    )
     public ResponseEntity<DisciplinaDTO> criarDisciplina(@RequestBody DisciplinaDTO disciplinaDTO) {
         try {
             DisciplinaDTO salva = disciplinaService.salvar(disciplinaDTO);
@@ -84,6 +101,17 @@ public class DisciplinaController {
 
     @Operation(summary = "Adiciona topico na disciplina")
     @PostMapping("/{idDisciplina}/topico")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = TopicoDTO.class),
+                    examples = @ExampleObject(value = """
+            {
+              "conjTopicos": [0]
+            }
+        """)
+            )
+    )
     public ResponseEntity<?> adicionarTopico(@PathVariable int idDisciplina, @RequestBody TopicoDTO dto) throws ModelException {
         Topico topico;
         if (dto.getId() != 0) {

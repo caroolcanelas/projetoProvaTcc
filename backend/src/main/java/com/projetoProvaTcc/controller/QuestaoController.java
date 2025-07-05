@@ -1,9 +1,13 @@
 package com.projetoProvaTcc.controller;
 
 import com.projetoProvaTcc.dto.QuestaoDTO;
+import com.projetoProvaTcc.dto.TopicoDTO;
 import com.projetoProvaTcc.exception.ModelException;
 import com.projetoProvaTcc.service.QuestaoService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
@@ -24,6 +28,23 @@ public class QuestaoController {
 
     @Operation(summary = "Cria uma questão")
     @PostMapping
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = TopicoDTO.class),
+                    examples = @ExampleObject(value = """
+            {
+               "instrucaoInicial": "string",
+               "suporte": "string",
+               "comando": "string",
+               "nivel": "FACIL",
+               "tipo": "RESPOSTA_UNICA",
+               "validada": true,
+               "matriculaProfessorValidador": 0
+             }
+        """)
+            )
+    )
     public ResponseEntity<QuestaoDTO> criaQuestao(@RequestBody QuestaoDTO questaoDTO) {
         try {
             QuestaoDTO salva = questaoService.salvar(questaoDTO);
@@ -83,6 +104,17 @@ public class QuestaoController {
 
     @Operation(summary = "Associa uma opção já existente a uma questão")
     @PostMapping("/{idQuestao}/opcao/")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = TopicoDTO.class),
+                    examples = @ExampleObject(value = """
+            {
+               "conjOpcoes": [0]
+             }
+        """)
+            )
+    )
     public ResponseEntity<?> adicionarOpcaoNaQuestao(
             @PathVariable int idQuestao,
             @RequestBody int idOpcao
@@ -100,6 +132,17 @@ public class QuestaoController {
 
     @Operation(summary = "Adiciona tag na questão")
     @PostMapping("/{idQuestao}/addTag")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = TopicoDTO.class),
+                    examples = @ExampleObject(value = """
+            {
+              "conjTags": [0]
+            }
+        """)
+            )
+    )
     public ResponseEntity<?> adicionarTags(@PathVariable int idQuestao, @RequestBody List<String> nomesTags) {
         try {
             questaoService.adicionarTagsNaQuestao(idQuestao, nomesTags);
@@ -124,6 +167,23 @@ public class QuestaoController {
     //add questao derivada
     @Operation(summary = "Adiciona Questão Derivada em Questão")
     @PostMapping("/{idQuestao}/questaoDerivada")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = TopicoDTO.class),
+                    examples = @ExampleObject(value = """
+            {
+               "instrucaoInicial": "string",
+               "suporte": "string",
+               "comando": "string",
+               "nivel": "FACIL",
+               "tipo": "RESPOSTA_UNICA",
+               "validada": true,
+               "matriculaProfessorValidador": 0
+             }
+        """)
+            )
+    )
     public ResponseEntity<?> adicionaQuestaoDerivada(@PathVariable int idQuestao, @RequestBody QuestaoDTO dto) throws ModelException{
         questaoService.adicionarQuestaoDerivadaEmQuestao(idQuestao, dto.getConjQuestoesDerivadas());
         return ResponseEntity.ok().body("Questão Derivada adicionados com sucesso!");

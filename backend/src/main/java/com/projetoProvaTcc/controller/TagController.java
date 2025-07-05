@@ -1,8 +1,12 @@
 package com.projetoProvaTcc.controller;
 
 import com.projetoProvaTcc.dto.TagDTO;
+import com.projetoProvaTcc.dto.TopicoDTO;
 import com.projetoProvaTcc.service.TagService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,6 +26,18 @@ public class TagController {
 
     @Operation(summary = "Cria uma tag")
     @PostMapping
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = TopicoDTO.class),
+                    examples = @ExampleObject(value = """
+            {
+              "tagName": "string",
+              "assunto": "string"
+            }
+        """)
+            )
+    )
     public ResponseEntity<TagDTO> criarTag(@RequestBody TagDTO tagDTO) {
         try {
             TagDTO salva = tagService.salvar(tagDTO);
