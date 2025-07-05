@@ -1,6 +1,5 @@
 package com.projetoProvaTcc.service;
 
-import com.projetoProvaTcc.dto.DisciplinaDTO;
 import com.projetoProvaTcc.dto.ProfessorDTO;
 import com.projetoProvaTcc.entity.Disciplina;
 import com.projetoProvaTcc.entity.Professor;

@@ -1,6 +1,5 @@
 package com.projetoProvaTcc.controller;
 
-import com.projetoProvaTcc.dto.DisciplinaDTO;
 import com.projetoProvaTcc.dto.LoginDTO;
 import com.projetoProvaTcc.dto.ProfessorDTO;
 import com.projetoProvaTcc.dto.TopicoDTO;

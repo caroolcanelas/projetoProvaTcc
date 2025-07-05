@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -107,6 +106,88 @@ public class TagService {
         }
         return false;
     }
+
+    @Transactional
+    public void adicionarQuestaoNaTag(List<String> nomesTags, int idQuestao) throws ModelException {
+
+        List<Tag> tags = repository.findAllByTagNameIn(nomesTags);
+        if (tags.isEmpty()) {
+            throw new ModelException("Nenhuma tag encontrada com os nomes fornecidos.");
+        }
+        Questao questao = questaoRepository.findById((long) idQuestao)
+                .orElseThrow(() -> new ModelException("Questão não encontrada com ID: " + idQuestao));
+
+        for (Tag tag : tags) {
+            if (!tag.getConjQuestoes().contains(questao)) {
+                tag.getConjQuestoes().add(questao);
+                questao.getConjTags().add(tag);
+                questaoRepository.save(questao);
+            }
+        }
+    }
+
+    @Transactional
+    public void removerQuestaoDasTags(List<String> nomesTags, int idQuestao) throws ModelException {
+        List<Tag> tags = repository.findAllByTagNameIn(nomesTags);
+        if (tags.isEmpty()) {
+            throw new ModelException("Nenhuma tag encontrada com os nomes fornecidos.");
+        }
+
+        Questao questao = questaoRepository.findById((long) idQuestao)
+                .orElseThrow(() -> new ModelException("Questão não encontrada com ID: " + idQuestao));
+
+        for (Tag tag : tags) {
+            if (tag.getConjQuestoes().contains(questao)) {
+                // Remove dos dois lados
+                tag.getConjQuestoes().remove(questao);
+                questao.getConjTags().remove(tag);
+
+                questaoRepository.save(questao);
+            }
+        }
+    }
+
+    @Transactional
+    public void adicionarTopicosNaTag(String nomeTag, List<String> nomesTopicos) throws ModelException {
+        List<Tag> tags = repository.findAllByTagNameIn(List.of(nomeTag));
+        if (tags.isEmpty()) {
+            throw new ModelException("Tag não encontrada com o nome: " + nomeTag);
+        }
+        Tag tag = tags.get(0);
+
+        List<Topico> topicos = topicoRepository.findAllByNomeIn(nomesTopicos);
+        if (topicos.isEmpty()) {
+            throw new ModelException("Nenhum tópico encontrado com os nomes fornecidos.");
+        }
+
+        for (Topico topico : topicos) {
+            if (!tag.getConjTopicosAderentes().contains(topico)) {
+                tag.getConjTopicosAderentes().add(topico);
+            }
+        }
+
+        repository.save(tag);
+    }
+
+    @Transactional
+    public void removerTopicosDaTag(String nomeTag, List<String> nomesTopicos) throws ModelException {
+        List<Tag> tags = repository.findAllByTagNameIn(List.of(nomeTag));
+        if (tags.isEmpty()) {
+            throw new ModelException("Tag não encontrada com o nome: " + nomeTag);
+        }
+        Tag tag = tags.get(0);
+
+        List<Topico> topicos = topicoRepository.findAllByNomeIn(nomesTopicos);
+        if (topicos.isEmpty()) {
+            throw new ModelException("Nenhum tópico encontrado com os nomes fornecidos.");
+        }
+
+        tag.getConjTopicosAderentes().removeAll(topicos);
+
+        repository.save(tag);
+    }
+
+
 
     public void importarTagsViaCsv(MultipartFile file) throws Exception {
         //buffer reader le o arquivo linha a linha

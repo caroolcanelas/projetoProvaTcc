@@ -2,6 +2,7 @@ package com.projetoProvaTcc.controller;
 
 import com.projetoProvaTcc.dto.TagDTO;
 import com.projetoProvaTcc.dto.TopicoDTO;
+import com.projetoProvaTcc.exception.ModelException;
 import com.projetoProvaTcc.service.TagService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("api/tag")
@@ -99,6 +99,62 @@ public class TagController {
             return ResponseEntity.status(500).body("Erro ao excluir Tag: " + e.getMessage());
         }
     }
+
+    //adiciona questao na tag
+    @Operation(summary = "Adiciona uma questão a tag")
+    @PostMapping("/add-questao/{idQuestao}")
+    public ResponseEntity<String> adicionarQuestaoNasTags(
+            @RequestBody List<String> nomesTags,
+            @PathVariable int idQuestao) {
+        try {
+            tagService.adicionarQuestaoNaTag(nomesTags, idQuestao);
+            return ResponseEntity.ok("Questão adicionada às tags com sucesso!");
+        } catch (ModelException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+
+    //remover questao de tag
+    @Operation(summary = "Remove uma questão da  tag")
+    @DeleteMapping("/remove-questao/{idQuestao}")
+    public ResponseEntity<String> removerQuestaoDasTags(
+            @RequestBody List<String> nomesTags,
+            @PathVariable int idQuestao) {
+        try {
+            tagService.removerQuestaoDasTags(nomesTags, idQuestao);
+            return ResponseEntity.ok("Questão removida das tags com sucesso!");
+        } catch (ModelException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Adiciona tópicos na tag informada")
+    @PostMapping("/{nomeTag}/add-topicos")
+    public ResponseEntity<String> adicionarTopicosNaTag(
+            @PathVariable String nomeTag,
+            @RequestBody List<String> nomesTopicos) {
+        try {
+            tagService.adicionarTopicosNaTag(nomeTag, nomesTopicos);
+            return ResponseEntity.ok("Tópicos adicionados na tag com sucesso!");
+        } catch (ModelException e) {
+            return ResponseEntity.badRequest().body("Erro: " + e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Remove tópicos da tag informada")
+    @DeleteMapping("/{nomeTag}/remove-topicos")
+    public ResponseEntity<String> removerTopicosDaTag(
+            @PathVariable String nomeTag,
+            @RequestBody List<String> nomesTopicos) {
+        try {
+            tagService.removerTopicosDaTag(nomeTag, nomesTopicos);
+            return ResponseEntity.ok("Tópicos removidos da tag com sucesso!");
+        } catch (ModelException e) {
+            return ResponseEntity.badRequest().body("Erro: " + e.getMessage());
+        }
+    }
+
 
     //import batch de tags via csv
     @Operation(summary = "Faz o upload em batch de tags")
