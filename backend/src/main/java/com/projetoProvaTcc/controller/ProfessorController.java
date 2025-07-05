@@ -3,10 +3,14 @@ package com.projetoProvaTcc.controller;
 import com.projetoProvaTcc.dto.DisciplinaDTO;
 import com.projetoProvaTcc.dto.LoginDTO;
 import com.projetoProvaTcc.dto.ProfessorDTO;
+import com.projetoProvaTcc.dto.TopicoDTO;
 import com.projetoProvaTcc.entity.Professor;
 import com.projetoProvaTcc.service.ProfessorService;
 import com.projetoProvaTcc.exception.ModelException;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,6 +30,20 @@ public class ProfessorController {
 
     @Operation(summary = "Cria um professor")
     @PostMapping
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = TopicoDTO.class),
+                    examples = @ExampleObject(value = """
+            {
+              "nome": "string",
+              "email": "string",
+              "senha": "string",
+              "matricula": 0
+            }
+        """)
+            )
+    )
     public ResponseEntity<ProfessorDTO> criar(@RequestBody ProfessorDTO dto) {
         try {
             return ResponseEntity.ok(service.salvar(dto));
