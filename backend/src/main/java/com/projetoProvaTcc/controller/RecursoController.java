@@ -89,23 +89,4 @@ public class RecursoController {
         }
     }
 
-
-    //precisa desse método?
-    //Todos os arquivos contidos no CSV, devem existir no ZIP
-//    @Operation(summary = "Importa recursos em lote via CSV e ZIP")
-//    @PostMapping(value = "/importar-lote", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    public ResponseEntity<String> importarRecursosEmLote(
-//            @RequestParam("csv") MultipartFile csvFile,
-//            @RequestParam("zip") MultipartFile zipFile
-//    ) {
-//        try {
-//            recursoService.importarRecursosViaCsv(csvFile, zipFile);
-//            return ResponseEntity.ok("Recursos importados com sucesso!");
-//        } catch (ModelException e) {
-//            return ResponseEntity.badRequest().body(e.getMessage());
-//        } catch (Exception e) {
-//            return ResponseEntity.internalServerError().body("Erro durante a importação: " + e.getMessage());
-//        }
-//    }
-
 }
