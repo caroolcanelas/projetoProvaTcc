@@ -63,32 +63,32 @@ public class TagService {
     }
 
     @Transactional
-    public TagDTO atualizar(Long id, Map<String, Object> updates) throws ModelException {
+    public TagDTO atualizar(Long id, TagDTO dto) throws ModelException {
         Tag tag = repository.findById(id).orElse(null);
         if (tag == null) {
             return null;
         }
 
         // Atualiza os campos recebidos no map
-        if (updates.containsKey("tagName")) {
-            String tagName = (String) updates.get("tagName");
-            tag.setTagName(tagName);
+        if (dto.getTagName() != null) {
+            tag.setTagName(dto.getTagName());
         }
 
-        if (updates.containsKey("assunto")) {
-            String assunto = (String) updates.get("assunto");
-            tag.setAssunto(assunto);
+        if (dto.getAssunto() != null) {
+            tag.setAssunto(dto.getAssunto());
         }
 
-        if (updates.containsKey("conjTopicosAderentes")) {
-            List<String> nomesTopicos = (List<String>) updates.get("conjTopicosAderentes");
+        // Atualiza os tópicos aderentes (por nome)
+        if (dto.getConjTopicosAderentes() != null && !dto.getConjTopicosAderentes().isEmpty()) {
+            List<String> nomesTopicos = dto.getConjTopicosAderentes();
             List<Topico> topicos = topicoRepository.findAllByNomeIn(nomesTopicos);
             tag.setConjTopicosAderentes(topicos);
         }
 
-        if (updates.containsKey("conjQuestoes")) {
-            List<Integer> idsQuestoesInt = (List<Integer>) updates.get("conjQuestoes");
-            List<Long> idsQuestoes = idsQuestoesInt.stream()
+        // Atualiza as questões relacionadas (por ID)
+        if (dto.getConjQuestoes() != null && !dto.getConjQuestoes().isEmpty()) {
+            List<Long> idsQuestoes = dto.getConjQuestoes()
+                    .stream()
                     .map(Integer::longValue)
                     .collect(Collectors.toList());
             List<Questao> questoes = questaoRepository.findAllById(idsQuestoes);

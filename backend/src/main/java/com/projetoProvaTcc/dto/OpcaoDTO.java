@@ -1,5 +1,6 @@
 package com.projetoProvaTcc.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,10 @@ import java.util.List;
 @NoArgsConstructor // Gera construtor sem argumentos
 @AllArgsConstructor //Gera construtor com argumentos
 public class OpcaoDTO {
+
+    @Schema(hidden = true)
     private int id;
+
     private String conteudo;
     private Boolean correta;
 

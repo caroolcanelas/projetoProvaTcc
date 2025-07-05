@@ -1,5 +1,6 @@
 package com.projetoProvaTcc.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProfessorDTO {
+
+    @Schema(hidden = true)
     private Long id;
+
     private String nome;
     private String email;
     private String senha;
