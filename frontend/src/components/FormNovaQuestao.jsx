@@ -86,7 +86,7 @@ export default function FormNovaQuestao({ professor, onQuestaoSalva, modoEdicao 
         }
 
         alert("Questão atualizada com sucesso!");
-        navigate("/ver-questoes");
+        navigate("/dashboard");
       } catch (err) {
         alert("Erro na comunicação com o servidor: " + err.message);
       }
@@ -113,7 +113,7 @@ export default function FormNovaQuestao({ professor, onQuestaoSalva, modoEdicao 
 
         if (response.ok) {
           alert("Questão salva com sucesso!");
-          navigate("/ver-questoes");
+          navigate("/dashboard");
         } else {
           const erro = await response.text();
           alert("Erro ao salvar questão: " + erro);
