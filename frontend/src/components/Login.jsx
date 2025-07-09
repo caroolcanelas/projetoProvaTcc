@@ -10,28 +10,34 @@ export default function Login() {
 
   const fazerLogin = async (e) => {
     e.preventDefault();
+
     try {
+      // 1. Faz o login
       const resposta = await axios.post("http://localhost:8080/api/professor/login", {
         email,
         senha,
       });
 
-      // Simulação de retorno do backend com dados do professor
-      const dadosProfessor = {
-        nome: "Carla Ribeiro",
-        email,
-        matricula: 1003
-      };
+      if (resposta.status === 200) {
+        // 2. Busca todos os professores
+        const res = await axios.get("http://localhost:8080/api/professor");
+        const professores = res.data;
 
-      // Salvar no localStorage
-      localStorage.setItem("professor", JSON.stringify(dadosProfessor));
+        // 3. Filtra pelo e-mail informado no login
+        const professorLogado = professores.find((p) => p.email === email);
 
-      // Redirecionar
-      navigate("/dashboard");
+        if (professorLogado) {
+          localStorage.setItem("professor", JSON.stringify(professorLogado));
+          navigate("/dashboard");
+        } else {
+          setMensagem("Professor não encontrado no banco.");
+        }
+      }
     } catch (erro) {
       setMensagem("Erro: " + (erro.response?.data || erro.message));
     }
   };
+
 
   return (
     <div className="min-h-screen bg-[#fdfaf4] flex items-center justify-center font-sans">
