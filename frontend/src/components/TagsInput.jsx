@@ -39,7 +39,12 @@ export default function TagsInput({ tags, setTags }) {
               <select
                 className="input"
                 value={tag.tagName}
-                onChange={(e) => handleChange(index, "tagName", e.target.value)}
+                onChange={(e) => {
+                  const tagSelecionada = tagsDisponiveis.find(t => t.tagName === e.target.value);
+
+                  handleChange(index, "tagName", tagSelecionada?.tagName || "");
+                  handleChange(index, "assunto", tagSelecionada?.assunto || "");
+                }}
               >
                 <option value="">Selecione uma tag existente</option>
                 {tagsDisponiveis.map((t) => (
