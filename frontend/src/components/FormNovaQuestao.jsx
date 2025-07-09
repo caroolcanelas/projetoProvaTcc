@@ -1,8 +1,8 @@
-
 import { useEffect, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
-import OpcaoQuestao from "./OpcaoQuestao";
 import TagsInput from "./TagsInput";
+import OpcaoQuestao from "./OpcaoQuestao";
+import { useNavigate } from "react-router-dom";
 
 export default function FormNovaQuestao({ professor, onQuestaoSalva, modoEdicao = false, questaoInicial = null }) {
   const [instrucaoInicial, setInstrucaoInicial] = useState("");
@@ -11,10 +11,10 @@ export default function FormNovaQuestao({ professor, onQuestaoSalva, modoEdicao 
   const [nivel, setNivel] = useState("FACIL");
   const [tipo, setTipo] = useState("RESPOSTA_UNICA");
   const [validada, setValidada] = useState(false);
-  const [opcoes, setOpcoes] = useState([
-    { conteudo: "", correta: false, conjRecursos: [] }
-  ]);
+  const [opcoes, setOpcoes] = useState([{ conteudo: "", correta: false, conjRecursos: [] }]);
   const [tags, setTags] = useState([{ tagName: "", assunto: "" }]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (modoEdicao && questaoInicial) {
@@ -44,23 +44,67 @@ export default function FormNovaQuestao({ professor, onQuestaoSalva, modoEdicao 
       return;
     }
 
-    const novaQuestao = {
-      instrucaoInicial,
-      suporte,
-      comando,
-      nivel,
-      tipo,
-      validada,
-      matriculaProfessorValidador: professor?.matricula,
-      conjOpcoes: opcoesValidas,
-      conjQuestoesDerivadas: [],
-      conjTags: tags.filter(tag => tag.tagName.trim() !== "")
-    };
+    const tagsValidas = tags.filter(tag => tag.tagName.trim() !== "");
 
-    try {
-      if (modoEdicao) {
-        onQuestaoSalva(novaQuestao);
-      } else {
+    if (modoEdicao && questaoInicial?.id) {
+      const questaoId = questaoInicial.id;
+
+      const dadosAtualizados = {
+        instrucaoInicial,
+        suporte,
+        comando,
+        nivel,
+        tipo,
+        validada,
+      };
+
+      const houveAlteracao =
+        instrucaoInicial !== questaoInicial.instrucaoInicial ||
+        suporte !== questaoInicial.suporte ||
+        comando !== questaoInicial.comando ||
+        nivel !== questaoInicial.nivel ||
+        tipo !== questaoInicial.tipo ||
+        validada !== questaoInicial.validada;
+
+      if (!houveAlteracao) {
+        alert("Nenhuma alteração nos dados principais da questão foi detectada.");
+        navigate("/dashboard");
+        return;
+      }
+
+      try {
+        const patch = await fetch(`http://localhost:8080/api/questao/${questaoId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(dadosAtualizados),
+        });
+
+        if (!patch.ok) {
+          const erro = await patch.text();
+          alert("Erro ao atualizar dados da questão: " + erro);
+          return;
+        }
+
+        alert("Questão atualizada com sucesso!");
+        navigate("/ver-questoes");
+      } catch (err) {
+        alert("Erro na comunicação com o servidor: " + err.message);
+      }
+    } else {
+      const novaQuestao = {
+        instrucaoInicial,
+        suporte,
+        comando,
+        nivel,
+        tipo,
+        validada,
+        matriculaProfessorValidador: professor?.matricula,
+        conjOpcoes: opcoesValidas,
+        conjTags: tagsValidas,
+        conjQuestoesDerivadas: [],
+      };
+
+      try {
         const response = await fetch("http://localhost:8080/api/questao", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -69,14 +113,14 @@ export default function FormNovaQuestao({ professor, onQuestaoSalva, modoEdicao 
 
         if (response.ok) {
           alert("Questão salva com sucesso!");
-          onQuestaoSalva();
+          navigate("/ver-questoes");
         } else {
           const erro = await response.text();
           alert("Erro ao salvar questão: " + erro);
         }
+      } catch (err) {
+        alert("Erro na comunicação com o servidor: " + err.message);
       }
-    } catch (err) {
-      alert("Erro na comunicação com o servidor: " + err.message);
     }
   };
 
@@ -123,14 +167,10 @@ export default function FormNovaQuestao({ professor, onQuestaoSalva, modoEdicao 
       </select>
 
       <label className="label">Validada</label>
-      <input
-        type="checkbox"
-        checked={validada}
-        onChange={(e) => setValidada(e.target.checked)}
-      />
+      <input type="checkbox" checked={validada} onChange={(e) => setValidada(e.target.checked)} />
 
-      <OpcaoQuestao opcoes={opcoes} setOpcoes={setOpcoes} />
-      <TagsInput tags={tags} setTags={setTags} />
+      <OpcaoQuestao opcoes={opcoes} setOpcoes={setOpcoes} modoEdicao={modoEdicao} questaoId={questaoInicial?.id} />
+      <TagsInput tags={tags} setTags={setTags} modoEdicao={modoEdicao} questaoId={questaoInicial?.id} />
 
       <button onClick={enviarQuestao} className="btn-salvar">
         {modoEdicao ? "Salvar alterações" : "Salvar questão"}
