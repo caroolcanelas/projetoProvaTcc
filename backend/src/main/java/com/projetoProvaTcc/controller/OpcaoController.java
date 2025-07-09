@@ -19,6 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/opcao")
+@CrossOrigin(origins = "http://localhost:5173")
 public class OpcaoController {
 
     @Autowired
