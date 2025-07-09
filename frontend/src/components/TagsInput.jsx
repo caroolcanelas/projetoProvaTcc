@@ -65,6 +65,11 @@ export default function TagsInput({ tags, setTags, modoEdicao, questaoId }) {
         if (!resp.ok) throw new Error("Erro ao criar nova tag");
 
         tagFinal = await resp.json();
+      } else {
+        const tagExistente = tagsDisponiveis.find(t => t.tagName === tag.tagName);
+        if (tagExistente) {
+          tagFinal = tagExistente;
+        }
       }
 
       if (modoEdicao && questaoId && tagFinal.tagName) {
@@ -117,8 +122,11 @@ export default function TagsInput({ tags, setTags, modoEdicao, questaoId }) {
                 value={tag.tagName}
                 onChange={(e) => {
                   const selecionada = tagsDisponiveis.find(t => t.tagName === e.target.value);
-                  handleChange(index, "tagName", selecionada?.tagName || "");
-                  handleChange(index, "assunto", selecionada?.assunto || "");
+                  if (selecionada) {
+                    const novas = [...tags];
+                    novas[index] = selecionada;
+                    setTags(novas);
+                  }
                 }}
               >
                 <option value="">Selecione uma tag existente</option>
